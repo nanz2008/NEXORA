@@ -1,0 +1,4512 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NEXORA — Fantasy World</title>
+
+<style>
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  min-height:100%;
+  font-family:Arial,sans-serif;
+  background:#070a12;
+  color:#eee
+}
+button,input,select,textarea{font:inherit}
+button{
+  border:0;
+  border-radius:12px;
+  padding:11px 14px;
+  background:#6252ff;
+  color:#fff;
+  margin:4px;
+  cursor:pointer
+}
+button:active{transform:scale(.98)}
+button.secondary{background:#252c43}
+button.danger{background:#a83e55}
+
+.screen{display:none;min-height:100vh}
+.screen.active{display:block}
+
+.center{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:20px;
+  background:
+    radial-gradient(circle at 50% 35%,#29235e 0,#10152a 42%,#070a12 78%)
+}
+
+.hero{
+  text-align:center;
+  width:min(700px,100%)
+}
+
+.logo{
+  font-size:clamp(44px,13vw,78px);
+  font-weight:900;
+  letter-spacing:.15em;
+  color:#aa9dff;
+  text-shadow:0 0 28px #6e5cff
+}
+
+.sub{
+  color:#aeb4c8;
+  font-size:18px;
+  margin:8px 0 28px
+}
+
+.panel{
+  background:#111727;
+  border:1px solid #2a3450;
+  border-radius:16px;
+  padding:16px;
+  margin:12px 0;
+  box-shadow:0 10px 28px #0005
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:10px
+}
+
+.card{
+  background:#171d2e;
+  border:1px solid #303a58;
+  border-radius:14px;
+  padding:14px
+}
+
+.muted{color:#929ab0}
+.good{color:#65e0a4}
+.gold{color:#ffd66b}
+.xp{color:#78baff}
+.bad{color:#ff7185}
+
+.choice{
+  width:100%;
+  text-align:left;
+  background:#171d2e;
+  border:1px solid #303a58
+}
+
+.choice b{
+  display:block;
+  color:#c0b8ff;
+  margin-bottom:5px
+}
+
+input,select,textarea{
+  width:100%;
+  padding:11px;
+  margin:6px 0 12px;
+  border-radius:10px;
+  border:1px solid #303a58;
+  background:#0c111e;
+  color:#fff
+}
+
+textarea{
+  min-height:100px;
+  resize:vertical
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:#0d1220ee;
+  border-bottom:1px solid #29324a
+}
+
+.head{
+  max-width:1200px;
+  margin:auto;
+  padding:9px 12px;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center
+}
+
+.brand{
+  font-weight:900;
+  letter-spacing:3px;
+  color:#a99cff
+}
+
+.stats{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px
+}
+
+.stat{
+  background:#171d2e;
+  border:1px solid #29334d;
+  border-radius:8px;
+  padding:6px 9px;
+  font-size:12px
+}
+
+.nav{
+  max-width:1200px;
+  margin:auto;
+  display:flex;
+  overflow:auto;
+  padding:6px 8px
+}
+
+.nav button{
+  white-space:nowrap;
+  font-size:12px
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:12px
+}
+
+.page{display:none}
+.page.active{display:block}
+
+.location{
+  min-height:300px;
+  padding:20px;
+  border:1px solid #333d5a;
+  border-radius:18px;
+  background:
+    radial-gradient(circle at 50% 10%,#35345f,#121827 70%)
+}
+
+.location h1{color:#d2ccff}
+
+.bar{
+  height:11px;
+  background:#293148;
+  border-radius:99px;
+  overflow:hidden;
+  margin:5px 0 10px
+}
+
+.fill{
+  height:100%;
+  width:0;
+  transition:width .25s
+}
+
+.hp{background:#e95570}
+.mp{background:#508eff}
+.xpf{background:#9b70ff}
+
+.log{
+  height:170px;
+  overflow:auto;
+  background:#080b12;
+  border-radius:10px;
+  padding:10px;
+  font-size:13px
+}
+
+.log p{margin:4px 0}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:#000c;
+  z-index:50;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:12px
+}
+
+.modal.show{display:flex}
+
+.modalbox{
+  width:min(620px,100%);
+  max-height:92vh;
+  overflow:auto;
+  background:#111727;
+  border:1px solid #3b4665;
+  border-radius:18px;
+  padding:16px
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:20px;
+  transform:translateX(-50%);
+  z-index:100;
+  background:#202941;
+  padding:11px 16px;
+  border-radius:12px;
+  display:none;
+  max-width:90%;
+  text-align:center
+}
+
+@media(max-width:650px){
+  .head{display:block}
+  .stats{margin-top:7px}
+  .container{padding:9px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= TITLE ================= -->
+
+<section id="title" class="screen active">
+
+  <div class="center">
+
+    <div class="hero">
+
+      <div class="logo">NEXORA</div>
+
+      <div class="sub">
+        The Beginning of a New Fantasy World
+      </div>
+
+      <button id="startBtn">
+        ⚔️ MULAI PETUALANGAN
+      </button>
+
+      <button id="loadBtn">
+        💾 LOAD GAME
+      </button>
+
+      <br>
+
+      <button id="soundBtn" class="secondary">
+        🔊 SOUND ON
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= CHARACTER CREATOR ================= -->
+
+<section id="creator" class="screen">
+
+  <div class="container">
+
+    <div class="panel">
+
+      <h1>🌌 Character Creation</h1>
+
+      <p class="muted">
+        Ciptakan petualangmu sebelum memasuki dunia NEXORA.
+      </p>
+
+      <label>Nama Karakter</label>
+
+      <input
+        id="charName"
+        placeholder="Contoh: Kaii"
+        maxlength="24"
+      >
+
+      <h3>🧬 Race</h3>
+
+      <div class="grid" id="raceChoices"></div>
+
+      <h3>⚔️ Class</h3>
+
+      <div class="grid" id="classChoices"></div>
+
+      <div class="panel">
+
+        <p>
+          Race:
+          <b id="racePreview">Belum dipilih</b>
+        </p>
+
+        <p>
+          Class:
+          <b id="classPreview">Belum dipilih</b>
+        </p>
+
+        <button id="createBtn">
+          ✨ CIPTAKAN KARAKTER
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= GAME ================= -->
+
+<section id="game" class="screen">
+
+<header>
+
+  <div class="head">
+
+    <div class="brand">
+      NEXORA
+    </div>
+
+    <div class="stats">
+
+      <div class="stat">
+        ⚔️ <span id="uiName">-</span>
+      </div>
+
+      <div class="stat">
+        Lv <span id="uiLevel">1</span>
+      </div>
+
+      <div class="stat">
+        ❤️ <span id="uiHP">0/0</span>
+      </div>
+
+      <div class="stat">
+        💰 <span id="uiGold">0</span>
+      </div>
+
+      <div class="stat">
+        🏅 <span id="uiRank">F</span>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="nav">
+
+    <button data-page="world">
+      🗺️ World
+    </button>
+
+    <button data-page="character">
+      👤 Character
+    </button>
+
+    <button data-page="quests">
+      📜 Quest
+    </button>
+
+    <button data-page="inventory">
+      🎒 Inventory
+    </button>
+
+    <button data-page="skills">
+      ✨ Skills
+    </button>
+
+    <button data-page="creatorPage">
+      🛠️ Creator
+    </button>
+
+    <button data-page="owner">
+      👑 Owner
+    </button>
+
+    <button id="saveBtn">
+      💾 Save
+    </button>
+
+  </div>
+
+</header>
+
+
+<main class="container">
+
+
+<!-- ================= WORLD ================= -->
+
+<div id="world" class="page active">
+
+  <div class="location">
+
+    <h1 id="locationName">
+      🏰 Astera
+    </h1>
+
+    <p id="locationDesc"></p>
+
+    <div
+      class="grid"
+      id="travelButtons"
+    ></div>
+
+  </div>
+
+  <div
+    class="panel"
+    id="locationActions"
+  ></div>
+
+</div>
+
+
+<!-- ================= CHARACTER ================= -->
+
+<div id="character" class="page">
+
+  <div class="panel">
+
+    <h2>👤 Character Status</h2>
+
+    <div class="grid">
+
+
+      <div class="card">
+
+        <h3 id="sheetName">-</h3>
+
+        <p>
+          Race:
+          <b id="sheetRace">-</b>
+        </p>
+
+        <p>
+          Class:
+          <b id="sheetClass">-</b>
+        </p>
+
+        <p>
+          Level:
+          <b id="sheetLevel">1</b>
+        </p>
+
+        <p>
+          Guild Rank:
+          <b id="sheetRank">F</b>
+        </p>
+
+        <p>
+          Rebirth:
+          <b id="sheetRebirth">0</b>
+        </p>
+
+      </div>
+
+
+      <div class="card">
+
+        <p>❤️ HP</p>
+
+        <b id="sheetHP">
+          0/0
+        </b>
+
+        <div class="bar">
+          <div
+            id="hpBar"
+            class="fill hp"
+          ></div>
+        </div>
+
+
+        <p>🔷 MP</p>
+
+        <b id="sheetMP">
+          0/0
+        </b>
+
+        <div class="bar">
+          <div
+            id="mpBar"
+            class="fill mp"
+          ></div>
+        </div>
+
+
+        <p>✨ EXP</p>
+
+        <b id="sheetXP">
+          0/0
+        </b>
+
+        <div class="bar">
+          <div
+            id="xpBar"
+            class="fill xpf"
+          ></div>
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>📊 Stats</h3>
+
+        <p>
+          STR:
+          <b id="statSTR">0</b>
+        </p>
+
+        <p>
+          INT:
+          <b id="statINT">0</b>
+        </p>
+
+        <p>
+          AGI:
+          <b id="statAGI">0</b>
+        </p>
+
+        <p>
+          VIT:
+          <b id="statVIT">0</b>
+        </p>
+
+        <p>
+          CRIT:
+          <b id="statCRIT">0%</b>
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <button id="rebirthBtn">
+      🔄 Rebirth
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ================= QUEST ================= -->
+
+<div id="quests" class="page">
+
+  <div class="panel">
+
+    <h2>📜 Quest Board</h2>
+
+    <div id="questList"></div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= INVENTORY ================= -->
+
+<div id="inventory" class="page">
+
+  <div class="panel">
+
+    <h2>🎒 Inventory</h2>
+
+    <div id="inventoryList"></div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= SKILLS ================= -->
+
+<div id="skills" class="page">
+
+  <div class="panel">
+
+    <h2>✨ Skills</h2>
+
+    <div id="skillList"></div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= CUSTOM CREATOR ================= -->
+
+<div id="creatorPage" class="page">
+
+  <div class="panel">
+
+    <h2>🛠️ NEXORA Creator</h2>
+
+    <p class="muted">
+      Buat Race, Class, Skill, Weapon, Armor atau Passive.
+    </p>
+
+
+    <label>Nama</label>
+
+    <input
+      id="customName"
+      maxlength="30"
+      placeholder="Nama custom content"
+    >
+
+
+    <label>Jenis</label>
+
+    <select id="customType">
+
+      <option>Race</option>
+      <option>Class</option>
+      <option>Skill</option>
+      <option>Weapon</option>
+      <option>Armor</option>
+      <option>Passive</option>
+
+    </select>
+
+
+    <label>Power</label>
+
+    <input
+      id="customPower"
+      type="number"
+      value="10"
+      min="0"
+      max="999"
+    >
+
+
+    <label>Mana Cost</label>
+
+    <input
+      id="customMana"
+      type="number"
+      value="5"
+      min="0"
+      max="999"
+    >
+
+
+    <label>Cooldown</label>
+
+    <input
+      id="customCooldown"
+      type="number"
+      value="3"
+      min="0"
+      max="999"
+    >
+
+
+    <label>Deskripsi</label>
+
+    <textarea
+      id="customDesc"
+      placeholder="Jelaskan kemampuan atau item..."
+    ></textarea>
+
+
+    <button id="balanceBtn">
+      🤖 CHECK BALANCE
+    </button>
+
+
+    <div id="balanceResult"></div>
+
+
+    <button id="submitCustomBtn">
+      📤 SUBMIT
+    </button>
+
+  </div>
+
+
+  <div class="panel">
+
+    <h3>📚 Custom Content</h3>
+
+    <div id="customList"></div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= OWNER ================= -->
+
+<div id="owner" class="page">
+
+  <div class="panel">
+
+    <h2>👑 Owner Dashboard</h2>
+
+    <p>
+      Owner:
+      <b>Kyy Arthev</b>
+    </p>
+
+    <p class="muted">
+      Creator & Owner
+    </p>
+
+
+    <div class="grid">
+
+      <div class="card">
+        Members<br>
+        <b id="memberCount">0</b>
+      </div>
+
+      <div class="card">
+        Content<br>
+        <b id="contentCount">0</b>
+      </div>
+
+      <div class="card">
+        World<br>
+        <b class="good">
+          LOCAL
+        </b>
+      </div>
+
+    </div>
+
+
+    <h3>
+      📥 Submissions
+    </h3>
+
+    <div id="submissionList"></div>
+
+  </div>
+
+</div>
+
+
+</main>
+
+</section>
+
+
+<!-- ================= COMBAT ================= -->
+
+<div
+  id="combatModal"
+  class="modal"
+>
+
+  <div class="modalbox">
+
+    <h2 id="enemyName">
+      Monster
+    </h2>
+
+    <div class="bar">
+
+      <div
+        id="enemyHPBar"
+        class="fill hp"
+      ></div>
+
+    </div>
+
+    <p id="enemyHPText"></p>
+
+
+    <div class="panel">
+
+      <h3>
+        ⚔️ Battle
+      </h3>
+
+      <div id="battleSkills"></div>
+
+      <button id="basicAttackBtn">
+        ⚔️ BASIC ATTACK
+      </button>
+
+      <button id="battlePotionBtn">
+        🧪 POTION
+      </button>
+
+      <button
+        id="fleeBtn"
+        class="danger"
+      >
+        🏃 FLEE
+      </button>
+
+    </div>
+
+
+    <div
+      class="log"
+      id="battleLog"
+    ></div>
+
+  </div>
+
+</div>
+
+
+<div
+  id="toast"
+  class="toast"
+></div>
+
+
+<script>
+'use strict';
+
+/* =========================================================
+   NEXORA CORE
+========================================================= */
+
+const SAVE_KEY = 'NEXORA_SAVE_V4';
+
+
+const RACES = {
+
+  Human:
+    'Seimbang dalam semua aspek.',
+
+  Elf:
+    'Magic dan agility tinggi.',
+
+  Dwarf:
+    'HP dan pertahanan tinggi.',
+
+  Beastkin:
+    'Agility dan critical tinggi.'
+
+};
+
+
+const CLASSES = {
+
+  Warrior:
+    'Petarung jarak dekat.',
+
+  Mage:
+    'Pengguna magic.',
+
+  Archer:
+    'Pemanah jarak jauh.',
+
+  Assassin:
+    'Petarung cepat dan critical tinggi.'
+
+};
+
+
+const LOCATIONS = {
+
+  Astera:
+    'Kota utama tempat perjalananmu dimulai.',
+
+  AlunAlun:
+    'Alun-alun Astera yang ramai.',
+
+  Federation:
+    'Markas Adventurer Federation.',
+
+  Tavern:
+    'Moonlit Tavern, tempat rumor berkumpul.',
+
+  Market:
+    'Grand Market, pusat kebutuhan petualang.',
+
+  Arena:
+    'Royal Arena untuk latihan.',
+
+  Forest:
+    'Whispering Forest, penuh monster.',
+
+  Dungeon:
+    'Abyss Gate, gerbang menuju dungeon.'
+
+};
+
+
+const QUESTS = [
+
+  {
+    id:1,
+    title:'Awal Sang Petualang',
+    desc:'Daftarkan dirimu di Adventurer Federation.',
+    xp:50,
+    gold:50
+  },
+
+  {
+    id:2,
+    title:'Bisikan dari Hutan',
+    desc:'Kalahkan satu monster di Whispering Forest.',
+    xp:100,
+    gold:80
+  },
+
+  {
+    id:3,
+    title:'Rumor Moonlit Tavern',
+    desc:'Dengarkan rumor di Tavern.',
+    xp:120,
+    gold:100
+  },
+
+  {
+    id:4,
+    title:'Ujian Federation',
+    desc:'Selesaikan ujian Federation. Level minimal 3.',
+    xp:200,
+    gold:150
+  },
+
+  {
+    id:5,
+    title:'Gerbang Abyss',
+    desc:'Kalahkan monster di Abyss Gate.',
+    xp:300,
+    gold:250
+  },
+
+  {
+    id:6,
+    title:'Nama di Antara Petualang',
+    desc:'Naikkan Reputation sampai 100.',
+    xp:500,
+    gold:500
+  }
+
+];
+
+
+const MONSTERS = {
+
+  slime:{
+    name:'Forest Slime',
+    hp:80,
+    atk:10,
+    xp:40,
+    gold:20
+  },
+
+  wolf:{
+    name:'Dire Wolf',
+    hp:130,
+    atk:18,
+    xp:70,
+    gold:35
+  },
+
+  goblin:{
+    name:'Goblin Scout',
+    hp:160,
+    atk:23,
+    xp:90,
+    gold:45
+  },
+
+  bat:{
+    name:'Shadow Bat',
+    hp:220,
+    atk:30,
+    xp:150,
+    gold:80
+  },
+
+  guardian:{
+    name:'Abyss Guardian',
+    hp:650,
+    atk:55,
+    xp:500,
+    gold:500
+  }
+
+};
+
+
+/* =========================================================
+   GAME DATA
+========================================================= */
+
+function defaultGame(){
+
+  return {
+
+    name:'',
+    race:'',
+    class:'',
+
+    level:1,
+
+    xp:0,
+    xpNeed:100,
+
+    hp:100,
+    maxHp:100,
+
+    mp:50,
+    maxMp:50,
+
+    gold:100,
+
+    rep:0,
+
+    rebirth:0,
+
+    location:'Astera',
+
+    stats:{
+      str:10,
+      int:10,
+      agi:10,
+      vit:10,
+      crit:5
+    },
+
+    inventory:[
+      {
+        name:'Health Potion',
+        type:'potion',
+        amount:3
+      }
+    ],
+
+    equipment:{
+      weapon:'Rusty Sword',
+      armor:'Traveler Clothes'
+    },
+
+    completed:[],
+
+    custom:[],
+
+    members:1
+
+  };
+
+}
+
+
+let game = defaultGame();
+
+let selectedRace = '';
+let selectedClass = '';
+
+let enemy = null;
+
+let soundEnabled = true;
+
+let audioContext = null;
+
+
+/* =========================================================
+   SHORTCUT
+========================================================= */
+
+function $(id){
+  return document.getElementById(id);
+}
+
+
+/* =========================================================
+   AUDIO
+========================================================= */
+
+function initAudio(){
+
+  try{
+
+    if(!audioContext){
+
+      const Audio =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+      if(Audio){
+        audioContext = new Audio();
+      }
+
+    }
+
+    if(
+      audioContext &&
+      audioContext.state === 'suspended'
+    ){
+      audioContext.resume();
+    }
+
+  }catch(error){
+
+    audioContext = null;
+
+  }
+
+}
+
+
+function beep(
+  frequency = 440,
+  duration = 0.12,
+  type = 'sine'
+){
+
+  if(!soundEnabled){
+    return;
+  }
+
+  initAudio();
+
+  if(!audioContext){
+    return;
+  }
+
+  try{
+
+    const oscillator =
+      audioContext.createOscillator();
+
+    const gain =
+      audioContext.createGain();
+
+    oscillator.type = type;
+
+    oscillator.frequency.value =
+      frequency;
+
+    gain.gain.setValueAtTime(
+      0.04,
+      audioContext.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.001,
+      audioContext.currentTime + duration
+    );
+
+    oscillator.connect(gain);
+
+    gain.connect(
+      audioContext.destination
+    );
+
+    oscillator.start();
+
+    oscillator.stop(
+      audioContext.currentTime + duration
+    );
+
+  }catch(error){}
+
+}
+
+
+function toggleSound(){
+
+  soundEnabled =
+    !soundEnabled;
+
+  const button =
+    $('soundBtn');
+
+  if(button){
+
+    button.textContent =
+      soundEnabled
+      ? '🔊 SOUND ON'
+      : '🔇 SOUND OFF';
+
+  }
+
+  if(soundEnabled){
+
+    beep(600,0.12);
+
+    toast(
+      '🔊 Sound ON'
+    );
+
+  }else{
+
+    toast(
+      '🔇 Sound OFF'
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   SCREEN
+========================================================= */
+
+function showScreen(id){
+
+  document
+    .querySelectorAll('.screen')
+    .forEach(
+      screen =>
+        screen.classList.remove('active')
+    );
+
+  const target =
+    $(id);
+
+  if(target){
+
+    target.classList.add('active');
+
+  }
+
+}
+
+
+function showPage(id){
+
+  document
+    .querySelectorAll('.page')
+    .forEach(
+      page =>
+        page.classList.remove('active')
+    );
+
+  const page =
+    $(id);
+
+  if(page){
+
+    page.classList.add('active');
+
+  }
+
+  renderAll();
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer = null;
+
+
+function toast(text){
+
+  const box =
+    $('toast');
+
+  if(!box){
+    return;
+  }
+
+  box.textContent =
+    text;
+
+  box.style.display =
+    'block';
+
+  clearTimeout(
+    toastTimer
+  );
+
+  toastTimer =
+    setTimeout(
+      function(){
+
+        box.style.display =
+          'none';
+
+      },
+      1800
+    );
+
+}
+
+
+/* =========================================================
+   CHARACTER CREATOR
+========================================================= */
+
+function buildCreator(){
+
+  const raceBox =
+    $('raceChoices');
+
+  const classBox =
+    $('classChoices');
+
+  raceBox.innerHTML = '';
+
+  classBox.innerHTML = '';
+
+
+  Object.keys(RACES)
+    .forEach(
+      function(name){
+
+        const button =
+          document.createElement('button');
+
+        button.className =
+          'choice';
+
+        button.innerHTML =
+          '<b>🧬 ' +
+          name +
+          '</b>' +
+          '<span class="muted">' +
+          RACES[name] +
+          '</span>';
+
+        button.addEventListener(
+          'click',
+          function(){
+
+            selectedRace =
+              name;
+
+            $('racePreview')
+              .textContent =
+              name;
+
+            beep(500,0.07);
+
+          }
+        );
+
+        raceBox.appendChild(
+          button
+        );
+
+      }
+    );
+
+
+  Object.keys(CLASSES)
+    .forEach(
+      function(name){
+
+        const button =
+          document.createElement('button');
+
+        button.className =
+          'choice';
+
+        button.innerHTML =
+          '<b>⚔️ ' +
+          name +
+          '</b>' +
+          '<span class="muted">' +
+          CLASSES[name] +
+          '</span>';
+
+        button.addEventListener(
+          'click',
+          function(){
+
+            selectedClass =
+              name;
+
+            $('classPreview')
+              .textContent =
+              name;
+
+            beep(600,0.07);
+
+          }
+        );
+
+        classBox.appendChild(
+          button
+        );
+
+      }
+    );
+
+}
+
+
+function applyRace(){
+
+  if(game.race === 'Human'){
+
+    game.stats.str += 2;
+    game.stats.int += 2;
+    game.stats.agi += 2;
+    game.stats.vit += 2;
+
+  }
+
+
+  if(game.race === 'Elf'){
+
+    game.stats.int += 5;
+    game.stats.agi += 3;
+
+  }
+
+
+  if(game.race === 'Dwarf'){
+
+    game.stats.vit += 6;
+    game.stats.str += 3;
+
+    game.maxHp += 30;
+
+  }
+
+
+  if(game.race === 'Beastkin'){
+
+    game.stats.agi += 6;
+    game.stats.crit += 5;
+
+  }
+
+}
+
+
+function applyClass(){
+
+  if(game.class === 'Warrior'){
+
+    game.stats.str += 7;
+    game.stats.vit += 5;
+
+    game.maxHp += 40;
+
+  }
+
+
+  if(game.class === 'Mage'){
+
+    game.stats.int += 8;
+
+    game.maxMp += 40;
+
+  }
+
+
+  if(game.class === 'Archer'){
+
+    game.stats.agi += 7;
+    game.stats.crit += 5;
+
+  }
+
+
+  if(game.class === 'Assassin'){
+
+    game.stats.agi += 10;
+    game.stats.crit += 10;
+
+  }
+
+}
+
+
+function createCharacter(){
+
+  const name =
+    $('charName')
+      .value
+      .trim();
+
+  if(!name){
+
+    toast(
+      'Masukkan nama karakter!'
+    );
+
+    return;
+
+  }
+
+
+  if(
+    !selectedRace ||
+    !selectedClass
+  ){
+
+    toast(
+      'Pilih Race dan Class!'
+    );
+
+    return;
+
+  }
+
+
+  game =
+    defaultGame();
+
+  game.name =
+    name;
+
+  game.race =
+    selectedRace;
+
+  game.class =
+    selectedClass;
+
+
+  applyRace();
+
+  applyClass();
+
+
+  game.hp =
+    game.maxHp;
+
+  game.mp =
+    game.maxMp;
+
+
+  saveGame(false);
+
+  showScreen('game');
+
+  renderAll();
+
+  toast(
+    '✨ Selamat datang di NEXORA!'
+  );
+
+  beep(800,0.3);
+
+}
+
+
+/* =========================================================
+   WORLD
+========================================================= */
+
+function getLocationButtons(){
+
+  return [
+
+    ['Astera','🏰 Astera'],
+
+    ['AlunAlun','⛲ Alun-Alun'],
+
+    ['Federation','🛡️ Federation'],
+
+    ['Tavern','🍺 Moonlit Tavern'],
+
+    ['Market','🏪 Grand Market'],
+
+    ['Arena','🏟️ Royal Arena'],
+
+    ['Forest','🌲 Whispering Forest'],
+
+    ['Dungeon','🚪 Abyss Gate']
+
+  ];
+
+}
+
+
+function renderWorld(){
+
+  $('locationName')
+    .textContent =
+    '📍 ' +
+    game.location;
+
+
+  $('locationDesc')
+    .textContent =
+    LOCATIONS[game.location] ||
+    'Tempat misterius.';
+
+
+  const travel =
+    $('travelButtons');
+
+  travel.innerHTML =
+    '';
+
+
+  getLocationButtons()
+    .forEach(
+      function(item){
+
+        const button =
+          document.createElement('button');
+
+        button.textContent =
+          item[1];
+
+        button.addEventListener(
+          'click',
+          function(){
+
+            travelTo(
+              item[0]
+            );
+
+          }
+        );
+
+        travel.appendChild(
+          button
+        );
+
+      }
+    );
+
+
+  renderLocationActions();
+
+}
+
+
+function travelTo(place){
+
+  game.location =
+    place;
+
+  saveGame(false);
+
+  renderWorld();
+
+  toast(
+    '📍 Pergi ke ' +
+    place
+  );
+
+  beep(300,0.1);
+
+}
+
+
+function renderLocationActions(){
+
+  const box =
+    $('locationActions');
+
+  box.innerHTML =
+    '';
+
+
+  if(game.location === 'Astera'){
+
+    box.innerHTML = `
+      <h2>🏰 Astera</h2>
+      <p>Kota tempat perjalananmu dimulai.</p>
+      <button id="goFederationBtn">
+        🛡️ Adventurer Federation
+      </button>
+    `;
+
+    $('goFederationBtn')
+      .addEventListener(
+        'click',
+        function(){
+          travelTo('Federation');
+        }
+      );
+
+  }
+
+
+  if(game.location === 'AlunAlun'){
+
+    box.innerHTML = `
+      <h2>⛲ Alun-Alun</h2>
+      <p>Warga Astera berlalu-lalang.</p>
+      <button id="npcBtn">
+        💬 Bicara dengan NPC
+      </button>
+    `;
+
+    $('npcBtn')
+      .addEventListener(
+        'click',
+        talkNPC
+      );
+
+  }
+
+
+  if(game.location === 'Federation'){
+
+    box.innerHTML = `
+      <h2>🛡️ Adventurer Federation</h2>
+      <p>
+        Guild Rank:
+        <b>${getRank()}</b>
+      </p>
+      <button id="questBtn">
+        📜 Quest Board
+      </button>
+      <button id="guildTestBtn">
+        ⚔️ Ujian Federation
+      </button>
+    `;
+
+    $('questBtn')
+      .addEventListener(
+        'click',
+        function(){
+          showPage('quests');
+        }
+      );
+
+    $('guildTestBtn')
+      .addEventListener(
+        'click',
+        guildTest
+      );
+
+  }
+
+
+  if(game.location === 'Tavern'){
+
+    box.innerHTML = `
+      <h2>🍺 Moonlit Tavern</h2>
+      <p>Tempat para petualang bertukar rumor.</p>
+      <button id="restBtn">
+        🛏️ Istirahat — 20 Gold
+      </button>
+      <button id="rumorBtn">
+        💬 Dengarkan Rumor
+      </button>
+    `;
+
+    $('restBtn')
+      .addEventListener(
+        'click',
+        rest
+      );
+
+    $('rumorBtn')
+      .addEventListener(
+        'click',
+        tavernRumor
+      );
+
+  }
+
+
+  if(game.location === 'Market'){
+
+    box.innerHTML = `
+      <h2>🏪 Grand Market</h2>
+      <p>Health Potion — 25 Gold</p>
+      <button id="buyPotionBtn">
+        🧪 Beli Potion
+      </button>
+    `;
+
+    $('buyPotionBtn')
+      .addEventListener(
+        'click',
+        buyPotion
+      );
+
+  }
+
+
+  if(game.location === 'Arena'){
+
+    box.innerHTML = `
+      <h2>🏟️ Royal Arena</h2>
+      <p>Tempat latihan para petualang.</p>
+      <button id="arenaBtn">
+        ⚔️ Training Battle
+      </button>
+    `;
+
+    $('arenaBtn')
+      .addEventListener(
+        'click',
+        arenaFight
+      );
+
+  }
+
+
+  if(game.location === 'Forest'){
+
+    box.innerHTML = `
+      <h2>🌲 Whispering Forest</h2>
+      <p>Monster berkeliaran di antara pepohonan.</p>
+
+      <button id="slimeBtn">
+        🟢 Forest Slime
+      </button>
+
+      <button id="wolfBtn">
+        🐺 Dire Wolf
+      </button>
+
+      <button id="goblinBtn">
+        👺 Goblin Scout
+      </button>
+    `;
+
+    $('slimeBtn')
+      .addEventListener(
+        'click',
+        function(){
+          startCombat('slime');
+        }
+      );
+
+    $('wolfBtn')
+      .addEventListener(
+        'click',
+        function(){
+          startCombat('wolf');
+        }
+      );
+
+    $('goblinBtn')
+      .addEventListener(
+        'click',
+        function(){
+          startCombat('goblin');
+        }
+      );
+
+  }
+
+
+  if(game.location === 'Dungeon'){
+
+    box.innerHTML = `
+      <h2>🚪 Abyss Gate</h2>
+      <p>Gerbang menuju dungeon berbahaya.</p>
+
+      <button id="batBtn">
+        🦇 Shadow Bat
+      </button>
+
+      <button id="guardianBtn">
+        👹 Abyss Guardian
+      </button>
+    `;
+
+    $('batBtn')
+      .addEventListener(
+        'click',
+        function(){
+          startCombat('bat');
+        }
+      );
+
+    $('guardianBtn')
+      .addEventListener(
+        'click',
+        function(){
+          startCombat('guardian');
+        }
+      );
+
+  }
+
+}
+
+
+/* =========================================================
+   GUILD
+========================================================= */
+
+function getRank(){
+
+  if(game.rep >= 500)
+    return 'S';
+
+  if(game.rep >= 350)
+    return 'A';
+
+  if(game.rep >= 250)
+    return 'B';
+
+  if(game.rep >= 170)
+    return 'C';
+
+  if(game.rep >= 100)
+    return 'D';
+
+  if(game.rep >= 50)
+    return 'E';
+
+  return 'F';
+
+}
+
+
+function guildTest(){
+
+  if(
+    game.completed.includes(4)
+  ){
+
+    toast(
+      'Ujian sudah selesai.'
+    );
+
+    return;
+
+  }
+
+
+  if(game.level < 3){
+
+    toast(
+      'Level minimal 3.'
+    );
+
+    return;
+
+  }
+
+
+  completeQuest(4);
+
+}
+
+
+/* =========================================================
+   QUEST
+========================================================= */
+
+function renderQuests(){
+
+  const box =
+    $('questList');
+
+  box.innerHTML =
+    '';
+
+
+  QUESTS.forEach(
+    function(q){
+
+      const done =
+        game.completed.includes(
+          q.id
+        );
+
+      const locked =
+        q.id > 1 &&
+        !game.completed.includes(
+          q.id - 1
+        );
+
+
+      const card =
+        document.createElement('div');
+
+      card.className =
+        'card';
+
+
+      let button =
+        '';
+
+
+      if(done){
+
+        button =
+          '<p class="good"><b>✅ SELESAI</b></p>';
+
+      }else if(locked){
+
+        button =
+          '<p class="muted">🔒 Terkunci</p>';
+
+      }else{
+
+        button =
+          '<button data-quest="' +
+          q.id +
+          '">▶️ MULAI QUEST</button>';
+
+      }
+
+
+      card.innerHTML = `
+
+        <h3>
+          ${done ? '✅' : '📜'}
+          ${q.title}
+        </h3>
+
+        <p>
+          ${q.desc}
+        </p>
+
+        <p class="xp">
+          ✨ EXP +${q.xp}
+        </p>
+
+        <p class="gold">
+          💰 Gold +${q.gold}
+        </p>
+
+        ${button}
+
+      `;
+
+
+      box.appendChild(
+        card
+      );
+
+
+      const questButton =
+        card.querySelector(
+          '[data-quest]'
+        );
+
+
+      if(questButton){
+
+        questButton.addEventListener(
+          'click',
+          function(){
+
+            completeQuest(
+              q.id
+            );
+
+          }
+        );
+
+      }
+
+    }
+  );
+
+}
+
+
+function completeQuest(id){
+
+  if(
+    game.completed.includes(id)
+  ){
+
+    toast(
+      'Quest sudah selesai.'
+    );
+
+    return;
+
+  }
+
+
+  if(
+    id > 1 &&
+    !game.completed.includes(id - 1)
+  ){
+
+    toast(
+      'Quest sebelumnya belum selesai.'
+    );
+
+    return;
+
+  }
+
+
+  if(id === 1){
+
+    if(
+      game.location !==
+      'Federation'
+    ){
+
+      toast(
+        'Pergi ke Federation dulu.'
+      );
+
+      return;
+
+    }
+
+  }
+
+
+  if(id === 2){
+
+    if(
+      game.location !==
+      'Forest'
+    ){
+
+      toast(
+        'Pergi ke Whispering Forest dulu.'
+      );
+
+      return;
+
+    }
+
+    toast(
+      '🌲 Kalahkan monster untuk menyelesaikan quest!'
+    );
+
+    return;
+
+  }
+
+
+  if(id === 3){
+
+    if(
+      game.location !==
+      'Tavern'
+    ){
+
+      toast(
+        'Pergi ke Moonlit Tavern dulu.'
+      );
+
+      return;
+
+    }
+
+  }
+
+
+  if(id === 4){
+
+    if(
+      game.location !==
+      'Federation'
+    ){
+
+      toast(
+        'Pergi ke Federation dulu.'
+      );
+
+      return;
+
+    }
+
+    if(game.level < 3){
+
+      toast(
+        'Level minimal 3.'
+      );
+
+      return;
+
+    }
+
+  }
+
+
+  if(id === 5){
+
+    if(
+      game.location !==
+      'Dungeon'
+    ){
+
+      toast(
+        'Pergi ke Abyss Gate dulu.'
+      );
+
+      return;
+
+    }
+
+    toast(
+      '🚪 Kalahkan monster dungeon untuk menyelesaikan quest!'
+    );
+
+    return;
+
+  }
+
+
+  if(id === 6){
+
+    if(game.rep < 100){
+
+      toast(
+        'Reputation belum mencapai 100.'
+      );
+
+      return;
+
+    }
+
+  }
+
+
+  const quest =
+    QUESTS.find(
+      q => q.id === id
+    );
+
+
+  if(!quest){
+    return;
+  }
+
+
+  game.completed.push(
+    id
+  );
+
+  game.xp +=
+    quest.xp;
+
+  game.gold +=
+    quest.gold;
+
+  game.rep +=
+    15;
+
+
+  checkLevel();
+
+  saveGame(false);
+
+  renderAll();
+
+  toast(
+    '📜 Quest selesai!'
+  );
+
+  beep(900,0.25);
+
+}
+
+
+/* =========================================================
+   COMBAT
+========================================================= */
+
+function startCombat(type){
+
+  if(
+    !MONSTERS[type]
+  ){
+    return;
+  }
+
+
+  enemy =
+    Object.assign(
+      {},
+      MONSTERS[type]
+    );
+
+
+  enemy.maxHp =
+    enemy.hp;
+
+
+  $('enemyName')
+    .textContent =
+    '👹 ' +
+    enemy.name;
+
+
+  $('combatModal')
+    .classList
+    .add('show');
+
+
+  $('battleLog')
+    .innerHTML =
+    '';
+
+
+  battleLog(
+    '⚔️ ' +
+    enemy.name +
+    ' muncul!'
+  );
+
+
+  renderBattleSkills();
+
+  updateBattle();
+
+  beep(
+    180,
+    0.2,
+    'sawtooth'
+  );
+
+}
+
+
+function renderBattleSkills(){
+
+  const box =
+    $('battleSkills');
+
+  box.innerHTML =
+    '';
+
+
+  getSkills()
+    .forEach(
+      function(skill,index){
+
+        const button =
+          document.createElement(
+            'button'
+          );
+
+        button.textContent =
+          '✨ ' +
+          skill.name +
+          ' · DMG ' +
+          skill.damage +
+          ' · MP ' +
+          skill.cost;
+
+
+        button.addEventListener(
+          'click',
+          function(){
+
+            useSkill(
+              index
+            );
+
+          }
+        );
+
+
+        box.appendChild(
+          button
+        );
+
+      }
+    );
+
+}
+
+
+function updateBattle(){
+
+  if(!enemy){
+    return;
+  }
+
+
+  const percent =
+    Math.max(
+      0,
+      enemy.hp /
+      enemy.maxHp *
+      100
+    );
+
+
+  $('enemyHPBar')
+    .style.width =
+    percent +
+    '%';
+
+
+  $('enemyHPText')
+    .textContent =
+    Math.max(
+      0,
+      enemy.hp
+    ) +
+    ' / ' +
+    enemy.maxHp +
+    ' HP';
+
+}
+
+
+function battleLog(text){
+
+  const box =
+    $('battleLog');
+
+  box.insertAdjacentHTML(
+    'beforeend',
+    '<p>' +
+    escapeHTML(text) +
+    '</p>'
+  );
+
+  box.scrollTop =
+    box.scrollHeight;
+
+}
+
+
+function calculateDamage(
+  base,
+  stat
+){
+
+  let damage =
+    base +
+    stat;
+
+
+  const critical =
+    Math.random() *
+    100 <
+    game.stats.crit;
+
+
+  if(critical){
+
+    damage *= 2;
+
+    battleLog(
+      '💥 CRITICAL HIT! ' +
+      damage +
+      ' damage!'
+    );
+
+    beep(
+      900,
+      0.18,
+      'square'
+    );
+
+  }else{
+
+    battleLog(
+      '⚔️ Kamu memberikan ' +
+      damage +
+      ' damage.'
+    );
+
+  }
+
+
+  return damage;
+
+}
+
+
+function basicAttack(){
+
+  if(!enemy){
+    return;
+  }
+
+
+  const damage =
+    calculateDamage(
+      10,
+      game.stats.str
+    );
+
+
+  enemy.hp -=
+    damage;
+
+
+  beep(
+    500,
+    0.08
+  );
+
+
+  afterPlayerAction();
+
+}
+
+
+function useSkill(index){
+
+  if(!enemy){
+    return;
+  }
+
+
+  const skill =
+    getSkills()[index];
+
+
+  if(!skill){
+    return;
+  }
+
+
+  if(
+    game.mp <
+    skill.cost
+  ){
+
+    battleLog(
+      '🔷 MP tidak cukup!'
+    );
+
+    return;
+
+  }
+
+
+  game.mp -=
+    skill.cost;
+
+
+  let stat;
+
+
+  if(
+    game.class ===
+    'Mage'
+  ){
+
+    stat =
+      game.stats.int;
+
+  }else if(
+    game.class ===
+    'Archer' ||
+    game.class ===
+    'Assassin'
+  ){
+
+    stat =
+      game.stats.agi;
+
+  }else{
+
+    stat =
+      game.stats.str;
+
+  }
+
+
+  const damage =
+    calculateDamage(
+      skill.damage,
+      stat
+    );
+
+
+  enemy.hp -=
+    damage;
+
+
+  beep(
+    700,
+    0.12,
+    'triangle'
+  );
+
+
+  afterPlayerAction();
+
+}
+
+
+function afterPlayerAction(){
+
+  updateBattle();
+
+  renderCharacter();
+
+
+  if(
+    enemy.hp <= 0
+  ){
+
+    victory();
+
+    return;
+
+  }
+
+
+  enemyTurn();
+
+}
+
+
+function enemyTurn(){
+
+  if(!enemy){
+    return;
+  }
+
+
+  const damage =
+    enemy.atk +
+    Math.floor(
+      Math.random() * 8
+    );
+
+
+  game.hp -=
+    damage;
+
+
+  battleLog(
+    '👹 ' +
+    enemy.name +
+    ' menyerang ' +
+    damage +
+    ' damage.'
+  );
+
+
+  if(
+    game.hp <= 0
+  ){
+
+    game.hp = 1;
+
+    battleLog(
+      '💀 Kamu berhasil bertahan dan mundur.'
+    );
+
+
+    setTimeout(
+      closeCombat,
+      500
+    );
+
+  }
+
+
+  renderCharacter();
+
+}
+
+
+function victory(){
+
+  if(!enemy){
+    return;
+  }
+
+
+  battleLog(
+    '🏆 ' +
+    enemy.name +
+    ' dikalahkan!'
+  );
+
+
+  game.xp +=
+    enemy.xp;
+
+  game.gold +=
+    enemy.gold;
+
+  game.rep +=
+    5;
+
+
+  if(
+    !game.completed.includes(2) &&
+    game.location ===
+    'Forest'
+  ){
+
+    game.completed.push(2);
+
+    game.xp +=
+      100;
+
+    game.gold +=
+      80;
+
+    game.rep +=
+      15;
+
+    battleLog(
+      '📜 Quest Bisikan dari Hutan selesai!'
+    );
+
+  }
+
+
+  if(
+    !game.completed.includes(5) &&
+    game.location ===
+    'Dungeon'
+  ){
+
+    game.completed.push(5);
+
+    game.xp +=
+      300;
+
+    game.gold +=
+      250;
+
+    game.rep +=
+      15;
+
+    battleLog(
+      '📜 Quest Gerbang Abyss selesai!'
+    );
+
+  }
+
+
+  if(
+    Math.random() <
+    0.25
+  ){
+
+    addItem(
+      'Health Potion',
+      1
+    );
+
+    battleLog(
+      '🎁 Kamu mendapatkan Health Potion!'
+    );
+
+  }
+
+
+  checkLevel();
+
+  saveGame(false);
+
+  renderAll();
+
+  beep(
+    1000,
+    0.28
+  );
+
+
+  setTimeout(
+    closeCombat,
+    900
+  );
+
+}
+
+
+function closeCombat(){
+
+  $('combatModal')
+    .classList
+    .remove('show');
+
+  enemy =
+    null;
+
+  renderAll();
+
+}
+
+
+function flee(){
+
+  closeCombat();
+
+  toast(
+    '🏃 Kamu meninggalkan pertarungan.'
+  );
+
+}
+
+
+/* =========================================================
+   SKILLS
+========================================================= */
+
+function getSkills(){
+
+  const data = {
+
+    Warrior:[
+      ['Power Slash',25,5],
+      ['Heavy Strike',40,10]
+    ],
+
+    Mage:[
+      ['Fire Bolt',30,8],
+      ['Arcane Burst',50,15]
+    ],
+
+    Archer:[
+      ['Piercing Arrow',28,6],
+      ['Rain Arrow',45,12]
+    ],
+
+    Assassin:[
+      ['Shadow Cut',35,7],
+      ['Death Fang',55,15]
+    ]
+
+  };
+
+
+  return (
+    data[game.class] ||
+    []
+  ).map(
+    function(x){
+
+      return {
+
+        name:x[0],
+        damage:x[1],
+        cost:x[2]
+
+      };
+
+    }
+  );
+
+}
+
+
+function renderSkills(){
+
+  const box =
+    $('skillList');
+
+  box.innerHTML =
+    '';
+
+
+  getSkills()
+    .forEach(
+      function(skill){
+
+        const card =
+          document.createElement(
+            'div'
+          );
+
+        card.className =
+          'card';
+
+
+        card.innerHTML = `
+
+          <h3>
+            ✨ ${skill.name}
+          </h3>
+
+          <p>
+            Damage:
+            <b>${skill.damage}</b>
+          </p>
+
+          <p>
+            Mana:
+            <b>${skill.cost}</b>
+          </p>
+
+        `;
+
+
+        box.appendChild(
+          card
+        );
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   LEVEL
+========================================================= */
+
+function checkLevel(){
+
+  while(
+    game.xp >=
+    game.xpNeed
+  ){
+
+    game.xp -=
+      game.xpNeed;
+
+
+    game.level++;
+
+
+    game.xpNeed =
+      Math.floor(
+        game.xpNeed *
+        1.35
+      );
+
+
+    game.maxHp +=
+      15;
+
+    game.maxMp +=
+      8;
+
+
+    game.stats.str++;
+    game.stats.int++;
+    game.stats.agi++;
+    game.stats.vit++;
+
+
+    game.hp =
+      game.maxHp;
+
+    game.mp =
+      game.maxMp;
+
+
+    toast(
+      '⬆️ LEVEL UP! Level ' +
+      game.level
+    );
+
+
+    beep(
+      1000,
+      0.3
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   INVENTORY
+========================================================= */
+
+function addItem(
+  name,
+  amount
+){
+
+  const item =
+    game.inventory.find(
+      x =>
+        x.name ===
+        name
+    );
+
+
+  if(item){
+
+    item.amount +=
+      amount;
+
+  }else{
+
+    game.inventory.push({
+
+      name:name,
+
+      type:
+        name ===
+        'Health Potion'
+        ? 'potion'
+        : 'misc',
+
+      amount:amount
+
+    });
+
+  }
+
+}
+
+
+function renderInventory(){
+
+  const box =
+    $('inventoryList');
+
+  box.innerHTML =
+    '';
+
+
+  if(
+    !game.inventory.length
+  ){
+
+    box.innerHTML =
+      '<p class="muted">' +
+      'Inventory kosong.' +
+      '</p>';
+
+    return;
+
+  }
+
+
+  game.inventory
+    .forEach(
+      function(item,index){
+
+        const card =
+          document.createElement(
+            'div'
+          );
+
+        card.className =
+          'card';
+
+
+        card.innerHTML = `
+
+          <h3>
+            🎒 ${escapeHTML(item.name)}
+          </h3>
+
+          <p>
+            Jumlah:
+            <b>${item.amount}</b>
+          </p>
+
+        `;
+
+
+        if(
+          item.type ===
+          'potion'
+        ){
+
+          const button =
+            document.createElement(
+              'button'
+            );
+
+          button.textContent =
+            '🧪 Gunakan';
+
+          button.addEventListener(
+            'click',
+            function(){
+
+              useInventoryPotion(
+                index
+              );
+
+            }
+          );
+
+          card.appendChild(
+            button
+          );
+
+        }
+
+
+        box.appendChild(
+          card
+        );
+
+      }
+    );
+
+}
+
+
+function useInventoryPotion(index){
+
+  const item =
+    game.inventory[index];
+
+
+  if(!item){
+    return;
+  }
+
+
+  if(
+    item.amount <= 0
+  ){
+
+    toast(
+      'Potion habis.'
+    );
+
+    return;
+
+  }
+
+
+  if(
+    game.hp >=
+    game.maxHp
+  ){
+
+    toast(
+      'HP sudah penuh.'
+    );
+
+    return;
+
+  }
+
+
+  item.amount--;
+
+  game.hp =
+    Math.min(
+      game.maxHp,
+      game.hp + 60
+    );
+
+
+  saveGame(false);
+
+  renderAll();
+
+  toast(
+    '🧪 HP dipulihkan.'
+  );
+
+}
+
+
+/* =========================================================
+   POTION DALAM BATTLE
+========================================================= */
+
+function useBattlePotion(){
+
+  const index =
+    game.inventory.findIndex(
+      x =>
+        x.name ===
+        'Health Potion' &&
+        x.amount > 0
+    );
+
+
+  if(index < 0){
+
+    battleLog(
+      '🧪 Potion habis.'
+    );
+
+    return;
+
+  }
+
+
+  if(
+    game.hp >=
+    game.maxHp
+  ){
+
+    battleLog(
+      '❤️ HP sudah penuh.'
+    );
+
+    return;
+
+  }
+
+
+  game.inventory[index]
+    .amount--;
+
+
+  game.hp =
+    Math.min(
+      game.maxHp,
+      game.hp + 60
+    );
+
+
+  battleLog(
+    '🧪 Kamu meminum potion.'
+  );
+
+
+  renderCharacter();
+
+
+  if(enemy){
+
+    enemyTurn();
+
+  }
+
+}
+
+
+/* =========================================================
+   TAVERN / MARKET / NPC
+========================================================= */
+
+function rest(){
+
+  if(
+    game.gold < 20
+  ){
+
+    toast(
+      'Gold tidak cukup.'
+    );
+
+    return;
+
+  }
+
+
+  game.gold -=
+    20;
+
+  game.hp =
+    game.maxHp;
+
+  game.mp =
+    game.maxMp;
+
+
+  saveGame(false);
+
+  renderAll();
+
+  toast(
+    '🛏️ Kamu beristirahat.'
+  );
+
+  beep(
+    400,
+    0.3
+  );
+
+}
+
+
+function buyPotion(){
+
+  if(
+    game.gold < 25
+  ){
+
+    toast(
+      'Gold tidak cukup.'
+    );
+
+    return;
+
+  }
+
+
+  game.gold -=
+    25;
+
+
+  addItem(
+    'Health Potion',
+    1
+  );
+
+
+  saveGame(false);
+
+  renderAll();
+
+  toast(
+    '🧪 Potion dibeli.'
+  );
+
+}
+
+
+function tavernRumor(){
+
+  if(
+    game.completed.includes(3)
+  ){
+
+    toast(
+      '💬 Rumor: sesuatu bergerak di Abyss Gate.'
+    );
+
+    return;
+
+  }
+
+
+  game.completed.push(
+    3
+  );
+
+
+  game.xp +=
+    120;
+
+  game.gold +=
+    100;
+
+  game.rep +=
+    15;
+
+
+  checkLevel();
+
+  saveGame(false);
+
+  renderAll();
+
+  toast(
+    '💬 Kamu mendapatkan rumor tentang Abyss Gate!'
+  );
+
+}
+
+
+function talkNPC(){
+
+  const lines = [
+
+    'NPC: Hati-hati di Whispering Forest.',
+
+    'NPC: Kudengar ada monster kuat di Abyss.',
+
+    'NPC: Federation menerima petualang baru.',
+
+    'NPC: Guild Rank menentukan reputasimu.'
+
+  ];
+
+
+  toast(
+    lines[
+      Math.floor(
+        Math.random() *
+        lines.length
+      )
+    ]
+  );
+
+}
+
+
+function arenaFight(){
+
+  if(
+    game.level < 2
+  ){
+
+    toast(
+      'Level minimal 2.'
+    );
+
+    return;
+
+  }
+
+
+  startCombat(
+    'wolf'
+  );
+
+}
+
+
+/* =========================================================
+   CHARACTER
+========================================================= */
+
+function renderCharacter(){
+
+  $('sheetName')
+    .textContent =
+    game.name || '-';
+
+  $('sheetRace')
+    .textContent =
+    game.race || '-';
+
+  $('sheetClass')
+    .textContent =
+    game.class || '-';
+
+  $('sheetLevel')
+    .textContent =
+    game.level;
+
+  $('sheetRank')
+    .textContent =
+    getRank();
+
+  $('sheetRebirth')
+    .textContent =
+    game.rebirth;
+
+
+  $('sheetHP')
+    .textContent =
+    game.hp +
+    '/' +
+    game.maxHp;
+
+
+  $('sheetMP')
+    .textContent =
+    game.mp +
+    '/' +
+    game.maxMp;
+
+
+  $('sheetXP')
+    .textContent =
+    game.xp +
+    '/' +
+    game.xpNeed;
+
+
+  $('hpBar')
+    .style.width =
+    (
+      game.hp /
+      game.maxHp *
+      100
+    ) +
+    '%';
+
+
+  $('mpBar')
+    .style.width =
+    (
+      game.mp /
+      game.maxMp *
+      100
+    ) +
+    '%';
+
+
+  $('xpBar')
+    .style.width =
+    (
+      game.xp /
+      game.xpNeed *
+      100
+    ) +
+    '%';
+
+
+  $('statSTR')
+    .textContent =
+    game.stats.str;
+
+  $('statINT')
+    .textContent =
+    game.stats.int;
+
+  $('statAGI')
+    .textContent =
+    game.stats.agi;
+
+  $('statVIT')
+    .textContent =
+    game.stats.vit;
+
+  $('statCRIT')
+    .textContent =
+    game.stats.crit +
+    '%';
+
+
+  $('uiName')
+    .textContent =
+    game.name || '-';
+
+  $('uiLevel')
+    .textContent =
+    game.level;
+
+  $('uiHP')
+    .textContent =
+    game.hp +
+    '/' +
+    game.maxHp;
+
+  $('uiGold')
+    .textContent =
+    game.gold;
+
+  $('uiRank')
+    .textContent =
+    getRank();
+
+}
+
+
+/* =========================================================
+   CUSTOM CREATOR
+========================================================= */
+
+function calculateBalance(){
+
+  let power =
+    Math.max(
+      0,
+      Number(
+        $('customPower').value
+      ) || 0
+    );
+
+
+  let mana =
+    Math.max(
+      0,
+      Number(
+        $('customMana').value
+      ) || 0
+    );
+
+
+  let cooldown =
+    Math.max(
+      0,
+      Number(
+        $('customCooldown').value
+      ) || 0
+    );
+
+
+  let score =
+    100;
+
+
+  if(power > 30)
+    score -= 20;
+
+  if(power > 50)
+    score -= 20;
+
+  if(power > 80)
+    score -= 30;
+
+  if(
+    power > 30 &&
+    mana < 5
+  )
+    score -= 15;
+
+  if(
+    power > 30 &&
+    cooldown < 2
+  )
+    score -= 20;
+
+
+  score =
+    Math.max(
+      0,
+      score
+    );
+
+
+  let category;
+
+
+  if(score < 30){
+
+    category =
+      'EXTREME';
+
+  }else if(score < 55){
+
+    category =
+      'OVERPOWERED';
+
+  }else if(score < 75){
+
+    category =
+      'STRONG';
+
+  }else{
+
+    category =
+      'BALANCED';
+
+  }
+
+
+  return {
+
+    score:score,
+
+    category:category
+
+  };
+
+}
+
+
+function checkBalance(){
+
+  const result =
+    calculateBalance();
+
+
+  $('balanceResult')
+    .innerHTML = `
+
+      <div class="card">
+
+        <h3>
+          🤖 Local Balance Engine
+        </h3>
+
+        <p>
+          Balance Score:
+          <b>
+            ${result.score}/100
+          </b>
+        </p>
+
+        <p>
+          Status:
+          <b>
+            ${result.category}
+          </b>
+        </p>
+
+        <p class="muted">
+          Sistem balance lokal berbasis aturan.
+        </p>
+
+      </div>
+
+    `;
+
+
+  beep(
+    700,
+    0.1
+  );
+
+}
+
+
+function submitCustom(){
+
+  const name =
+    $('customName')
+      .value
+      .trim();
+
+
+  if(!name){
+
+    toast(
+      'Isi nama content.'
+    );
+
+    return;
+
+  }
+
+
+  const balance =
+    calculateBalance();
+
+
+  game.custom.push({
+
+    name:name,
+
+    type:
+      $('customType')
+      .value,
+
+    power:
+      Number(
+        $('customPower').value
+      ) || 0,
+
+    mana:
+      Number(
+        $('customMana').value
+      ) || 0,
+
+    cooldown:
+      Number(
+        $('customCooldown').value
+      ) || 0,
+
+    desc:
+      $('customDesc')
+      .value
+      .trim(),
+
+    balance:balance,
+
+    status:'PENDING'
+
+  });
+
+
+  saveGame(false);
+
+  renderAll();
+
+  toast(
+    '📤 Content dikirim ke Owner.'
+  );
+
+}
+
+
+function renderCustom(){
+
+  const box =
+    $('customList');
+
+  box.innerHTML =
+    '';
+
+
+  if(
+    !game.custom.length
+  ){
+
+    box.innerHTML =
+      '<p class="muted">' +
+      'Belum ada custom content.' +
+      '</p>';
+
+    return;
+
+  }
+
+
+  game.custom
+    .forEach(
+      function(content){
+
+        const card =
+          document.createElement(
+            'div'
+          );
+
+        card.className =
+          'card';
+
+
+        card.innerHTML = `
+
+          <h3>
+            ${escapeHTML(
+              content.name
+            )}
+          </h3>
+
+          <p>
+            ${escapeHTML(
+              content.type
+            )}
+          </p>
+
+          <p>
+            Balance:
+            <b>
+              ${content.balance.score}/100
+            </b>
+          </p>
+
+          <p>
+            Status:
+            <b>
+              ${escapeHTML(
+                content.status
+              )}
+            </b>
+          </p>
+
+          <p class="muted">
+            ${escapeHTML(
+              content.desc
+            )}
+          </p>
+
+        `;
+
+
+        box.appendChild(
+          card
+        );
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   OWNER
+========================================================= */
+
+function renderOwner(){
+
+  $('memberCount')
+    .textContent =
+    game.members;
+
+
+  $('contentCount')
+    .textContent =
+    game.custom.length;
+
+
+  const box =
+    $('submissionList');
+
+  box.innerHTML =
+    '';
+
+
+  if(
+    !game.custom.length
+  ){
+
+    box.innerHTML =
+      '<p class="muted">' +
+      'Tidak ada submission.' +
+      '</p>';
+
+    return;
+
+  }
+
+
+  game.custom
+    .forEach(
+      function(content,index){
+
+        const card =
+          document.createElement(
+            'div'
+          );
+
+        card.className =
+          'card';
+
+
+        card.innerHTML = `
+
+          <h3>
+            ${escapeHTML(
+              content.name
+            )}
+          </h3>
+
+          <p>
+            Type:
+            ${escapeHTML(
+              content.type
+            )}
+          </p>
+
+          <p>
+            Balance:
+            ${content.balance.score}/100
+          </p>
+
+          <p>
+            ${escapeHTML(
+              content.desc
+            )}
+          </p>
+
+          <p>
+            Status:
+            <b>
+              ${escapeHTML(
+                content.status
+              )}
+            </b>
+          </p>
+
+        `;
+
+
+        if(
+          content.status ===
+          'PENDING'
+        ){
+
+          const approve =
+            document.createElement(
+              'button'
+            );
+
+          approve.textContent =
+            '✅ Approve';
+
+
+          approve.addEventListener(
+            'click',
+            function(){
+
+              moderate(
+                index,
+                'APPROVED'
+              );
+
+            }
+          );
+
+
+          const reject =
+            document.createElement(
+              'button'
+            );
+
+          reject.textContent =
+            '❌ Reject';
+
+          reject.className =
+            'danger';
+
+
+          reject.addEventListener(
+            'click',
+            function(){
+
+              moderate(
+                index,
+                'REJECTED'
+              );
+
+            }
+          );
+
+
+          card.appendChild(
+            approve
+          );
+
+          card.appendChild(
+            reject
+          );
+
+        }
+
+
+        box.appendChild(
+          card
+        );
+
+      }
+    );
+
+}
+
+
+function moderate(
+  index,
+  status
+){
+
+  if(
+    !game.custom[index]
+  ){
+    return;
+  }
+
+
+  game.custom[index]
+    .status =
+    status;
+
+
+  saveGame(false);
+
+  renderAll();
+
+
+  toast(
+    status ===
+    'APPROVED'
+    ? '✅ Content approved.'
+    : '❌ Content rejected.'
+  );
+
+}
+
+
+/* =========================================================
+   REBIRTH
+========================================================= */
+
+function doRebirth(){
+
+  if(
+    game.level < 50
+  ){
+
+    toast(
+      'Rebirth membutuhkan Level 50.'
+    );
+
+    return;
+
+  }
+
+
+  const confirmed =
+    window.confirm(
+      'Rebirth akan mengembalikan level ke 1. Lanjutkan?'
+    );
+
+
+  if(!confirmed){
+    return;
+  }
+
+
+  game.rebirth++;
+
+
+  game.level =
+    1;
+
+  game.xp =
+    0;
+
+  game.xpNeed =
+    100;
+
+
+  game.stats.str =
+    10 +
+    game.rebirth *
+    2;
+
+  game.stats.int =
+    10 +
+    game.rebirth *
+    2;
+
+  game.stats.agi =
+    10 +
+    game.rebirth *
+    2;
+
+  game.stats.vit =
+    10 +
+    game.rebirth *
+    2;
+
+
+  game.maxHp =
+    100 +
+    game.rebirth *
+    20;
+
+  game.maxMp =
+    50 +
+    game.rebirth *
+    10;
+
+
+  game.hp =
+    game.maxHp;
+
+  game.mp =
+    game.maxMp;
+
+
+  saveGame(false);
+
+  renderAll();
+
+
+  toast(
+    '🔄 REBIRTH BERHASIL!'
+  );
+
+}
+
+
+/* =========================================================
+   SAVE / LOAD
+========================================================= */
+
+function saveGame(showMessage = true){
+
+  try{
+
+    localStorage.setItem(
+      SAVE_KEY,
+      JSON.stringify(game)
+    );
+
+
+    if(showMessage){
+
+      toast(
+        '💾 Game tersimpan.'
+      );
+
+    }
+
+  }catch(error){
+
+    if(showMessage){
+
+      toast(
+        '⚠️ Penyimpanan tidak tersedia.'
+      );
+
+    }
+
+  }
+
+}
+
+
+function loadGame(){
+
+  try{
+
+    const raw =
+      localStorage.getItem(
+        SAVE_KEY
+      );
+
+
+    if(!raw){
+
+      toast(
+        'Belum ada save.'
+      );
+
+      return;
+
+    }
+
+
+    const data =
+      JSON.parse(
+        raw
+      );
+
+
+    game =
+      normalizeGame(
+        data
+      );
+
+
+    showScreen(
+      'game'
+    );
+
+
+    renderAll();
+
+
+    toast(
+      '💾 Save berhasil dimuat.'
+    );
+
+  }catch(error){
+
+    toast(
+      '⚠️ Save rusak atau tidak bisa dibaca.'
+    );
+
+  }
+
+}
+
+
+function normalizeGame(data){
+
+  const fresh =
+    defaultGame();
+
+
+  const result =
+    Object.assign(
+      fresh,
+      data
+    );
+
+
+  result.stats =
+    Object.assign(
+      fresh.stats,
+      data.stats || {}
+    );
+
+
+  result.equipment =
+    Object.assign(
+      fresh.equipment,
+      data.equipment || {}
+    );
+
+
+  result.inventory =
+    Array.isArray(
+      data.inventory
+    )
+    ? data.inventory
+    : fresh.inventory;
+
+
+  result.completed =
+    Array.isArray(
+      data.completed
+    )
+    ? data.completed
+    : [];
+
+
+  result.custom =
+    Array.isArray(
+      data.custom
+    )
+    ? data.custom
+    : [];
+
+
+  return result;
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(value){
+
+  return String(
+    value ?? ''
+  ).replace(
+    /[&<>'"]/g,
+    function(char){
+
+      const map = {
+
+        '&':'&amp;',
+        '<':'&lt;',
+        '>':'&gt;',
+        "'":'&#39;',
+        '"':'&quot;'
+
+      };
+
+      return map[char];
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   RENDER ALL
+========================================================= */
+
+function renderAll(){
+
+  if(
+    !$('game')
+      .classList
+      .contains('active')
+  ){
+
+    return;
+
+  }
+
+
+  renderCharacter();
+
+  renderWorld();
+
+  renderQuests();
+
+  renderInventory();
+
+  renderSkills();
+
+  renderCustom();
+
+  renderOwner();
+
+}
+
+
+/* =========================================================
+   EVENT SETUP
+========================================================= */
+
+function init(){
+
+  buildCreator();
+
+
+  $('startBtn')
+    .addEventListener(
+      'click',
+      function(){
+
+        initAudio();
+
+        showScreen(
+          'creator'
+        );
+
+      }
+    );
+
+
+  $('loadBtn')
+    .addEventListener(
+      'click',
+      function(){
+
+        initAudio();
+
+        loadGame();
+
+      }
+    );
+
+
+  $('soundBtn')
+    .addEventListener(
+      'click',
+      toggleSound
+    );
+
+
+  $('createBtn')
+    .addEventListener(
+      'click',
+      createCharacter
+    );
+
+
+  $('saveBtn')
+    .addEventListener(
+      'click',
+      function(){
+
+        saveGame(
+          true
+        );
+
+      }
+    );
+
+
+  document
+    .querySelectorAll(
+      '.nav [data-page]'
+    )
+    .forEach(
+      function(button){
+
+        button.addEventListener(
+          'click',
+          function(){
+
+            showPage(
+              button.dataset.page
+            );
+
+          }
+        );
+
+      }
+    );
+
+
+  $('basicAttackBtn')
+    .addEventListener(
+      'click',
+      basicAttack
+    );
+
+
+  $('battlePotionBtn')
+    .addEventListener(
+      'click',
+      useBattlePotion
+    );
+
+
+  $('fleeBtn')
+    .addEventListener(
+      'click',
+      flee
+    );
+
+
+  $('rebirthBtn')
+    .addEventListener(
+      'click',
+      doRebirth
+    );
+
+
+  $('balanceBtn')
+    .addEventListener(
+      'click',
+      checkBalance
+    );
+
+
+  $('submitCustomBtn')
+    .addEventListener(
+      'click',
+      submitCustom
+    );
+
+
+  renderAll();
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+if(
+  document.readyState ===
+  'loading'
+){
+
+  document.addEventListener(
+    'DOMContentLoaded',
+    init
+  );
+
+}else{
+
+  init();
+
+}
+
+</script>
+
+</body>
+</html>
