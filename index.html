@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#080b14">
+<title>NEXORA — Open World Fantasy RPG</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#070a11;color:#edf2ff;font-family:Arial,Helvetica,sans-serif}
+body{min-height:100vh;background:
+radial-gradient(circle at 50% -10%,#26335d 0,#10182a 32%,#070a11 72%);overflow-x:hidden}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:active{transform:scale(.98)}
+.app{max-width:1180px;margin:auto;padding:10px}
+.hidden{display:none!important}
+.top{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 4px 10px;background:rgba(7,10,17,.94);backdrop-filter:blur(10px);border-bottom:1px solid #27324b}
+.logo{font-weight:1000;font-size:25px;letter-spacing:3px;color:#a9c6ff}
+.logo span{color:#d8b86b}
+.topright{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.pill{background:#111827;border:1px solid #303d59;border-radius:999px;padding:7px 9px;font-size:11px}
+.iconbtn{width:40px;height:38px;border:1px solid #303d59;background:#111827;color:#fff;border-radius:10px}
+.hero{background:linear-gradient(145deg,rgba(22,31,51,.97),rgba(10,14,24,.98));border:1px solid #32405c;border-radius:20px;padding:18px;margin-bottom:12px;box-shadow:0 12px 32px #0006}
+.titleScreen{min-height:92vh;display:grid;place-items:center;text-align:center}
+.titleLogo{font-size:clamp(43px,13vw,72px);font-weight:1000;letter-spacing:7px;color:#eef3ff;text-shadow:0 0 35px #789cff55}
+.titleLogo span{color:#8fb8ff}
+.sigil{font-size:62px;color:#d8b86b;text-shadow:0 0 25px #d8b86b66}
+.subtitle{letter-spacing:5px;color:#8796b2;font-size:11px;margin:8px 0 28px}
+.eyebrow{font-size:10px;letter-spacing:3px;color:#8fa5ca;text-transform:uppercase}
+h1{font-size:30px;margin:6px 0 10px}
+h2{font-size:22px;margin:4px 0 10px}
+h3{font-size:16px;margin:0 0 8px}
+p{line-height:1.55}
+.muted{color:#96a2b8;font-size:13px}
+.small{font-size:11px;color:#8f9bb1}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.card{background:#101624;border:1px solid #293650;border-radius:15px;padding:14px}
+.card:hover{border-color:#405273}
+.big{font-size:25px;font-weight:900}
+.btn{width:100%;border:0;border-radius:11px;padding:11px 12px;margin-top:8px;background:#88b2ff;color:#07101d;font-weight:800}
+.btn.alt{background:#1a2335;color:#edf2ff;border:1px solid #33415e}
+.btn.gold{background:#d7b66c;color:#1b1408}
+.btn.red{background:#a85162;color:#fff}
+.btn.green{background:#3e9670;color:#fff}
+.btn.dark{background:#0b101b;color:#cfd8e9;border:1px solid #303d55}
+.choice{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.choice button{background:#111827;color:#dce6f8;border:1px solid #2f3b55;border-radius:12px;padding:11px;text-align:left;min-height:82px}
+.choice button.selected{border-color:#8fb8ff;background:#1b2a45;box-shadow:0 0 0 1px #8fb8ff55 inset}
+.choice button b{display:block;color:#c3d5ff;margin-bottom:5px}
+.field{display:grid;gap:6px;margin:9px 0}
+.field label{font-size:11px;color:#9aa8bf}
+input,select,textarea{width:100%;padding:11px;border-radius:10px;border:1px solid #34415c;background:#090f19;color:#fff;outline:none}
+textarea{min-height:85px;resize:vertical}
+.statline{display:flex;justify-content:space-between;gap:8px;margin:5px 0;font-size:12px}
+.bar{height:8px;background:#252e3e;border-radius:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:#7daeff}
+.bar.hp i{background:#65c88b}
+.bar.mp i{background:#7e9cff}
+.bar.xp i{background:#d6b66b}
+.tag{display:inline-block;border-radius:99px;padding:4px 7px;margin:2px;background:#1b2941;color:#a9c6ff;font-size:9px}
+.tag.gold{background:#3b3019;color:#f0d48d}
+.tag.red{background:#38202a;color:#ff9eae}
+.tag.green{background:#19382d;color:#86e1b4}
+.item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #202a3e}
+.item:last-child{border-bottom:0}
+.itemmain{min-width:0}
+.itemname{font-weight:800}
+.itemdesc{font-size:11px;color:#8f9cb2;margin-top:3px}
+.itemaction{flex-shrink:0}
+.sectionTitle{font-weight:900;font-size:17px;margin:16px 2px 9px}
+.nav{position:sticky;bottom:6px;z-index:40;display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:13px;padding:6px;background:#090d16ee;border:1px solid #29354d;border-radius:15px;backdrop-filter:blur(9px)}
+.nav button{border:0;background:#121a29;color:#98a5ba;border-radius:9px;padding:8px 3px;font-size:10px}
+.nav button.active{background:#263a5b;color:#fff}
+.map{position:relative;min-height:430px;border-radius:19px;overflow:hidden;border:1px solid #33445e;background:
+radial-gradient(circle at 30% 30%,#25413e,#162b2c 30%,#111b25 65%,#0a1018)}
+.map:before{content:"";position:absolute;inset:0;opacity:.3;background:
+linear-gradient(25deg,transparent 48%,#58706b 49%,#58706b 50%,transparent 51%),
+linear-gradient(155deg,transparent 48%,#465d61 49%,#465d61 50%,transparent 51%)}
+.mapplace{position:absolute;z-index:2;transform:translate(-50%,-50%);min-width:88px;max-width:115px;background:#0e1724dd;border:1px solid #50617d;border-radius:12px;color:#fff;padding:7px;text-align:center;font-size:10px}
+.mapplace b{display:block;font-size:19px}
+.m1{left:50%;top:52%}.m2{left:22%;top:24%}.m3{left:77%;top:22%}.m4{left:17%;top:55%}.m5{left:83%;top:55%}.m6{left:28%;top:80%}.m7{left:68%;top:79%}.m8{left:50%;top:15%}.m9{left:49%;top:88%}.m10{left:8%;top:34%}
+.locationCard{display:flex;gap:10px;align-items:flex-start}
+.avatar{width:45px;height:45px;border-radius:12px;background:#202b40;display:grid;place-items:center;font-size:23px;flex-shrink:0}
+.npc{border-left:3px solid #d7b66c}
+.quest{border-left:3px solid #7daeff}
+.quest.active{border-color:#d7b66c}
+.quest.done{border-color:#64c891}
+.quest.locked{opacity:.52;border-color:#59647a}
+.quest small{color:#8795ab}
+.log{max-height:240px;overflow:auto;background:#090e17;border-radius:11px;padding:9px;font-size:11px}
+.log div{padding:6px 0;border-bottom:1px solid #192235}
+.skillgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.skill{background:#131d2e;border:1px solid #34435e;color:#fff;border-radius:12px;padding:11px;text-align:left}
+.skill.locked{opacity:.42}
+.skill b{display:block;color:#c8d8ff}
+.enemybox{padding:18px;text-align:center;border-radius:17px;background:radial-gradient(circle,#3c3043,#151522 50%,#090c13);border:1px solid #493b55}
+.enemyicon{font-size:70px;line-height:1.1}
+.enemyname{font-size:20px;font-weight:900}
+.warning{background:#352b16;border:1px solid #705c2c;color:#efd28b;border-radius:11px;padding:9px;font-size:12px;margin:8px 0}
+.success{background:#153328;border:1px solid #376d58;color:#94e0bc;border-radius:11px;padding:9px;font-size:12px}
+.dangerbox{background:#361b26;border:1px solid #743b4b;color:#ff9faf;border-radius:11px;padding:9px;font-size:12px}
+.toast{position:fixed;left:50%;bottom:82px;transform:translateX(-50%);z-index:100;max-width:92%;background:#eff4ff;color:#08101b;border-radius:12px;padding:10px 14px;font-size:12px;font-weight:800;display:none;box-shadow:0 8px 30px #0009}
+.modal{position:fixed;inset:0;background:#000a;z-index:90;display:grid;place-items:center;padding:14px}
+.modalbox{width:min(560px,100%);max-height:90vh;overflow:auto;background:#101624;border:1px solid #3b4965;border-radius:18px;padding:16px}
+.statpoint{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#131c2c;border:1px solid #2d3a53;border-radius:11px;padding:9px;margin-bottom:7px}
+.statpoint button{width:40px;height:40px;border:1px solid #3c4d6a;background:#1c2a42;color:#fff;border-radius:10px}
+.rarity-common{color:#bfc7d5}.rarity-uncommon{color:#69d39a}.rarity-rare{color:#6ca9ff}.rarity-epic{color:#c08cff}.rarity-legendary{color:#e7bd61}.rarity-mythic{color:#ff7894}
+.achievement{border-left:3px solid #d7b66c}
+.faction{display:flex;justify-content:space-between;padding:9px;border-bottom:1px solid #202a3c}
+hr{border:0;border-top:1px solid #27334b;margin:13px 0}
+@media(max-width:700px){
+ .choice{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .grid4{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .grid3{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .nav{grid-template-columns:repeat(7,minmax(55px,1fr));overflow:auto}
+ .nav button{white-space:nowrap}
+}
+@media(max-width:420px){
+ .grid{grid-template-columns:1fr}
+ .grid3{grid-template-columns:1fr 1fr}
+ .choice{grid-template-columns:1fr 1fr}
+ h1{font-size:25px}
+ .hero{padding:14px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top hidden" id="topbar">
+  <div class="logo">NEX<span>ORA</span></div>
+  <div class="topright">
+    <div class="pill">Lv <b id="topLv">1</b></div>
+    <div class="pill">🪙 <b id="topGold">0</b></div>
+    <div class="pill">🏅 <b id="topRank">F</b></div>
+    <button class="iconbtn" id="soundBtn" type="button">🔊</button>
+  </div>
+</header>
+<main id="app"></main>
+<div id="toast" class="toast"></div>
+</div>
+
+<script>
+"use strict";
+
+/* =========================================================
+   NEXORA — COMPLETE OFFLINE RPG
+   Single index.html
+   Safe state normalization
+========================================================= */
+
+const SAVE_KEY="NEXORA_COMPLETE_V3";
+
+/* ---------- SAFE UTILITIES ---------- */
+
+function num(v,f=0){
+  const n=Number(v);
+  return Number.isFinite(n)?n:f;
+}
+function int(v,f=0){
+  return Math.floor(num(v,f));
+}
+function pos(v,f=0){
+  return Math.max(0,num(v,f));
+}
+function money(v){
+  return Math.floor(pos(v)).toLocaleString("id-ID");
+}
+function text(v,f=""){
+  return v===null||v===undefined?f:String(v);
+}
+function esc(v){
+  return text(v).replace(/[&<>"']/g,function(m){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m];
+  });
+}
+function clamp(v,a,b){
+  return Math.max(a,Math.min(b,num(v,a)));
+}
+function rand(min,max){
+  return Math.floor(Math.random()*(max-min+1))+min;
+}
+function pick(arr){
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+function $(id){
+  return document.getElementById(id);
+}
+
+/* ---------- RACES ---------- */
+
+const RACES={
+ Human:{icon:"🧑",hp:105,mp:55,str:3,int:3,vit:3,agi:3,luck:3,desc:"Serba bisa, bonus seimbang dan mudah berkembang."},
+ Elf:{icon:"🧝",hp:92,mp:75,str:1,int:7,vit:1,agi:6,luck:5,desc:"Cepat, kuat dalam magic dan critical."},
+ HighElf:{icon:"🧝‍♀️",hp:88,mp:95,str:1,int:10,vit:0,agi:5,luck:6,desc:"Spesialis arcane dengan MP besar."},
+ Dwarf:{icon:"⛏️",hp:135,mp:42,str:8,int:1,vit:9,agi:0,luck:2,desc:"Tangguh dan ahli senjata berat."},
+ Beastkin:{icon:"🐾",hp:108,mp:50,str:5,int:1,vit:3,agi:9,luck:8,desc:"Insting liar memberi speed dan luck."},
+ Dragonkin:{icon:"🐉",hp:145,mp:68,str:9,int:6,vit:7,agi:3,luck:3,desc:"Darah naga meningkatkan kekuatan fisik dan magic."},
+ Demonkin:{icon:"😈",hp:115,mp:82,str:6,int:8,vit:3,agi:5,luck:5,desc:"Energi abyss memperkuat serangan dan skill."},
+ Fairy:{icon:"🧚",hp:78,mp:100,str:0,int:9,vit:0,agi:10,luck:10,desc:"Tubuh rapuh tetapi sangat cepat dan beruntung."},
+ Orc:{icon:"👹",hp:150,mp:35,str:12,int:0,vit:10,agi:1,luck:1,desc:"Kekuatan brutal dan HP tinggi."},
+ Lizardfolk:{icon:"🦎",hp:120,mp:45,str:7,int:1,vit:7,agi:7,luck:3,desc:"Pemburu rawa dengan keseimbangan fisik."},
+ Angelic:{icon:"👼",hp:105,mp:88,str:4,int:9,vit:4,agi:6,luck:8,desc:"Ras langit dengan affinity holy."},
+ Voidborn:{icon:"🌑",hp:112,mp:92,str:7,int:9,vit:2,agi:7,luck:7,desc:"Keturunan kehampaan dengan potensi berbahaya."}
+};
+
+/* ---------- CLASSES ---------- */
+
+const CLASSES={
+ Warrior:{icon:"⚔️",hp:32,mp:5,str:8,int:0,vit:7,agi:2,luck:1,desc:"Frontliner dengan pertahanan dan damage tinggi."},
+ Knight:{icon:"🛡️",hp:48,mp:10,str:6,int:1,vit:11,agi:0,luck:1,desc:"Tank pelindung party."},
+ Berserker:{icon:"🪓",hp:38,mp:4,str:13,int:0,vit:4,agi:2,luck:0,desc:"Damage besar dengan pertahanan lebih rendah."},
+ Mage:{icon:"🔮",hp:5,mp:42,str:0,int:12,vit:0,agi:4,luck:4,desc:"Caster arcane dengan magic damage tinggi."},
+ Elementalist:{icon:"🌈",hp:8,mp:50,str:0,int:14,vit:0,agi:3,luck:3,desc:"Mengendalikan berbagai elemen."},
+ Cleric:{icon:"✝️",hp:25,mp:40,str:1,int:9,vit:5,agi:2,luck:5,desc:"Holy magic, healing dan support."},
+ Archer:{icon:"🏹",hp:15,mp:18,str:4,int:1,vit:2,agi:10,luck:6,desc:"Serangan jarak jauh dan critical."},
+ Ranger:{icon:"🌲",hp:22,mp:20,str:6,int:2,vit:3,agi:8,luck:6,desc:"Pemburu yang kuat di alam liar."},
+ Assassin:{icon:"🗡️",hp:8,mp:20,str:7,int:2,vit:0,agi:14,luck:9,desc:"Speed dan critical sangat tinggi."},
+ Samurai:{icon:"🗡️",hp:25,mp:18,str:11,int:2,vit:4,agi:7,luck:4,desc:"Ahli katana dengan serangan presisi."},
+ Summoner:{icon:"🌀",hp:12,mp:45,str:1,int:11,vit:2,agi:4,luck:5,desc:"Memanggil kekuatan makhluk astral."},
+ Spellblade:{icon:"⚔️",hp:27,mp:32,str:8,int:8,vit:4,agi:5,luck:3,desc:"Menggabungkan pedang dan magic."}
+};
+
+/* ---------- WORLD ---------- */
+
+const WORLD=[
+ {id:"astera",name:"Astera",icon:"🏰",level:1,rep:0,cost:0,desc:"Kota utama dan titik awal petualangan."},
+ {id:"plaza",name:"Astera Plaza",icon:"⛲",level:1,rep:0,cost:10,desc:"Alun-alun pusat, penuh pedagang dan NPC."},
+ {id:"federation",name:"Adventurer Federation",icon:"🛡️",level:1,rep:0,cost:15,desc:"Tempat quest, rank dan kontrak petualang."},
+ {id:"tavern",name:"Moonlit Tavern",icon:"🍺",level:1,rep:0,cost:12,desc:"Makan, minum, istirahat dan rumor."},
+ {id:"market",name:"Grand Market",icon:"🛒",level:1,rep:0,cost:15,desc:"Pasar besar untuk kebutuhan petualang."},
+ {id:"blacksmith",name:"Royal Blacksmith",icon:"🔨",level:2,rep:20,cost:25,desc:"Senjata, armor, upgrade dan repair."},
+ {id:"arena",name:"Royal Arena",icon:"🏟️",level:3,rep:60,cost:40,desc:"Duel dan turnamen dengan hadiah."},
+ {id:"westgate",name:"West Gate",icon:"🚪",level:1,rep:0,cost:10,desc:"Gerbang menuju wilayah barat."},
+ {id:"forest",name:"Whispering Forest",icon:"🌲",level:2,rep:15,cost:35,desc:"Hutan luas untuk hunting dan gathering."},
+ {id:"huntercamp",name:"Hunter Camp",icon:"🏕️",level:3,rep:40,cost:50,desc:"Base para hunter dan ranger."},
+ {id:"silverlake",name:"Silverlake",icon:"🏞️",level:4,rep:80,cost:70,desc:"Danau indah dengan ikan langka."},
+ {id:"fisherwharf",name:"Fisherman's Wharf",icon:"🎣",level:4,rep:90,cost:75,desc:"Pelabuhan nelayan."},
+ {id:"deepsea",name:"Deep Sea",icon:"🌊",level:12,rep:400,cost:250,desc:"Laut dalam dengan material eksotis."},
+ {id:"elvenwood",name:"Elvenwood",icon:"🌳",level:7,rep:180,cost:120,desc:"Wilayah bangsa Elf."},
+ {id:"elvenruins",name:"Moonleaf Sanctuary",icon:"🌙",level:9,rep:250,cost:150,desc:"Sanctuary kuno para High Elf."},
+ {id:"dwarfhold",name:"Dwarfhold",icon:"⛰️",level:8,rep:220,cost:140,desc:"Benteng bawah gunung para Dwarf."},
+ {id:"ironmine",name:"Irondeep Mine",icon:"⛏️",level:6,rep:130,cost:100,desc:"Tambang besi dan mineral."},
+ {id:"crystalcave",name:"Crystal Cave",icon:"💎",level:11,rep:350,cost:190,desc:"Gua kristal berenergi tinggi."},
+ {id:"swamp",name:"Blackmist Swamp",icon:"🐊",level:9,rep:280,cost:160,desc:"Rawa beracun dan penuh monster."},
+ {id:"moonfall",name:"Moonfall Village",icon:"🏘️",level:10,rep:320,cost:175,desc:"Desa terpencil di bawah cahaya bulan."},
+ {id:"ruincathedral",name:"Ruined Cathedral",icon:"⛪",level:13,rep:500,cost:220,desc:"Katedral runtuh yang menyimpan holy relic."},
+ {id:"ashencanyon",name:"Ashen Canyon",icon:"🌋",level:15,rep:650,cost:280,desc:"Ngarai panas dengan monster api."},
+ {id:"dragonvalley",name:"Dragon Valley",icon:"🐲",level:20,rep:1000,cost:400,desc:"Lembah tempat naga tua bersemayam."},
+ {id:"abyssgate",name:"Abyss Gate",icon:"🕳️",level:20,rep:700,cost:300,desc:"Gerbang menuju dungeon abyss."},
+ {id:"ancientdungeon",name:"Ancient Dungeon",icon:"🏚️",level:22,rep:850,cost:350,desc:"Dungeon kuno dengan boss bertingkat."},
+ {id:"skyshrine",name:"Sky Shrine",icon:"☁️",level:25,rep:1200,cost:500,desc:"Kuil yang melayang di atas awan."},
+ {id:"voidrift",name:"Void Rift",icon:"🌀",level:30,rep:1800,cost:750,desc:"Retakan dimensi yang tidak stabil."},
+ {id:"royalcastle",name:"Royal Castle",icon:"👑",level:12,rep:500,cost:180,desc:"Pusat pemerintahan kerajaan."},
+ {id:"colosseum",name:"Grand Colosseum",icon:"🏛️",level:15,rep:700,cost:250,desc:"Arena tingkat tinggi."},
+ {id:"merchantroad",name:"Merchant Road",icon:"🐎",level:5,rep:100,cost:80,desc:"Jalur dagang antarwilayah."},
+ {id:"oldgraveyard",name:"Old Graveyard",icon:"⚰️",level:14,rep:450,cost:210,desc:"Kuburan tua penuh undead."}
+];
+
+/* ---------- MONSTERS ---------- */
+
+const MONSTERS=[
+ {id:"slime",name:"Forest Slime",icon:"🟢",rec:1,hp:90,atk:12,def:3,xp:120,gold:45,zone:"forest",drops:["Green Slime Gel","Herb Leaf"]},
+ {id:"hornrabbit",name:"Horn Rabbit",icon:"🐇",rec:2,hp:115,atk:15,def:4,xp:145,gold:55,zone:"forest",drops:["Rabbit Fur","Wild Meat"]},
+ {id:"wolf",name:"Dire Wolf",icon:"🐺",rec:3,hp:160,atk:20,def:6,xp:190,gold:75,zone:"forest",drops:["Wolf Fang","Wolf Pelt","Wild Meat"]},
+ {id:"goblin",name:"Goblin Scout",icon:"👺",rec:5,hp:220,atk:27,def:8,xp:260,gold:100,zone:"forest",drops:["Goblin Ear","Rough Leather","Iron Scrap"]},
+ {id:"bat",name:"Shadow Bat",icon:"🦇",rec:7,hp:300,atk:35,def:7,xp:340,gold:135,zone:"forest",drops:["Bat Wing","Shadow Dust"]},
+ {id:"treant",name:"Forest Treant",icon:"🌲",rec:10,hp:520,atk:48,def:17,xp:620,gold:260,zone:"elvenwood",drops:["Ancient Bark","Mana Leaf","Treant Core"]},
+ {id:"swampfang",name:"Swamp Fang",icon:"🐊",rec:10,hp:460,atk:55,def:13,xp:590,gold:240,zone:"swamp",drops:["Venom Sac","Crocodile Scale","Toxic Herb"]},
+ {id:"ruinknight",name:"Ruin Knight",icon:"🛡️",rec:15,hp:800,atk:72,def:25,xp:950,gold:430,zone:"ruincathedral",drops:["Ancient Steel","Knight Core","Holy Fragment"]},
+ {id:"gravewraith",name:"Grave Wraith",icon:"👻",rec:16,hp:720,atk:82,def:19,xp:1050,gold:470,zone:"oldgraveyard",drops:["Soul Ash","Ghost Cloth","Dark Essence"]},
+ {id:"flamebeast",name:"Flame Beast",icon:"🔥",rec:17,hp:980,atk:92,def:22,xp:1250,gold:560,zone:"ashencanyon",drops:["Flame Core","Inferno Scale","Ruby Shard"]},
+ {id:"crystalgolem",name:"Crystal Golem",icon:"💠",rec:19,hp:1200,atk:105,def:35,xp:1600,gold:720,zone:"crystalcave",drops:["Crystal Core","Blue Crystal","Titan Ore"]},
+ {id:"abyssguardian",name:"Abyss Guardian",icon:"👹",rec:20,hp:1450,atk:125,def:38,xp:2600,gold:1200,boss:true,zone:"abyssgate",drops:["Abyss Core","Dark Crystal","Guardian Plate"]},
+ {id:"dragon",name:"Ancient Dragon",icon:"🐉",rec:25,hp:2500,atk:185,def:55,xp:5200,gold:2600,boss:true,zone:"dragonvalley",drops:["Dragon Scale","Dragon Heart","Ancient Gem"]},
+ {id:"voidlord",name:"Void Lord",icon:"🌑",rec:30,hp:3900,atk:250,def:70,xp:9000,gold:5200,boss:true,zone:"voidrift",drops:["Void Core","Void Crystal","Reality Shard"]}
+];
+
+/* ---------- SKILLS ---------- */
+
+const SKILLS={
+ Warrior:[
+  {id:"slash",name:"Power Slash",icon:"⚔️",cost:5,mul:1.65,crit:0,desc:"Tebasan berat."},
+  {id:"guard",name:"Guard Break",icon:"🛡️",cost:8,mul:1.35,crit:0,defdown:4,desc:"Mengurangi DEF musuh."},
+  {id:"whirl",name:"Whirlwind",icon:"🌪️",cost:12,mul:2.05,crit:.05,desc:"Serangan berputar."},
+  {id:"meteor",name:"Meteor Blade",icon:"☄️",cost:20,mul:3.2,crit:.1,desc:"Ultimate tebasan."}
+ ],
+ Knight:[
+  {id:"shield",name:"Shield Bash",icon:"🛡️",cost:5,mul:1.45,crit:0,desc:"Serangan dengan shield."},
+  {id:"fortress",name:"Iron Fortress",icon:"🏰",cost:8,mul:1.15,heal:.08,desc:"Damage kecil dan memulihkan HP."},
+  {id:"taunt",name:"Royal Guard",icon:"👑",cost:12,mul:1.8,heal:.12,desc:"Serangan sekaligus pemulihan."}
+ ],
+ Berserker:[
+  {id:"rage",name:"Rage Slash",icon:"🩸",cost:5,mul:1.9,crit:.08,desc:"Semakin ganas semakin sakit."},
+  {id:"axe",name:"Axe Crash",icon:"🪓",cost:10,mul:2.4,crit:.06,desc:"Hantaman kapak."},
+  {id:"blood",name:"Blood Reaver",icon:"☠️",cost:17,mul:3.1,crit:.15,heal:.08,desc:"Serangan brutal dengan lifesteal."}
+ ],
+ Mage:[
+  {id:"bolt",name:"Arcane Bolt",icon:"✨",cost:7,mul:1.9,crit:.03,desc:"Proyektil arcane."},
+  {id:"frost",name:"Frost Nova",icon:"❄️",cost:12,mul:2.35,crit:.05,desc:"Ledakan es."},
+  {id:"meteor",name:"Meteor",icon:"☄️",cost:18,mul:3.0,crit:.08,desc:"Meteor dari langit."},
+  {id:"arcane",name:"Arcane Ruin",icon:"🔮",cost:28,mul:4.2,crit:.15,desc:"Ultimate arcane."}
+ ],
+ Elementalist:[
+  {id:"fire",name:"Fire Lance",icon:"🔥",cost:7,mul:2.0,crit:.04,desc:"Tombak api."},
+  {id:"ice",name:"Glacial Spear",icon:"❄️",cost:11,mul:2.3,crit:.06,desc:"Serangan es."},
+  {id:"thunder",name:"Thunder Rain",icon:"⚡",cost:17,mul:2.9,crit:.1,desc:"Hujan petir."},
+  {id:"elemental",name:"Elemental Cataclysm",icon:"🌈",cost:27,mul:4.1,crit:.15,desc:"Ledakan seluruh elemen."}
+ ],
+ Cleric:[
+  {id:"holy",name:"Holy Strike",icon:"✝️",cost:6,mul:1.8,crit:.03,heal:.06,desc:"Serangan suci."},
+  {id:"light",name:"Radiant Ray",icon:"🌟",cost:11,mul:2.2,crit:.05,heal:.05,desc:"Cahaya pemulihan."},
+  {id:"judgement",name:"Divine Judgement",icon:"⚜️",cost:20,mul:3.4,crit:.1,heal:.1,desc:"Serangan divine."}
+ ],
+ Archer:[
+  {id:"pierce",name:"Piercing Shot",icon:"🏹",cost:5,mul:1.7,crit:.08,desc:"Tembakan menembus."},
+  {id:"rapid",name:"Rapid Arrow",icon:"💨",cost:9,mul:2.05,crit:.1,desc:"Panah cepat."},
+  {id:"rain",name:"Arrow Rain",icon:"🌧️",cost:15,mul:2.7,crit:.12,desc:"Hujan panah."},
+  {id:"phoenix",name:"Phoenix Arrow",icon:"🔥",cost:25,mul:4.0,crit:.18,desc:"Panah api legendaris."}
+ ],
+ Ranger:[
+  {id:"trap",name:"Hunter Trap",icon:"🪤",cost:5,mul:1.55,crit:.05,desc:"Serangan perangkap."},
+  {id:"hawk",name:"Hawk Shot",icon:"🦅",cost:9,mul:2.15,crit:.1,desc:"Tembakan presisi."},
+  {id:"storm",name:"Storm Volley",icon:"🌪️",cost:15,mul:2.8,crit:.12,desc:"Rentetan panah."}
+ ],
+ Assassin:[
+  {id:"shadow",name:"Shadow Strike",icon:"🌑",cost:5,mul:1.95,crit:.18,desc:"Critical tinggi."},
+  {id:"fang",name:"Night Fang",icon:"🗡️",cost:10,mul:2.55,crit:.2,desc:"Serangan bayangan."},
+  {id:"blink",name:"Phantom Blink",icon:"👤",cost:16,mul:3.0,crit:.25,desc:"Serangan teleport."},
+  {id:"execution",name:"Death Execution",icon:"💀",cost:26,mul:4.3,crit:.3,desc:"Ultimate assassin."}
+ ],
+ Samurai:[
+  {id:"iaijutsu",name:"Iai Slash",icon:"⚔️",cost:6,mul:2.0,crit:.12,desc:"Tebasan cepat."},
+  {id:"crescent",name:"Crescent Cut",icon:"🌙",cost:11,mul:2.45,crit:.14,desc:"Tebasan bulan."},
+  {id:"dragoncut",name:"Dragon Cut",icon:"🐉",cost:20,mul:3.5,crit:.2,desc:"Tebasan naga."}
+ ],
+ Summoner:[
+  {id:"sprite",name:"Spirit Bolt",icon:"🧚",cost:6,mul:1.75,crit:.04,desc:"Serangan spirit."},
+  {id:"beast",name:"Beast Summon",icon:"🐺",cost:12,mul:2.4,crit:.08,desc:"Memanggil beast."},
+  {id:"titan",name:"Astral Titan",icon:"🌌",cost:22,mul:3.6,crit:.12,desc:"Panggilan titan."}
+ ],
+ Spellblade:[
+  {id:"arcslash",name:"Arc Slash",icon:"⚔️",cost:6,mul:1.9,crit:.07,desc:"Pedang berlapis magic."},
+  {id:"frostblade",name:"Frost Blade",icon:"❄️",cost:11,mul:2.4,crit:.1,desc:"Pedang es."},
+  {id:"voidblade",name:"Void Blade",icon:"🌀",cost:20,mul:3.5,crit:.18,desc:"Pedang kehampaan."}
+ ]
+};
+
+/* ---------- ITEMS / MATERIALS ---------- */
+
+const ITEMS={};
+
+function addItem(id,name,icon,type,rarity,price,desc,extra){
+  ITEMS[id]=Object.assign({
+    id:id,name:name,icon:icon||"📦",type:type||"Material",
+    rarity:rarity||"Common",price:num(price),desc:desc||"Item NEXORA."
+  },extra||{});
+}
+
+/* Materials >100 */
+
+const materialSets=[
+ ["Forest",["Oak Wood","Pine Wood","Ancient Bark","Wild Herb","Moonleaf","Blue Herb","Red Herb","Mana Leaf","Rabbit Fur","Wolf Pelt","Wolf Fang","Wild Meat","Goblin Ear","Bat Wing","Shadow Dust","Treant Core","Forest Resin","Moss","Thorn Vine","Green Slime Gel"]],
+ ["Mine",["Iron Ore","Copper Ore","Silver Ore","Gold Ore","Mithril Ore","Titan Ore","Coal","Raw Quartz","Blue Crystal","Red Crystal","Green Crystal","Dark Crystal","Crystal Core","Ruby Shard","Sapphire Shard","Emerald Shard","Amethyst Shard","Ancient Steel","Iron Scrap","Stone Fragment"]],
+ ["Swamp",["Toxic Herb","Venom Sac","Crocodile Scale","Bog Moss","Poison Fang","Black Lotus","Swamp Pearl","Rotten Bark","Leech Blood","Marsh Crystal"]],
+ ["Sea",["Fresh Fish","Silver Fish","Blue Tuna","Golden Carp","Pearl","Black Pearl","Seaweed","Coral","Red Coral","Shell","Large Shell","Shark Fin","Whale Bone","Deep Sea Scale","Abyss Pearl","Salt Crystal","Ocean Essence","Tidal Core","Siren Feather","Sea Glass"]],
+ ["Ancient",["Holy Fragment","Soul Ash","Ghost Cloth","Dark Essence","Knight Core","Ancient Gem","Dragon Scale","Dragon Heart","Inferno Scale","Flame Core","Void Core","Void Crystal","Reality Shard","Sky Feather","Celestial Dust","Sun Fragment","Moon Fragment","Astral Stone","Aether Crystal","Divine Relic"]]
+];
+
+let matIndex=1;
+materialSets.forEach(function(set){
+  set[1].forEach(function(name){
+    const id="mat_"+matIndex++;
+    let icon="🪨";
+    if(/Wood|Bark|Moss|Vine|Herb|Lotus|Leaf|Grass/.test(name))icon="🌿";
+    if(/Ore|Coal|Steel|Stone|Quartz/.test(name))icon="⛏️";
+    if(/Crystal|Ruby|Sapphire|Emerald|Amethyst|Pearl|Gem|Fragment|Aether|Astral/.test(name))icon="💎";
+    if(/Fish|Tuna|Carp|Shark|Whale|Seaweed|Coral|Shell|Salt|Tidal|Ocean/.test(name))icon="🌊";
+    if(/Fang|Scale|Feather|Bone|Blood|Fin|Fur/.test(name))icon="🦴";
+    if(/Soul|Ghost|Dark|Void|Reality/.test(name))icon="🌑";
+    addItem(id,name,icon,"Material","Common",20,"Material untuk crafting dan quest.");
+  });
+});
+
+/* Consumables */
+
+[
+ ["small_potion","Small Potion","🧪","Common",35,55,"Memulihkan 55 HP.",{heal:55}],
+ ["medium_potion","Medium Potion","🧪","Uncommon",90,150,"Memulihkan 150 HP.",{heal:150}],
+ ["large_potion","Large Potion","🧪","Rare",220,350,"Memulihkan 350 HP.",{heal:350}],
+ ["mega_potion","Mega Potion","🧪","Epic",500,750,"Memulihkan 750 HP.",{heal:750}],
+ ["ether","Ether","🔵","Common",60,100,"Memulihkan 70 MP.",{mana:70}],
+ ["high_ether","High Ether","🔵","Rare",180,300,"Memulihkan 200 MP.",{mana:200}],
+ ["elixir","Elixir","✨","Epic",700,1000,"Memulihkan HP dan MP.",{heal:400,mana:200}],
+ ["antidote","Antidote","🧴","Common",30,50,"Menghilangkan efek racun.",{cleanse:true}],
+ ["revive","Revival Feather","🪶","Rare",350,550,"Menghidupkan kembali setelah kalah.",{revive:true}]
+].forEach(function(x){addItem(x[0],x[1],x[2],"Consumable",x[3],x[4],x[5],x[6]);});
+
+/* Tavern foods */
+
+[
+ ["bread","Astera Bread","🍞",45,"HP +90 selama petualangan."],
+ ["meat","Grilled Wild Meat","🍖",80,"ATK +5 selama 3 battle."],
+ ["fishmeal","Silverlake Fish Meal","🐟",120,"DEX +5 selama 3 battle."],
+ ["manaTea","Moonleaf Tea","🍵",100,"MP maksimal +40 selama 3 battle."],
+ ["royalMeal","Royal Feast","🍱",350,"HP/MP +25% dan LUCK +5."],
+ ["dwarfAle","Dwarf Malt","🍺",180,"DEF +8 selama 3 battle."],
+ ["fairyCake","Fairy Mooncake","🍰",220,"Critical +8 selama 3 battle."]
+].forEach(function(x){addItem(x[0],x[1],x[2],"Food","Uncommon",x[3],x[4]);});
+
+/* Weapons 60 */
+
+const weaponNames=[
+ ["Rusty Sword","⚔️","Warrior",45,4],
+ ["Iron Sword","⚔️","Warrior",180,10],
+ ["Steel Sword","⚔️","Warrior",420,18],
+ ["Knight Sword","⚔️","Knight",850,28],
+ ["Royal Sword","⚔️","Warrior",1500,42],
+ ["Dragon Slayer","⚔️","Warrior",4200,68],
+ ["Demon Edge","🗡️","Assassin",5200,75],
+ ["Void Saber","🗡️","Assassin",8500,100],
+ ["Training Axe","🪓","Berserker",60,6],
+ ["Iron Axe","🪓","Berserker",240,14],
+ ["Steel Axe","🪓","Berserker",520,23],
+ ["War Axe","🪓","Berserker",1000,34],
+ ["Executioner Axe","🪓","Berserker",2800,55],
+ ["Titan Axe","🪓","Berserker",6500,88],
+ ["Traveler Bow","🏹","Archer",55,5],
+ ["Oak Bow","🏹","Archer",210,12],
+ ["Hunter Bow","🏹","Ranger",500,22],
+ ["Silver Bow","🏹","Archer",950,33],
+ ["Moon Bow","🏹","Ranger",2300,52],
+ ["Phoenix Bow","🏹","Archer",5800,82],
+ ["Apprentice Staff","🪄","Mage",50,4],
+ ["Oak Staff","🪄","Mage",190,11],
+ ["Sage Staff","🪄","Mage",480,21],
+ ["Crystal Staff","🪄","Elementalist",1000,34],
+ ["Arcane Staff","🪄","Mage",2500,55],
+ ["Celestial Staff","🪄","Elementalist",6200,90],
+ ["Novice Katana","🗡️","Samurai",70,6],
+ ["Iron Katana","🗡️","Samurai",260,15],
+ ["Moon Katana","🗡️","Samurai",700,27],
+ ["Crimson Katana","🗡️","Samurai",1500,42],
+ ["Dragon Katana","🗡️","Samurai",4000,70],
+ ["Heaven Katana","🗡️","Samurai",7800,105],
+ ["Holy Mace","🔨","Cleric",100,7],
+ ["Priest Mace","🔨","Cleric",350,17],
+ ["Blessed Mace","🔨","Cleric",900,30],
+ ["Divine Mace","🔨","Cleric",3000,60],
+ ["Summoner Rod","🪄","Summoner",120,7],
+ ["Spirit Rod","🪄","Summoner",420,18],
+ ["Astral Rod","🪄","Summoner",1300,38],
+ ["Titan Rod","🪄","Summoner",3600,68],
+ ["Spellblade","⚔️","Spellblade",180,9],
+ ["Arcane Blade","⚔️","Spellblade",700,24],
+ ["Frost Blade","❄️","Spellblade",1700,43],
+ ["Void Blade","🌀","Spellblade",5200,82],
+ ["Guardian Shield","🛡️","Knight",300,8],
+ ["Iron Shield","🛡️","Knight",750,15],
+ ["Steel Shield","🛡️","Knight",1400,27],
+ ["Royal Shield","🛡️","Knight",3500,48],
+ ["Abyss Shield","🛡️","Knight",7200,78],
+ ["Bronze Dagger","🗡️","Assassin",80,6],
+ ["Iron Dagger","🗡️","Assassin",300,15],
+ ["Shadow Dagger","🗡️","Assassin",900,31],
+ ["Night Dagger","🗡️","Assassin",2200,52],
+ ["Phantom Dagger","🗡️","Assassin",6000,90],
+ ["Berserk Greatsword","⚔️","Berserker",2600,50],
+ ["Titan Greatsword","⚔️","Warrior",6000,86],
+ ["Dragon Greatsword","🐉","Warrior",9000,115],
+ ["Holy Blade","✨","Cleric",5000,78],
+ ["Heaven's Edge","✨","Spellblade",8500,112]
+];
+
+weaponNames.forEach(function(w,i){
+  addItem("weapon_"+i,w[0],w[1],"Weapon",i>53?"Legendary":i>40?"Epic":i>25?"Rare":i>10?"Uncommon":"Common",w[3],"Senjata "+w[2]+".",{atk:w[4],weaponClass:w[2],durability:100});
+});
+
+/* Armor */
+
+const armorNames=[
+ ["Traveler Clothes",10,3,100],
+ ["Leather Armor",35,7,220],
+ ["Hunter Leather",45,10,320],
+ ["Iron Armor",80,16,600],
+ ["Steel Armor",110,22,1100],
+ ["Knight Plate",150,30,1900],
+ ["Royal Plate",210,40,3500],
+ ["Dragon Armor",300,55,7000],
+ ["Abyss Armor",380,70,11000],
+ ["Mage Robe",30,8,280],
+ ["Sage Robe",55,15,700],
+ ["Arcane Robe",90,25,1800],
+ ["Celestial Robe",170,43,5000],
+ ["Void Robe",250,62,9500],
+ ["Elven Garb",60,13,800],
+ ["Moonleaf Garb",120,27,2200],
+ ["Dwarf Forged Mail",180,35,3200],
+ ["Titan Mail",280,58,7200],
+ ["Angel Vestment",200,50,6000],
+ ["Demon Mantle",230,48,6500]
+];
+
+armorNames.forEach(function(a,i){
+ addItem("armor_"+i,a[0],"🛡️","Armor",i>17?"Legendary":i>12?"Epic":i>7?"Rare":i>3?"Uncommon":"Common",a[3],"Armor untuk meningkatkan pertahanan.",{def:a[1],hp:a[2],durability:100});
+});
+
+/* Accessories */
+
+const accNames=[
+ ["Bronze Ring","💍",2,2,50],
+ ["Silver Ring","💍",4,4,150],
+ ["Gold Ring","💍",7,6,400],
+ ["Ruby Ring","💍",12,4,1000],
+ ["Sapphire Ring","💍",5,15,1200],
+ ["Emerald Ring","💍",8,10,1400],
+ ["Amethyst Ring","💍",10,12,1800],
+ ["Dragon Ring","🐉",18,15,4500],
+ ["Abyss Ring","🌑",22,18,7000],
+ ["Lucky Charm","🍀",1,10,900],
+ ["Hunter Charm","🪶",4,12,1300],
+ ["Moon Pendant","🌙",7,17,2200],
+ ["Holy Pendant","✝️",12,13,3000],
+ ["Void Pendant","🌀",18,22,8000]
+];
+
+accNames.forEach(function(a,i){
+ addItem("acc_"+i,a[0],a[1],"Accessory",i>10?"Epic":i>6?"Rare":i>2?"Uncommon":"Common",a[4],"Aksesori dengan bonus status.",{atk:a[2],luck:a[3]});
+});
+
+/* ---------- RECIPES ---------- */
+
+const RECIPES=[];
+function recipe(id,name,result,qty,cost,mats){
+ RECIPES.push({id:id,name:name,result:result,qty:qty,cost:cost,mats:mats});
+}
+
+recipe("r1","Small Potion","small_potion",1,25,{"mat_5":2,"mat_6":1});
+recipe("r2","Medium Potion","medium_potion",1,70,{"mat_5":3,"mat_7":2});
+recipe("r3","Large Potion","large_potion",1,160,{"mat_7":3,"mat_8":2});
+recipe("r4","Ether","ether",1,50,{"mat_9":2,"mat_10":1});
+recipe("r5","High Ether","high_ether",1,150,{"mat_10":3,"mat_11":2});
+recipe("r6","Elixir","elixir",1,400,{"mat_8":3,"mat_10":3,"mat_90":1});
+recipe("r7","Iron Sword","weapon_1",1,80,{"mat_21":5,"mat_39":2});
+recipe("r8","Steel Sword","weapon_2",1,180,{"mat_21":8,"mat_22":5,"mat_39":3});
+recipe("r9","Hunter Bow","weapon_16",1,200,{"mat_1":8,"mat_2":5,"mat_25":2});
+recipe("r10","Sage Staff","weapon_22",1,250,{"mat_3":5,"mat_30":4,"mat_31":2});
+recipe("r11","Iron Armor","armor_3",1,250,{"mat_21":10,"mat_39":5});
+recipe("r12","Hunter Leather","armor_2",1,120,{"mat_12":6,"mat_13":4});
+recipe("r13","Moon Katana","weapon_28",1,500,{"mat_3":8,"mat_16":3,"mat_71":2});
+recipe("r14","Crystal Staff","weapon_23",1,700,{"mat_31":8,"mat_32":4,"mat_33":2});
+recipe("r15","Dragon Ring","acc_7",1,1000,{"mat_81":5,"mat_82":1,"mat_83":3});
+recipe("r16","Abyss Ring","acc_8",1,1600,{"mat_86":5,"mat_87":3,"mat_88":1});
+
+/* ---------- QUEST DATA ---------- */
+
+const STATIC_QUESTS=[
+ {id:"main1",type:"Main",name:"Awakening in Astera",desc:"Daftarkan diri di Adventurer Federation.",level:1,rep:0,xp:500,gold:300,repReward:20,goal:{kind:"visit",value:"federation"}},
+ {id:"main2",type:"Main",name:"Whispering Threat",desc:"Kalahkan 3 monster.",level:2,rep:20,xp:900,gold:500,repReward:35,goal:{kind:"kills",value:3}},
+ {id:"main3",type:"Main",name:"Hunter's Proof",desc:"Kalahkan 8 monster.",level:4,rep:50,xp:1600,gold:900,repReward:60,goal:{kind:"kills",value:8}},
+ {id:"main4",type:"Main",name:"Abyss Rumor",desc:"Datangi Moonlit Tavern dan cari rumor.",level:5,rep:80,xp:2200,gold:1200,repReward:80,goal:{kind:"visit",value:"tavern"}},
+ {id:"main5",type:"Main",name:"Guardian at the Gate",desc:"Kalahkan Abyss Guardian.",level:20,rep:700,xp:6000,gold:3000,repReward:150,goal:{kind:"boss",value:"abyssguardian"}},
+ {id:"main6",type:"Main",name:"Dragon's Shadow",desc:"Kalahkan Ancient Dragon.",level:25,rep:1000,xp:11000,gold:6000,repReward:250,goal:{kind:"boss",value:"dragon"}}
+];
+
+const QUEST_TEMPLATES=[
+ ["Hunt","Wolf Extermination","Kalahkan 5 Dire Wolf.","killsMonster","wolf",5,900,450,35],
+ ["Hunt","Goblin Trouble","Kalahkan 6 Goblin Scout.","killsMonster","goblin",6,1300,700,50],
+ ["Hunt","Shadow Hunt","Kalahkan 4 Shadow Bat.","killsMonster","bat",4,1600,800,60],
+ ["Hunt","Treant Bounty","Kalahkan 2 Forest Treant.","killsMonster","treant",2,2500,1300,90],
+ ["Gather","Forest Herbalist","Kumpulkan 12 Wild Herb.","item","mat_4",12,800,350,30],
+ ["Gather","Moonleaf Research","Kumpulkan 8 Moonleaf.","item","mat_5",8,1300,650,50],
+ ["Gather","Iron Contract","Kumpulkan 15 Iron Ore.","item","mat_21",15,1500,700,60],
+ ["Gather","Crystal Contract","Kumpulkan 8 Blue Crystal.","item","mat_30",8,2500,1200,100],
+ ["Gather","Pearl Diver","Kumpulkan 5 Pearl.","item","mat_63",5,2200,1100,80],
+ ["Craft","Potion Crafter","Craft 3 Small Potion.","craft","small_potion",3,700,400,30],
+ ["Craft","Blacksmith Apprentice","Craft 1 Iron Sword.","craft","weapon_1",1,1200,650,45],
+ ["Craft","Armor Apprentice","Craft 1 Iron Armor.","craft","armor_3",1,1600,800,55],
+ ["Explore","New Roads","Kunjungi 5 lokasi berbeda.","locations",5,1000,500,45],
+ ["Explore","Kingdom Explorer","Kunjungi 12 lokasi berbeda.","locations",12,3000,1600,120],
+ ["Arena","Arena Debut","Menangkan 2 duel Arena.","arena",2,1600,1000,70],
+ ["Arena","Arena Veteran","Menangkan 5 duel Arena.","arena",5,4000,2500,150],
+ ["Dungeon","Abyss Explorer","Kalahkan 3 monster di Abyss Gate.","dungeonKills",3,3200,1800,130],
+ ["Dungeon","Deep Dungeon","Kalahkan 10 monster dungeon.","dungeonKills",10,7000,4000,250],
+ ["Travel","Merchant Route","Kunjungi Merchant Road.","visit","merchantroad",1,1100,650,50],
+ ["Travel","Elven Envoy","Kunjungi Elvenwood.","visit","elvenwood",1,2000,1000,90],
+ ["Travel","Dwarf Envoy","Kunjungi Dwarfhold.","visit","dwarfhold",1,2300,1200,100],
+ ["Reality","Reality Quest: Survival","Kalahkan 10 monster hari ini.","kills",10,3500,1800,100],
+ ["Reality","Reality Quest: Gathering","Dapatkan 20 material apa pun.","materials",20,2800,1500,90],
+ ["Reality","Reality Quest: Wanderer","Kunjungi 8 lokasi.","locations",8,3000,1700,110],
+ ["Reality","Reality Quest: Wealth","Kumpulkan 5000 Gold.","goldEarned",5000,4500,1000,120]
+];
+
+let quests=[];
+
+/* ---------- GAME STATE ---------- */
+
+function freshState(){
+ return {
+  version:3,
+  started:false,
+  name:"",
+  race:"Human",
+  class:"Warrior",
+  level:1,
+  xp:0,
+  gold:500,
+  hp:100,
+  mp:50,
+  statPoints:6,
+  rebirth:0,
+  rebirthPoints:0,
+  reputation:0,
+  rank:"F",
+  location:"astera",
+  stats:{str:10,int:10,vit:10,agi:10,luck:5},
+  inventory:{
+   weapon_0:1,
+   armor_0:1,
+   small_potion:5,
+   bread:2
+  },
+  equipment:{
+   weapon:"weapon_0",
+   armor:"armor_0",
+   accessory:null
+  },
+  unlockedSkills:[],
+  equippedSkills:[],
+  completed:[],
+  activeQuest:null,
+  questProgress:{},
+  kills:0,
+  bossKills:0,
+  arenaWins:0,
+  dungeonKills:0,
+  locationsVisited:["astera"],
+  materialsGathered:0,
+  goldEarned:0,
+  crafts:0,
+  achievements:[],
+  titles:[],
+  activeTitle:"",
+  buffs:[],
+  combat:null,
+  logs:["Selamat datang di Astera.","Dunia NEXORA menantikan langkahmu."],
+  custom:[],
+  memberName:"",
+  role:"Member",
+  createdAt:Date.now(),
+  questDay:"",
+  dailyQuestIds:[]
+ };
+}
+
+function normalizeState(raw){
+ const d=freshState();
+ const s=raw&&typeof raw==="object"?raw:{};
+ const g=Object.assign({},d,s);
+
+ g.name=text(s.name,"");
+ g.race=RACES[s.race]?s.race:"Human";
+ g.class=CLASSES[s.class]?s.class:"Warrior";
+ g.level=Math.max(1,int(s.level,1));
+ g.xp=pos(s.xp,0);
+ g.gold=pos(s.gold,500);
+ g.hp=pos(s.hp,100);
+ g.mp=pos(s.mp,50);
+ g.statPoints=Math.max(0,int(s.statPoints,6));
+ g.rebirth=Math.max(0,int(s.rebirth,0));
+ g.rebirthPoints=Math.max(0,int(s.rebirthPoints,0));
+ g.reputation=Math.max(0,int(s.reputation,s.rep));
+ g.rank=text(s.rank,"F");
+
+ if(!s.stats||typeof s.stats!=="object")s.stats={};
+ g.stats={
+  str:Math.max(1,int(s.stats.str,10)),
+  int:Math.max(1,int(s.stats.int,10)),
+  vit:Math.max(1,int(s.stats.vit,10)),
+  agi:Math.max(1,int(s.stats.agi,10)),
+  luck:Math.max(0,int(s.stats.luck,5))
+ };
+
+ if(!s.inventory||Array.isArray(s.inventory)) {
+   const old={};
+   if(Array.isArray(s.inventory)){
+    s.inventory.forEach(function(it){
+      if(it&&it.name){
+       const found=Object.keys(ITEMS).find(function(id){return ITEMS[id].name===it.name});
+       if(found)old[found]=Math.max(0,int(it.qty||it.amount,1));
+      }
+    });
+   }
+   g.inventory=Object.keys(old).length?old:Object.assign({},d.inventory);
+ }else{
+   g.inventory={};
+   Object.keys(s.inventory).forEach(function(id){
+     if(ITEMS[id])g.inventory[id]=Math.max(0,int(s.inventory[id],0));
+   });
+   if(!Object.keys(g.inventory).length)g.inventory=Object.assign({},d.inventory);
+ }
+
+ if(!s.equipment||typeof s.equipment!=="object")g.equipment=Object.assign({},d.equipment);
+ else{
+  g.equipment={
+   weapon:ITEMS[s.equipment.weapon]?s.equipment.weapon:(ITEMS[findItemIdByName(s.equipment.weapon)]?findItemIdByName(s.equipment.weapon):"weapon_0"),
+   armor:ITEMS[s.equipment.armor]?s.equipment.armor:(ITEMS[findItemIdByName(s.equipment.armor)]?findItemIdByName(s.equipment.armor):"armor_0"),
+   accessory:ITEMS[s.equipment.accessory]?s.equipment.accessory:null
+  };
+ }
+
+ g.completed=Array.isArray(s.completed)?s.completed:[];
+ g.unlockedSkills=Array.isArray(s.unlockedSkills)?s.unlockedSkills:[];
+ g.equippedSkills=Array.isArray(s.equippedSkills)?s.equippedSkills:[];
+ g.achievements=Array.isArray(s.achievements)?s.achievements:[];
+ g.titles=Array.isArray(s.titles)?s.titles:[];
+ g.logs=Array.isArray(s.logs)?s.logs.slice(0,40):d.logs;
+ g.locationsVisited=Array.isArray(s.locationsVisited)&&s.locationsVisited.length?s.locationsVisited:["astera"];
+ g.custom=Array.isArray(s.custom)?s.custom:[];
+ g.buffs=Array.isArray(s.buffs)?s.buffs:[];
+ g.questProgress=s.questProgress&&typeof s.questProgress==="object"?s.questProgress:{};
+ g.activeQuest=s.activeQuest||null;
+ g.questDay=text(s.questDay,"");
+ g.dailyQuestIds=Array.isArray(s.dailyQuestIds)?s.dailyQuestIds:[];
+ g.combat=null;
+
+ if(!g.unlockedSkills.length){
+   g.unlockedSkills=getClassSkills(g.class).slice(0,2);
+ }
+ if(!g.equippedSkills.length){
+   g.equippedSkills=g.unlockedSkills.slice(0,4);
+ }
+
+ recalc();
+ updateRank();
+ return g;
+}
+
+function findItemIdByName(name){
+ const n=text(name,"");
+ return Object.keys(ITEMS).find(function(id){return ITEMS[id].name===n})||null;
+}
+
+let state=loadState();
+let soundOn=true;
+let audioCtx=null;
+let toastTimer=null;
+let battleTimer=null;
+
+/* ---------- SAVE / LOAD ---------- */
+
+function loadState(){
+ try{
+  const raw=localStorage.getItem(SAVE_KEY);
+  if(raw)return normalizeState(JSON.parse(raw));
+  return normalizeState(null);
+ }catch(e){
+  return normalizeState(null);
+ }
+}
+
+function save(){
+ try{
+  localStorage.setItem(SAVE_KEY,JSON.stringify(state));
+ }catch(e){}
+ updateTop();
+}
+
+function resetSave(){
+ try{localStorage.removeItem(SAVE_KEY)}catch(e){}
+ location.reload();
+}
+
+/* ---------- AUDIO ---------- */
+
+function beep(freq=440,dur=.08,type="sine"){
+ if(!soundOn)return;
+ try{
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC)return;
+  audioCtx=audioCtx||new AC();
+  if(audioCtx.state==="suspended")audioCtx.resume();
+  const o=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+  o.type=type;
+  o.frequency.value=freq;
+  gain.gain.value=.035;
+  o.connect(gain);
+  gain.connect(audioCtx.destination);
+  o.start();
+  gain.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+dur);
+  o.stop(audioCtx.currentTime+dur);
+ }catch(e){}
+}
+function sfx(kind){
+ if(kind==="hit")beep(120,.08,"sawtooth");
+ else if(kind==="crit"){beep(520,.07);setTimeout(function(){beep(760,.1)},60)}
+ else if(kind==="win"){[440,560,680].forEach(function(f,i){setTimeout(function(){beep(f,.1)},i*90)})}
+ else if(kind==="level"){[500,650,820].forEach(function(f,i){setTimeout(function(){beep(f,.12)},i*100)})}
+ else if(kind==="quest"){beep(650,.08);setTimeout(function(){beep(900,.12)},80)}
+ else beep(300,.05);
+}
+function toggleSound(){
+ soundOn=!soundOn;
+ const b=$("soundBtn");
+ if(b)b.textContent=soundOn?"🔊":"🔇";
+ if(soundOn)beep(700,.1);
+}
+
+/* ---------- NOTIFICATION ---------- */
+
+function toast(msg){
+ const t=$("toast");
+ if(!t)return;
+ t.textContent=text(msg);
+ t.style.display="block";
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(function(){t.style.display="none"},2200);
+}
+function log(msg){
+ state.logs.unshift(text(msg));
+ state.logs=state.logs.slice(0,40);
+ save();
+}
+
+/* ---------- STATS ---------- */
+
+function getClassSkills(cls){
+ return (SKILLS[cls]||[]).map(function(s){return s.id});
+}
+
+function recalc(){
+ const r=RACES[state.race]||RACES.Human;
+ const c=CLASSES[state.class]||CLASSES.Warrior;
+ const w=ITEMS[state.equipment.weapon]||{};
+ const a=ITEMS[state.equipment.armor]||{};
+ const ac=ITEMS[state.equipment.accessory]||{};
+
+ state.stats.maxHp=
+   r.hp+c.hp+
+   state.stats.vit*14+
+   (state.level-1)*18+
+   state.rebirth*40+
+   num(a.hp,0);
+
+ state.stats.maxMp=
+   r.mp+c.mp+
+   state.stats.int*8+
+   (state.level-1)*7+
+   num(ac.mana,0);
+
+ state.stats.atk=
+   r.str+c.str+
+   state.stats.str*3+
+   state.stats.int*1.4+
+   (state.level-1)*3+
+   num(w.atk,0)+
+   num(ac.atk,0)+
+   state.rebirth*4;
+
+ state.stats.def=
+   r.vit+c.vit+
+   state.stats.vit*2.2+
+   (state.level-1)*2+
+   num(a.def,0)+
+   state.rebirth*2;
+
+ state.stats.spd=
+   r.agi+c.agi+
+   state.stats.agi+
+   Math.floor((state.level-1)/2);
+
+ state.stats.luck=
+   r.luck+c.luck+
+   state.stats.luck+
+   num(ac.luck,0)+
+   state.rebirth;
+
+ state.stats.maxHp=Math.max(1,Math.floor(state.stats.maxHp));
+ state.stats.maxMp=Math.max(1,Math.floor(state.stats.maxMp));
+ state.stats.atk=Math.max(1,Math.floor(state.stats.atk));
+ state.stats.def=Math.max(0,Math.floor(state.stats.def));
+ state.stats.spd=Math.max(1,Math.floor(state.stats.spd));
+ state.stats.luck=Math.max(0,Math.floor(state.stats.luck));
+
+ state.hp=clamp(state.hp,state.hp<=0?0:1,state.stats.maxHp);
+ state.mp=clamp(state.mp,0,state.stats.maxMp);
+
+ if(state.started&&state.hp<=0)state.hp=Math.min(state.stats.maxHp,1);
+}
+
+function xpNeed(){
+ return Math.floor(120+state.level*90+state.level*state.level*16);
+}
+
+function gainXP(amount){
+ let n=pos(amount);
+ if(n<=0)return;
+ state.xp+=n;
+ let leveled=0;
+ while(state.xp>=xpNeed()&&state.level<100){
+  state.xp-=xpNeed();
+  state.level++;
+  state.statPoints+=6;
+  leveled++;
+  recalc();
+  state.hp=state.stats.maxHp;
+  state.mp=state.stats.maxMp;
+  state.unlockedSkills=unlockSkillsForLevel(state.unlockedSkills);
+ }
+ if(leveled){
+  updateRank();
+  toast("✨ LEVEL UP! Lv "+state.level+" • +"+(leveled*6)+" Stat Points");
+  sfx("level");
+  log("Naik level ke "+state.level+". Mendapat "+(leveled*6)+" Stat Points.");
+ }
+ save();
+}
+
+function unlockSkillsForLevel(current){
+ const all=getClassSkills(state.class);
+ const out=Array.isArray(current)?current.slice():[];
+ all.forEach(function(id,i){
+  const need=i===0?1:i===1?3:i===2?8:15;
+  if(state.level>=need&&!out.includes(id))out.push(id);
+ });
+ return out;
+}
+
+function addStat(stat){
+ if(state.statPoints<=0)return;
+ if(!["str","int","vit","agi","luck"].includes(stat))return;
+ state.stats[stat]++;
+ state.statPoints--;
+ recalc();
+ save();
+ render("status");
+ toast("Stat "+stat.toUpperCase()+" +1");
+}
+
+function updateRank(){
+ const r=pos(state.reputation);
+ state.rank=r>=1800?"S+":r>=1200?"S":r>=800?"A":r>=500?"B":r>=300?"C":r>=160?"D":r>=70?"E":"F";
+}
+
+/* ---------- BUFFS ---------- */
+
+function buffValue(key){
+ let total=0;
+ state.buffs.forEach(function(b){
+  if(b.key===key)total+=num(b.value);
+ });
+ return total;
+}
+function addBuff(key,value,battles){
+ state.buffs.push({key:key,value:num(value),battles:Math.max(1,int(battles,1))});
+ toast("Efek aktif: "+key+" +"+value);
+}
+function consumeBattleBuffs(){
+ state.buffs=state.buffs.map(function(b){
+  return Object.assign({},b,{battles:int(b.battles)-1});
+ }).filter(function(b){return b.battles>0});
+}
+
+/* ---------- INVENTORY ---------- */
+
+function itemQty(id){
+ return Math.max(0,int(state.inventory[id],0));
+}
+function addItem(id,qty){
+ if(!ITEMS[id])return;
+ const q=Math.max(0,int(qty));
+ if(q<=0)return;
+ state.inventory[id]=itemQty(id)+q;
+ state.materialsGathered+=ITEMS[id].type==="Material"?q:0;
+}
+function removeItem(id,qty){
+ const q=Math.max(0,int(qty));
+ if(itemQty(id)<q)return false;
+ state.inventory[id]=itemQty(id)-q;
+ if(state.inventory[id]<=0)delete state.inventory[id];
+ return true;
+}
+
+/* ---------- QUESTS ---------- */
+
+function dayKey(){
+ const d=new Date();
+ return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+}
+
+function buildDailyQuests(){
+ const key=dayKey();
+ if(state.questDay===key&&state.dailyQuestIds.length)return;
+ state.questDay=key;
+ state.dailyQuestIds=[];
+ const shuffled=QUEST_TEMPLATES.slice().sort(function(){return Math.random()-.5});
+ shuffled.slice(0,8).forEach(function(t,i){
+  const q={
+   id:"daily_"+key+"_"+i,
+   type:t[0],
+   name:t[1],
+   desc:t[2],
+   level:1+Math.floor(Math.random()*Math.max(1,state.level)),
+   rep:Math.max(0,t[8]),
+   xp:t[6],
+   gold:t[7],
+   repReward:t[8],
+   goal:{kind:t[3],value:t[4],amount:t[5]}
+  };
+  quests.push(q);
+  state.dailyQuestIds.push(q.id);
+ });
+ save();
+}
+
+function refreshQuestList(){
+ quests=STATIC_QUESTS.slice();
+ buildDailyQuests();
+ const daily=state.dailyQuestIds.map(function(id){
+  return quests.find(function(q){return q.id===id});
+ }).filter(Boolean);
+ quests=STATIC_QUESTS.concat(daily);
+}
+
+function questCompleted(id){
+ return state.completed.includes(id);
+}
+
+function questProgress(q){
+ if(!q||!q.goal)return 0;
+ const g=q.goal;
+ if(g.kind==="kills")return state.kills;
+ if(g.kind==="killsMonster")return int(state.questProgress["kill_"+g.value],0);
+ if(g.kind==="boss")return int(state.questProgress["boss_"+g.value],0);
+ if(g.kind==="item")return itemQty(g.value);
+ if(g.kind==="craft")return int(state.questProgress["craft_"+g.value],0);
+ if(g.kind==="locations")return state.locationsVisited.length;
+ if(g.kind==="arena")return state.arenaWins;
+ if(g.kind==="dungeonKills")return state.dungeonKills;
+ if(g.kind==="visit")return state.locationsVisited.includes(g.value)?1:0;
+ if(g.kind==="materials")return state.materialsGathered;
+ if(g.kind==="goldEarned")return state.goldEarned;
+ return 0;
+}
+
+function questReady(q){
+ if(!q)return false;
+ if(questCompleted(q.id))return false;
+ if(state.level<pos(q.level,1))return false;
+ if(state.reputation<pos(q.rep,0))return false;
+ return true;
+}
+
+function acceptQuest(id){
+ const q=quests.find(function(x){return x.id===id});
+ if(!q||!questReady(q))return;
+ if(state.activeQuest&&state.activeQuest!==id){
+  toast("Selesaikan quest aktif terlebih dahulu.");
+  return;
+ }
+ state.activeQuest=id;
+ log("Quest diterima: "+q.name);
+ save();
+ sfx("quest");
+ toast("📜 Quest diterima!");
+ render("quests");
+}
+
+function checkQuest(){
+ const q=quests.find(function(x){return x.id===state.activeQuest});
+ if(!q)return;
+ const amount=questProgress(q);
+ const target=q.goal&&q.goal.amount?q.goal.amount:(q.goal&&q.goal.value&&typeof q.goal.value==="number"?q.goal.value:1);
+ if(amount>=target)finishQuest(q);
+ else toast("Progress: "+amount+"/"+target);
+}
+
+function finishQuest(q){
+ if(!q||questCompleted(q.id))return;
+ state.completed.push(q.id);
+ state.activeQuest=null;
+ state.gold+=pos(q.gold);
+ state.goldEarned+=pos(q.gold);
+ state.reputation+=pos(q.repReward);
+ gainXP(q.xp);
+ updateRank();
+ grantAchievement("quest_"+q.type,"Quest "+q.type,"Menyelesaikan quest kategori "+q.type+".");
+ log("Quest selesai: "+q.name+" • +"+money(q.xp)+" EXP • +"+money(q.gold)+" Gold • +"+q.repReward+" REP");
+ toast("🏆 Quest selesai! +"+money(q.xp)+" EXP • +"+money(q.gold)+" Gold");
+ sfx("quest");
+ save();
+}
+
+/* ---------- ACHIEVEMENTS ---------- */
+
+const ACHIEVEMENTS=[
+ ["firstblood","First Blood","Kalahkan monster pertama.",function(){return state.kills>=1}],
+ ["hunter10","Monster Hunter","Kalahkan 10 monster.",function(){return state.kills>=10}],
+ ["hunter50","Veteran Hunter","Kalahkan 50 monster.",function(){return state.kills>=50}],
+ ["explorer10","Explorer","Kunjungi 10 lokasi.",function(){return state.locationsVisited.length>=10}],
+ ["explorer20","World Walker","Kunjungi 20 lokasi.",function(){return state.locationsVisited.length>=20}],
+ ["rich","Coin Collector","Miliki 10.000 Gold.",function(){return state.gold>=10000}],
+ ["arena","Arena Fighter","Menang 1 Arena.",function(){return state.arenaWins>=1}],
+ ["arena10","Arena Veteran","Menang 10 Arena.",function(){return state.arenaWins>=10}],
+ ["craft","Crafter","Craft 10 item.",function(){return state.crafts>=10}],
+ ["boss","Boss Slayer","Kalahkan boss.",function(){return state.bossKills>=1}],
+ ["rebirth","Reborn","Lakukan Rebirth.",function(){return state.rebirth>=1}],
+ ["abyss","Abyss Walker","Kalahkan Abyss Guardian.",function(){return int(state.questProgress["boss_abyssguardian"],0)>=1}]
+];
+
+function grantAchievement(id,name,condition){
+ if(state.achievements.includes(id))return;
+ state.achievements.push(id);
+ state.titles.push(name);
+ toast("🏅 Achievement: "+name);
+ log("Achievement diperoleh: "+name);
+}
+
+function checkAchievements(){
+ ACHIEVEMENTS.forEach(function(a){
+  if(!state.achievements.includes(a[0])&&a[3]())grantAchievement(a[0],a[1],a[2]);
+ });
+}
+
+/* ---------- TRAVEL ---------- */
+
+function getPlace(id){
+ return WORLD.find(function(p){return p.id===id})||WORLD[0];
+}
+
+function travel(id){
+ const p=getPlace(id);
+ if(!p)return;
+
+ if(state.level<p.level){
+  toast("🔒 Lokasi ini membutuhkan Level "+p.level+".");
+  return;
+ }
+ if(state.reputation<p.rep){
+  toast("🔒 Reputation minimal "+p.rep+".");
+  return;
+ }
+ if(state.location===id){
+  toast("Kamu sudah berada di "+p.name+".");
+  return;
+ }
+ if(state.gold<p.cost){
+  toast("Gold tidak cukup. Travel membutuhkan 🪙 "+money(p.cost)+".");
+  return;
+ }
+
+ state.gold-=p.cost;
+ state.location=id;
+
+ if(!state.locationsVisited.includes(id))state.locationsVisited.push(id);
+ state.questProgress["visit_"+id]=1;
+
+ log("Berjalan menuju "+p.name+" • biaya "+money(p.cost)+" Gold.");
+ toast("📍 Tiba di "+p.name);
+ save();
+ render("world");
+
+ if(["forest","swamp","oldgraveyard","ashencanyon","elvenwood"].includes(id)){
+  setTimeout(function(){startEncounter(false)},250);
+ }
+}
+
+/* ---------- GATHERING ---------- */
+
+const GATHER=[
+ {id:"forage",name:"Forage Forest",icon:"🌿",place:["forest","elvenwood"],desc:"Mencari herbal, kayu dan material alam.",pool:["mat_1","mat_2","mat_4","mat_5","mat_6","mat_7","mat_8","mat_16","mat_17","mat_18"],gold:0},
+ {id:"hunt",name:"Hunting",icon:"🏹",place:["forest","huntercamp","merchantroad"],desc:"Berburu monster kecil dan mendapatkan daging/fur.",pool:["mat_9","mat_10","mat_11","mat_12","mat_13","mat_14","mat_15"],gold:20},
+ {id:"mine",name:"Mining",icon:"⛏️",place:["ironmine","crystalcave","dwarfhold"],desc:"Menambang ore, crystal dan gem.",pool:["mat_21","mat_22","mat_23","mat_24","mat_25","mat_26","mat_27","mat_28","mat_29","mat_30","mat_31","mat_32","mat_33","mat_34","mat_35","mat_36","mat_37","mat_38","mat_39","mat_40"],gold:40},
+ {id:"fish",name:"Fishing",icon:"🎣",place:["silverlake","fisherwharf","deepsea"],desc:"Menangkap ikan dan material laut.",pool:["mat_61","mat_62","mat_63","mat_64","mat_65","mat_66","mat_67","mat_68","mat_69","mat_70","mat_71","mat_72","mat_73","mat_74","mat_75"],gold:35},
+ {id:"salvage",name:"Relic Salvage",icon:"🏺",place:["ruincathedral","oldgraveyard","ancientdungeon"],desc:"Mengambil relic dari reruntuhan.",pool:["mat_81","mat_82","mat_83","mat_84","mat_85","mat_86","mat_87","mat_88","mat_89","mat_90"],gold:60}
+];
+
+function gather(id){
+ const g=GATHER.find(function(x){return x.id===id});
+ if(!g)return;
+ if(!g.place.includes(state.location)){
+  toast("Aktivitas ini hanya tersedia di lokasi tertentu.");
+  return;
+ }
+
+ const amount=rand(2,5);
+ for(let i=0;i<amount;i++){
+  let item=pick(g.pool);
+  if(!ITEMS[item])continue;
+  let qty=1;
+  if(Math.random()<.18)qty++;
+  addItem(item,qty);
+  state.questProgress["gather_"+id]=int(state.questProgress["gather_"+id],0)+qty;
+ }
+ if(g.gold){
+  state.gold+=g.gold;
+  state.goldEarned+=g.gold;
+ }
+ log(g.name+" menghasilkan "+amount+" material.");
+ toast(g.icon+" Gathering berhasil! +"+amount+" material");
+ save();
+ render("world");
+}
+
+/* ---------- COMBAT ---------- */
+
+function monsterForLocation(){
+ const loc=state.location;
+ const candidates=MONSTERS.filter(function(m){
+  if(m.zone===loc)return true;
+  if(loc==="forest"&&["forest"].includes(m.zone))return true;
+  if(loc==="elvenwood"&&["forest","elvenwood"].includes(m.zone))return true;
+  if(loc==="swamp"&&m.zone==="swamp")return true;
+  if(loc==="ruincathedral"&&m.zone==="ruincathedral")return true;
+  if(loc==="ashencanyon"&&m.zone==="ashencanyon")return true;
+  if(loc==="oldgraveyard"&&m.zone==="oldgraveyard")return true;
+  if(loc==="crystalcave"&&m.zone==="crystalcave")return true;
+  if(loc==="dragonvalley"&&m.zone==="dragonvalley")return true;
+  return false;
+ });
+ if(candidates.length)return pick(candidates);
+ const available=MONSTERS.filter(function(m){return m.rec<=state.level+5&&!m.boss});
+ return pick(available.length?available:MONSTERS.slice(0,3));
+}
+
+function startEncounter(forceBoss){
+ if(state.combat)return;
+ let e;
+ if(forceBoss)e=MONSTERS.find(function(m){return m.id===forceBoss})||MONSTERS[11];
+ else e=monsterForLocation();
+
+ const scaled=Math.max(1,state.level-e.rec);
+ const hp=Math.floor(e.hp*(1+Math.min(.25,scaled*.025)));
+ const atk=Math.floor(e.atk*(1+Math.min(.2,scaled*.02)));
+
+ state.combat={
+  enemy:Object.assign({},e,{hp:hp,maxHp:hp,atk:atk,def:e.def}),
+  arena:false,
+  dungeon:["abyssgate","ancientdungeon","voidrift"].includes(state.location),
+  boss:!!e.boss
+ };
+
+ log("Pertarungan dimulai melawan "+e.name+". Recommended Lv "+e.rec+".");
+ save();
+ render("combat");
+ beep(90,.16,"sawtooth");
+}
+
+function startBoss(id){
+ const m=MONSTERS.find(function(x){return x.id===id});
+ if(!m)return;
+ if(state.level<m.rec){
+  toast("Boss membutuhkan Level "+m.rec+".");
+  return;
+ }
+ startEncounter(id);
+}
+
+function startArena(){
+ if(state.level<3){
+  toast("Royal Arena terbuka mulai Lv 3.");
+  return;
+ }
+ if(state.gold<100){
+  toast("Biaya masuk Arena 🪙 100 Gold.");
+  return;
+ }
+ state.gold-=100;
+
+ const scale=1+Math.min(.8,state.level*.035);
+ const hp=Math.floor((220+state.level*55)*scale);
+ const e={
+  id:"arena",
+  name:"Arena Challenger",
+  icon:"⚔️",
+  rec:Math.max(3,state.level),
+  hp:hp,
+  maxHp:hp,
+  atk:Math.floor((state.stats.atk*.72+state.stats.def*.35)),
+  def:Math.floor(state.stats.def*.65),
+  xp:Math.floor(500+state.level*130),
+  gold:Math.floor(300+state.level*80),
+  drops:[]
+ };
+
+ state.combat={enemy:e,arena:true,dungeon:false,boss:false};
+ log("Duel Royal Arena dimulai. Biaya masuk 100 Gold.");
+ save();
+ render("combat");
+}
+
+function playerDamage(skill){
+ let base=state.stats.atk+rand(0,Math.max(5,Math.floor(state.stats.atk*.12)));
+ let critChance=.06+state.stats.luck/500+buffValue("crit")/100;
+ let crit=Math.random()<critChance;
+
+ if(skill){
+  base*=num(skill.mul,1);
+  crit=crit||Math.random()<num(skill.crit,0);
+ }
+ base+=buffValue("atk");
+ if(Math.random()<.04)base*=1.15;
+ if(crit)base*=1.7;
+
+ return {damage:Math.max(1,Math.floor(base)),crit:crit};
+}
+
+function attack(skillId){
+ if(!state.combat)return;
+
+ const c=state.combat;
+ const e=c.enemy;
+ let skill=null;
+
+ if(skillId){
+  skill=(SKILLS[state.class]||[]).find(function(s){return s.id===skillId});
+  if(!skill)return;
+  if(!state.unlockedSkills.includes(skill.id)){
+   toast("Skill belum terbuka.");
+   return;
+  }
+  if(state.mp<skill.cost){
+   toast("MP tidak cukup.");
+   return;
+  }
+  state.mp-=skill.cost;
+ }
+
+ const result=playerDamage(skill);
+ let damage=Math.max(1,result.damage-Math.floor(num(e.def)*.55));
+ e.hp=Math.max(0,e.hp-damage);
+
+ if(skill&&skill.heal){
+  state.hp=Math.min(state.stats.maxHp,state.hp+Math.floor(state.stats.maxHp*skill.heal));
+ }
+ if(skill&&skill.defdown)e.def=Math.max(0,e.def-skill.defdown);
+
+ sfx(result.crit?"crit":"hit");
+ toast((result.crit?"💥 CRITICAL! ":"")+"-"+money(damage)+" damage");
+
+ if(e.hp<=0){
+  winBattle();
+  return;
+ }
+
+ save();
+ render("combat");
+
+ clearTimeout(battleTimer);
+ battleTimer=setTimeout(enemyTurn,500);
+}
+
+function enemyTurn(){
+ if(!state.combat)return;
+
+ const e=state.combat.enemy;
+ const reduction=Math.floor(state.stats.def*.38);
+ const damage=Math.max(1,e.atk+rand(0,Math.max(3,Math.floor(e.atk*.1)))-reduction);
+
+ state.hp-=damage;
+ sfx("hit");
+ log(e.name+" menyerang. Kamu menerima "+damage+" damage.");
+
+ if(state.hp<=0){
+  defeatBattle();
+  return;
+ }
+
+ save();
+ render("combat");
+}
+
+function winBattle(){
+ const c=state.combat;
+ if(!c)return;
+ const e=c.enemy;
+
+ let xp=pos(e.xp);
+ let gold=pos(e.gold);
+
+ if(c.arena){
+  xp=Math.floor(xp*(1+state.rebirth*.05));
+  gold=Math.floor(gold*(1+state.rebirth*.05));
+  state.arenaWins++;
+ }else{
+  state.kills++;
+  if(e.boss)state.bossKills++;
+  state.questProgress["kill_"+e.id]=int(state.questProgress["kill_"+e.id],0)+1;
+  state.questProgress["boss_"+e.id]=int(state.questProgress["boss_"+e.id],0)+(e.boss?1:0);
+  if(c.dungeon)state.dungeonKills++;
+ }
+
+ state.gold+=gold;
+ state.goldEarned+=gold;
+
+ gainXP(xp);
+
+ const drops=[];
+ (e.drops||[]).forEach(function(name){
+  const id=findItemIdByName(name);
+  if(id&&Math.random()<.72){
+   addItem(id,1);
+   drops.push(ITEMS[id].name+" x1");
+  }
+ });
+
+ if(c.arena){
+  const tokenId="arena_token";
+  if(!ITEMS[tokenId])addItemDefArenaToken();
+  addItem(tokenId,rand(1,3));
+  drops.push("Arena Token x"+rand(1,3));
+ }
+
+ state.combat=null;
+ consumeBattleBuffs();
+
+ const dropText=drops.length?drops.join(", "):"Tidak ada drop tambahan.";
+
+ log("MENANG melawan "+e.name+" • +"+money(xp)+" EXP • +"+money(gold)+" Gold • Drop: "+dropText);
+
+ checkQuestAuto();
+ checkAchievements();
+
+ sfx("win");
+ save();
+ showRewardModal(e,xp,gold,drops);
+}
+
+function addItemDefArenaToken(){
+ addItem("arena_token",0);
+ if(!ITEMS.arena_token){
+  addItemDef();
+ }
+}
+
+function addItemDef(){
+ addItem("arena_token",0);
+}
+
+/* Ensure arena token exists */
+addItem("arena_token",0);
+if(!ITEMS.arena_token){
+ addItem=function(id,qty){
+  if(id==="arena_token"&&!ITEMS.arena_token){
+   ITEMS.arena_token={id:"arena_token",name:"Arena Token",icon:"🏆",type:"Currency",rarity:"Rare",price:0,desc:"Token hadiah Arena."};
+  }
+  if(!ITEMS[id])return;
+  const q=Math.max(0,int(qty));
+  if(q<=0)return;
+  state.inventory[id]=itemQty(id)+q;
+  if(ITEMS[id].type==="Material")state.materialsGathered+=q;
+ };
+}
+
+function defeatBattle(){
+ const lost=Math.min(state.gold,Math.floor(state.gold*.06));
+ state.gold-=lost;
+ state.hp=Math.max(1,Math.floor(state.stats.maxHp*.35));
+ state.mp=Math.max(0,Math.floor(state.stats.maxMp*.35));
+ state.location="astera";
+ state.combat=null;
+ log("Kamu kalah. Kehilangan "+money(lost)+" Gold dan kembali ke Astera.");
+ toast("💀 Kalah. -"+money(lost)+" Gold.");
+ save();
+ render("home");
+}
+
+function checkQuestAuto(){
+ if(!state.activeQuest)return;
+ const q=quests.find(function(x){return x.id===state.activeQuest});
+ if(!q)return;
+ const target=q.goal&&q.goal.amount?q.goal.amount:1;
+ if(questProgress(q)>=target)finishQuest(q);
+}
+
+function battlePotion(){
+ if(!state.combat){
+  toast("Tidak sedang bertarung.");
+  return;
+ }
+ const choices=["mega_potion","large_potion","medium_potion","small_potion"];
+ const id=choices.find(function(x){return itemQty(x)>0});
+ if(!id){
+  toast("Tidak ada Potion.");
+  return;
+ }
+ useItem(id,true);
+ if(state.combat)setTimeout(enemyTurn,350);
+}
+
+function flee(){
+ if(!state.combat)return;
+ if(state.combat.arena){
+  toast("Tidak bisa kabur dari Arena.");
+  return;
+ }
+ state.combat=null;
+ log("Kamu berhasil meninggalkan pertarungan.");
+ save();
+ render("world");
+}
+
+/* ---------- ITEM USE ---------- */
+
+function useItem(id,inBattle){
+ const it=ITEMS[id];
+ if(!it||itemQty(id)<=0)return;
+
+ if(it.type==="Consumable"){
+  if(it.heal){
+   state.hp=Math.min(state.stats.maxHp,state.hp+it.heal);
+  }
+  if(it.mana){
+   state.mp=Math.min(state.stats.maxMp,state.mp+it.mana);
+  }
+  if(it.revive&&state.hp>0){
+   toast("Revival Feather hanya digunakan saat kalah.");
+   return;
+  }
+  removeItem(id,1);
+  toast(it.name+" digunakan.");
+  log("Menggunakan "+it.name+".");
+  save();
+  if(inBattle)render("combat");else render("inventory");
+  return;
+ }
+
+ if(it.type==="Food"){
+  removeItem(id,1);
+  if(id==="bread")state.hp=Math.min(state.stats.maxHp,state.hp+90);
+  if(id==="meat")addBuff("atk",5,3);
+  if(id==="fishmeal")addBuff("spd",5,3);
+  if(id==="manaTea")addBuff("mp",40,3);
+  if(id==="royalMeal"){state.hp=state.stats.maxHp;state.mp=state.stats.maxMp;addBuff("luck",5,3)}
+  if(id==="dwarfAle")addBuff("def",8,3);
+  if(id==="fairyCake")addBuff("crit",8,3);
+  log("Menikmati "+it.name+".");
+  save();
+  render("inventory");
+ }
+}
+
+/* ---------- SHOPS ---------- */
+
+function buyItem(id){
+ const it=ITEMS[id];
+ if(!it)return;
+ const price=Math.max(1,int(it.price));
+ if(state.gold<price){
+  toast("Gold tidak cukup.");
+  return;
+ }
+ state.gold-=price;
+ addItem(id,1);
+ state.goldEarned+=0;
+ log("Membeli "+it.name+" seharga "+money(price)+" Gold.");
+ toast("🛒 "+it.name+" dibeli.");
+ save();
+ render("market");
+}
+
+function buyWeapon(id){
+ const it=ITEMS[id];
+ if(!it||it.type!=="Weapon")return;
+ buyItem(id);
+}
+
+function repairEquipment(){
+ const w=ITEMS[state.equipment.weapon]||{};
+ const a=ITEMS[state.equipment.armor]||{};
+ const cost=40;
+ if(state.gold<cost){
+  toast("Repair membutuhkan "+money(cost)+" Gold.");
+  return;
+ }
+ state.gold-=cost;
+ w.durability=100;
+ a.durability=100;
+ toast("🔨 Equipment diperbaiki.");
+ log("Equipment diperbaiki seharga "+money(cost)+" Gold.");
+ save();
+ render("blacksmith");
+}
+
+function upgradeWeapon(){
+ const id=state.equipment.weapon;
+ const w=ITEMS[id];
+ if(!w)return;
+ const current=num(w.atk);
+ const cost=Math.floor(180+current*35);
+ const mat="mat_21";
+ if(state.gold<cost){
+  toast("Gold kurang: "+money(cost));
+  return;
+ }
+ if(itemQty(mat)<3){
+  toast("Butuh 3 Iron Ore.");
+  return;
+ }
+ state.gold-=cost;
+ removeItem(mat,3);
+ w.atk=current+3;
+ toast("⚒️ "+w.name+" naik ATK +3!");
+ log("Upgrade "+w.name+" berhasil.");
+ recalc();
+ save();
+ render("blacksmith");
+}
+
+/* ---------- CRAFT ---------- */
+
+function canCraft(r){
+ if(state.gold<r.cost)return false;
+ return Object.keys(r.mats).every(function(id){return itemQty(id)>=r.mats[id]});
+}
+
+function craft(id){
+ const r=RECIPES.find(function(x){return x.id===id});
+ if(!r)return;
+ if(!canCraft(r)){
+  toast("Material atau Gold tidak cukup.");
+  return;
+ }
+ state.gold-=r.cost;
+ Object.keys(r.mats).forEach(function(mid){removeItem(mid,r.mats[mid])});
+ addItem(r.result,r.qty);
+ state.crafts++;
+ state.questProgress["craft_"+r.result]=int(state.questProgress["craft_"+r.result],0)+r.qty;
+ log("Craft "+r.name+" berhasil.");
+ toast("🔧 Craft berhasil: "+r.name);
+ checkQuestAuto();
+ save();
+ render("craft");
+}
+
+/* ---------- TAVERN ---------- */
+
+function rest(){
+ const cost=35;
+ if(state.gold<cost){
+  toast("Istirahat membutuhkan "+money(cost)+" Gold.");
+  return;
+ }
+ state.gold-=cost;
+ state.hp=state.stats.maxHp;
+ state.mp=state.stats.maxMp;
+ toast("🌙 HP & MP pulih.");
+ log("Beristirahat di Moonlit Tavern.");
+ save();
+ render("tavern");
+}
+
+/* ---------- REBIRTH ---------- */
+
+function rebirth(){
+ const need=30;
+ if(state.level<need){
+  toast("Rebirth membutuhkan Level "+need+".");
+  return;
+ }
+ if(!confirm("Rebirth akan mereset Level, EXP, quest progress dan sebagian progression. Lanjutkan?"))return;
+
+ state.rebirth++;
+ state.rebirthPoints+=5;
+ state.level=1;
+ state.xp=0;
+ state.statPoints=6;
+ state.reputation=Math.floor(state.reputation*.35);
+ state.completed=[];
+ state.activeQuest=null;
+ state.questProgress={};
+ state.kills=0;
+ state.bossKills=0;
+ state.arenaWins=0;
+ state.dungeonKills=0;
+ state.locationsVisited=["astera"];
+ state.location="astera";
+ state.gold=Math.max(500,Math.floor(state.gold*.55));
+ state.stats={str:10,int:10,vit:10,agi:10,luck:5};
+ state.unlockedSkills=getClassSkills(state.class).slice(0,2);
+ state.equippedSkills=state.unlockedSkills.slice(0,4);
+ recalc();
+ state.hp=state.stats.maxHp;
+ state.mp=state.stats.maxMp;
+ updateRank();
+ log("REBIRTH "+state.rebirth+" berhasil. +5 Rebirth Points.");
+ toast("♻️ REBIRTH BERHASIL! +5 Rebirth Points");
+ sfx("level");
+ save();
+ render("status");
+}
+
+/* ---------- MEMBER CREATOR ---------- */
+
+function balanceScore(type,power,def){
+ let score=50+num(power)*1.8+num(def)*1.1;
+ if(type==="Skill")score+=10;
+ if(type==="Race")score+=8;
+ if(type==="Weapon")score+=8;
+ return Math.max(0,Math.min(150,Math.round(score)));
+}
+
+function submitCustom(){
+ const name=text($("customName")?.value,"").trim();
+ if(!name){
+  toast("Nama konten wajib diisi.");
+  return;
+ }
+ const type=$("customType")?.value||"Skill";
+ const power=num($("customPower")?.value,0);
+ const def=num($("customDef")?.value,0);
+ const desc=text($("customDesc")?.value,"").trim();
+ const score=balanceScore(type,power,def);
+ state.custom.push({
+  id:Date.now(),
+  name:name,
+  type:type,
+  power:power,
+  def:def,
+  desc:desc,
+  score:score,
+  status:"Pending",
+  by:state.name
+ });
+ save();
+ toast("📨 Content dikirim ke Owner.");
+ render("creator");
+}
+
+function moderate(i,status){
+ if(!state.custom[i])return;
+ state.custom[i].status=status;
+ save();
+ toast(status==="Approved"?"✅ Content Approved":"❌ Content Rejected");
+ render("owner");
+}
+
+/* ---------- UI ---------- */
+
+function updateTop(){
+ const top=$("topbar");
+ if(!top)return;
+ top.classList.toggle("hidden",!state.started);
+ $("topLv").textContent=money(state.level);
+ $("topGold").textContent=money(state.gold);
+ $("topRank").textContent=text(state.rank,"F");
+}
+
+function nav(active){
+ const items=[
+  ["home","🏠","Home"],
+  ["world","🌌","World"],
+  ["quests","📜","Quest"],
+  ["status","📊","Status"],
+  ["inventory","🎒","Bag"],
+  ["skills","✨","Skills"],
+  ["more","☰","More"]
+ ];
+ return '<nav class="nav">'+items.map(function(x){
+  return '<button type="button" class="'+(active===x[0]?"active":"")+'" data-go="'+x[0]+'">'+x[1]+'<br>'+x[2]+'</button>';
+ }).join("")+'</nav>';
+}
+
+function render(screen){
+ refreshQuestList();
+ updateTop();
+
+ const app=$("app");
+ if(!state.started){
+  app.innerHTML=titleHTML();
+  bind();
+  return;
+ }
+
+ let html="";
+ if(screen==="home")html=homeHTML();
+ else if(screen==="world")html=worldHTML();
+ else if(screen==="quests")html=questsHTML();
+ else if(screen==="status")html=statusHTML();
+ else if(screen==="inventory")html=inventoryHTML();
+ else if(screen==="skills")html=skillsHTML();
+ else if(screen==="combat")html=combatHTML();
+ else if(screen==="more")html=moreHTML();
+ else if(screen==="market")html=marketHTML();
+ else if(screen==="blacksmith")html=blacksmithHTML();
+ else if(screen==="craft")html=craftHTML();
+ else if(screen==="tavern")html=tavernHTML();
+ else if(screen==="arena")html=arenaHTML();
+ else if(screen==="achievements")html=achievementsHTML();
+ else if(screen==="creator")html=creatorHTML();
+ else if(screen==="owner")html=ownerHTML();
+ else if(screen==="settings")html=settingsHTML();
+ else html=homeHTML();
+
+ app.innerHTML=html;
+ bind();
+ checkAchievements();
+ updateTop();
+}
+
+function titleHTML(){
+ return '<section class="titleScreen"><div style="width:100%;max-width:600px">'+
+ '<div class="sigil">✦</div>'+
+ '<div class="titleLogo">NEX<span>ORA</span></div>'+
+ '<div class="subtitle">OPEN WORLD • FANTASY • RPG • OFFLINE</div>'+
+ '<div class="card" style="text-align:left">'+
+ '<div class="eyebrow">THE WORLD AWAITS</div>'+
+ '<h2>Bangkitkan Takdirmu</h2>'+
+ '<p class="muted">Jelajahi kerajaan, hutan, laut, tambang, dungeon, arena dan wilayah rahasia. Bangun karakter dengan Race, Class, Stat Point, Skill, Equipment, Crafting dan Reputation.</p>'+
+ '<button class="btn" data-action="newGame">✦ MULAI PETUALANGAN</button>'+
+ '<button class="btn alt" data-action="continue">↻ LANJUTKAN SAVE</button>'+
+ '<p class="small" style="text-align:center;margin-top:12px">Created by <b>Kyy Arthev</b> — Creator & Owner</p>'+
+ '</div></div></section>';
+}
+
+function homeHTML(){
+ const need=xpNeed();
+ const pct=clamp(state.xp/need*100,0,100);
+ const active=quests.find(function(q){return q.id===state.activeQuest});
+ const p=getPlace(state.location);
+
+ return '<section class="hero">'+
+ '<div class="eyebrow">'+esc(p.name)+' • ADVENTURER</div>'+
+ '<h1>Selamat datang, '+esc(state.name||"Petualang")+'.</h1>'+
+ '<p class="muted">“Nama besar tidak diwariskan. Ia ditempa.”</p>'+
+ '<div class="grid3">'+
+ '<div class="card"><small>LEVEL</small><div class="big">'+money(state.level)+'</div></div>'+
+ '<div class="card"><small>GOLD</small><div class="big">🪙 '+money(state.gold)+'</div></div>'+
+ '<div class="card"><small>RANK</small><div class="big">'+esc(state.rank)+'</div></div>'+
+ '</div>'+
+ '<div style="margin-top:12px">'+
+ '<div class="statline"><span>EXP</span><b>'+money(state.xp)+' / '+money(need)+'</b></div>'+
+ '<div class="bar xp"><i style="width:'+pct+'%"></i></div></div>'+
+ '</section>'+
+ '<div class="grid">'+
+ '<div class="card"><div class="eyebrow">CHARACTER</div><h3>'+RACES[state.race].icon+' '+esc(state.race)+' • '+CLASSES[state.class].icon+' '+esc(state.class)+'</h3><p class="muted">HP '+money(state.hp)+'/'+money(state.stats.maxHp)+' • MP '+money(state.mp)+'/'+money(state.stats.maxMp)+'</p><button class="btn alt" data-go="status">📊 Buka Status</button></div>'+
+ '<div class="card"><div class="eyebrow">LOCATION</div><h3>'+p.icon+' '+esc(p.name)+'</h3><p class="muted">'+esc(p.desc)+'</p><button class="btn alt" data-go="world">🌌 Jelajahi World</button></div>'+
+ '</div>'+
+ '<div class="sectionTitle">📜 Quest Aktif</div>'+
+ '<div class="card quest '+(active?"active":"")+'">'+
+ (active?'<h3>'+esc(active.name)+'</h3><p class="muted">'+esc(active.desc)+'</p><button class="btn gold" data-action="checkQuest">🔎 Cek Progress</button>':'<p class="muted">Belum ada quest aktif. Buka Quest Board untuk mengambil kontrak.</p><button class="btn" data-go="quests">📜 Quest Board</button>')+
+ '</div>'+
+ '<div class="sectionTitle">🌙 Catatan Perjalanan</div>'+
+ '<div class="card log">'+state.logs.slice(0,8).map(function(x){return '<div>'+esc(x)+'</div>'}).join("")+'</div>'+
+ nav("home");
+}
+
+function statusHTML(){
+ const p=state.stats;
+ const points=state.statPoints;
+
+ return '<section class="hero">'+
+ '<div class="eyebrow">PLAYER PROFILE</div>'+
+ '<h1>'+esc(state.name||"Nameless")+'</h1>'+
+ '<p class="muted">'+RACES[state.race].icon+' '+esc(state.race)+' • '+CLASSES[state.class].icon+' '+esc(state.class)+' • Rank '+esc(state.rank)+'</p>'+
+ '<div class="grid3">'+
+ '<div class="card"><small>HP</small><div class="big">'+money(state.hp)+'/'+money(p.maxHp)+'</div></div>'+
+ '<div class="card"><small>MP</small><div class="big">'+money(state.mp)+'/'+money(p.maxMp)+'</div></div>'+
+ '<div class="card"><small>STAT POINT</small><div class="big">'+money(points)+'</div></div>'+
+ '<div class="card"><small>ATK</small><div class="big">'+money(p.atk)+'</div></div>'+
+ '<div class="card"><small>DEF</small><div class="big">'+money(p.def)+'</div></div>'+
+ '<div class="card"><small>SPD</small><div class="big">'+money(p.spd)+'</div></div>'+
+ '</div></section>'+
+ '<div class="card"><h3>📈 Manual Stat Allocation</h3><p class="muted">Setiap level memberi <b>6 Stat Points</b>. Kamu yang menentukan build.</p>'+
+ ["str","int","vit","agi","luck"].map(function(s){
+  return '<div class="statpoint"><div><b>'+s.toUpperCase()+'</b><br><small>Value: '+money(p[s])+'</small></div><button type="button" data-stat="'+s+'">+</button></div>';
+ }).join("")+
+ '</div>'+
+ '<div class="grid">'+
+ '<div class="card"><h3>⚔️ Equipment</h3>'+
+ '<p>Weapon: '+esc((ITEMS[state.equipment.weapon]||{}).name||"-")+'</p>'+
+ '<p>Armor: '+esc((ITEMS[state.equipment.armor]||{}).name||"-")+'</p>'+
+ '<p>Accessory: '+esc(state.equipment.accessory?(ITEMS[state.equipment.accessory]||{}).name:"None")+'</p>'+
+ '<button class="btn alt" data-go="inventory">🎒 Kelola Equipment</button></div>'+
+ '<div class="card"><h3>♻️ Rebirth</h3><p class="muted">Syarat: Level 30. Rebirth saat ini '+money(state.rebirth)+' • RP '+money(state.rebirthPoints)+'.</p><button class="btn gold" data-action="rebirth" '+(state.level<30?"disabled":"")+'>♻️ REBIRTH</button></div>'+
+ '</div>'+
+ nav("status");
+}
+
+function inventoryHTML(){
+ const entries=Object.keys(state.inventory).filter(function(id){return ITEMS[id]&&itemQty(id)>0});
+ return '<section class="hero"><div class="eyebrow">PLAYER BAG</div><h1>🎒 Inventory</h1><p class="muted">Gold: 🪙 '+money(state.gold)+' • Items: '+entries.length+'</p></section>'+
+ '<div class="card">'+(entries.length?entries.map(function(id){
+  const it=ITEMS[id];
+  const equipable=it.type==="Weapon"||it.type==="Armor"||it.type==="Accessory";
+  const equipped=state.equipment.weapon===id||state.equipment.armor===id||state.equipment.accessory===id;
+  return '<div class="item"><div class="itemmain"><div class="itemname '+rarityClass(it.rarity)+'">'+it.icon+' '+esc(it.name)+' ×'+money
