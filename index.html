@@ -1,0 +1,1974 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="theme-color" content="#080b14">
+<title>NEXORA V1</title>
+
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#070910;color:#e8edf7;font-family:Arial,Helvetica,sans-serif}
+body{min-height:100vh}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:active{transform:scale(.98)}
+.app{width:100%;max-width:1050px;margin:auto;min-height:100vh}
+.screen{padding:18px}
+.hidden{display:none!important}
+
+.start{
+ min-height:100vh;display:flex;align-items:center;justify-content:center;
+ padding:20px;
+ background:
+ radial-gradient(circle at 50% 20%,rgba(91,83,180,.22),transparent 35%),
+ linear-gradient(180deg,#090b17,#05060b);
+}
+.startbox{
+ width:100%;max-width:560px;text-align:center;padding:30px 22px;
+ border:1px solid #303852;border-radius:24px;background:rgba(13,17,30,.94);
+ box-shadow:0 20px 70px rgba(0,0,0,.45)
+}
+.logo{font-size:46px;font-weight:900;letter-spacing:8px;color:#dfe6ff}
+.subtitle{color:#8994ae;margin-top:8px}
+.version{font-size:12px;color:#68738e;margin-top:14px}
+.primary{
+ border:0;border-radius:12px;padding:14px 18px;background:#6d63d9;color:white;
+ font-weight:bold;width:100%;margin-top:18px
+}
+.secondary{
+ border:1px solid #343c55;background:#151a2a;color:#dbe2f5;
+ border-radius:10px;padding:11px 14px
+}
+.danger{border-color:#63343b;color:#ffb7bd}
+.start-actions{margin-top:25px}
+.start-actions button{display:block}
+.start-actions button+button{margin-top:9px}
+
+.top{
+ display:flex;gap:12px;align-items:center;justify-content:space-between;
+ padding:14px 18px;border-bottom:1px solid #20273a;
+ background:#0a0d17;position:sticky;top:0;z-index:5
+}
+.brand{font-weight:900;letter-spacing:3px}
+.level{font-size:12px;color:#929cb4}
+.topright{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.smallbtn{padding:8px 10px;font-size:12px}
+
+.panel{
+ background:#0e1320;border:1px solid #242c42;border-radius:16px;
+ padding:16px;margin-bottom:14px
+}
+.panel h2,.panel h3{margin:0 0 12px}
+.muted{color:#8993aa;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media(max-width:650px){
+ .grid,.grid3{grid-template-columns:1fr}
+ .logo{font-size:36px;letter-spacing:5px}
+ .top{align-items:flex-start}
+}
+
+.label{font-size:12px;color:#8993aa;margin-bottom:6px;display:block}
+input,textarea,select{
+ width:100%;background:#080c16;color:#edf1fb;border:1px solid #303950;
+ border-radius:10px;padding:12px;outline:none
+}
+textarea{resize:vertical;min-height:90px}
+input:focus,textarea:focus,select:focus{border-color:#7770e5}
+
+.choice{
+ border:1px solid #2d354c;background:#111725;border-radius:12px;padding:13px;
+ color:#e9edf8;text-align:left;width:100%;transition:.15s
+}
+.choice:hover{border-color:#6c67c9}
+.choice.selected{border-color:#8983ff;background:#1a1c35;box-shadow:0 0 0 1px #8983ff inset}
+.choice b{display:block;margin-bottom:4px}
+.choice span{font-size:12px;color:#929bb1;line-height:1.45}
+
+.setup-title{font-size:24px;font-weight:900;margin-bottom:5px}
+.step{color:#78839b;font-size:12px;margin-bottom:20px}
+.statline{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #1e2536}
+.statline:last-child{border:0}
+.statname{color:#929cb2}
+
+.hpbar,.expbar{
+ height:9px;background:#20283a;border-radius:20px;overflow:hidden;margin-top:7px
+}
+.hpfill{height:100%;background:#c84e61}
+.expfill{height:100%;background:#6374df}
+
+.tag{
+ display:inline-block;padding:5px 8px;border-radius:20px;
+ background:#1b2133;border:1px solid #303950;color:#abb4c9;font-size:11px;margin:2px
+}
+
+.location{
+ min-height:130px;padding:18px;border-radius:16px;border:1px solid #303850;
+ background:
+ radial-gradient(circle at 80% 20%,rgba(102,96,210,.22),transparent 30%),
+ linear-gradient(135deg,#11192a,#0a0e18)
+}
+.location-name{font-size:24px;font-weight:900}
+.location-desc{color:#929db4;font-size:13px;line-height:1.55;margin-top:6px}
+
+.rp{
+ max-height:430px;overflow-y:auto;padding:12px;
+ background:#070a11;border-radius:12px;border:1px solid #20283a
+}
+.msg{margin-bottom:15px;line-height:1.6}
+.msg .who{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#737e98;margin-bottom:4px}
+.msg.player .who{color:#9e98ff}
+.msg.arbiter .who{color:#b5a46b}
+.msg.npc .who{color:#79b6d9}
+.msg.system .who{color:#72bf91}
+.msg .body{white-space:pre-wrap}
+.typing{color:#68738d;font-style:italic}
+
+.rpform{margin-top:10px}
+.rpbuttons{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.rpbuttons button{flex:1;min-width:130px}
+
+.quest{
+ padding:13px;border:1px solid #293249;border-radius:12px;
+ background:#101625;margin-bottom:9px
+}
+.quest-title{font-weight:bold}
+.quest-meta{font-size:11px;color:#7f8ba4;margin-top:4px}
+.quest-desc{font-size:13px;color:#aeb7c9;margin-top:7px;line-height:1.45}
+
+.item{
+ display:flex;justify-content:space-between;gap:12px;
+ padding:10px 0;border-bottom:1px solid #20283a
+}
+.item:last-child{border-bottom:0}
+.item-name{font-weight:bold}
+.item-desc{font-size:11px;color:#7f8ba3;margin-top:3px}
+.item-right{text-align:right;white-space:nowrap}
+
+.toast{
+ position:fixed;left:50%;bottom:20px;transform:translateX(-50%);
+ background:#151b2b;border:1px solid #414b69;border-radius:12px;
+ padding:12px 16px;z-index:99;max-width:90%;box-shadow:0 10px 40px #0008
+}
+
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:14px}
+.tab{padding:10px 6px;font-size:11px}
+.tab.active{background:#292748;border-color:#7069dc}
+
+.cardstat{padding:12px;background:#111726;border:1px solid #293248;border-radius:12px}
+.big{font-size:22px;font-weight:900}
+.gold{color:#e6c36e}
+.good{color:#79ca98}
+.bad{color:#df7180}
+
+.worldrow{
+ display:flex;justify-content:space-between;gap:10px;align-items:center;
+ padding:12px 0;border-bottom:1px solid #20283a
+}
+.worldrow:last-child{border:0}
+
+.skill{
+ border:1px solid #2c354b;background:#111725;border-radius:12px;padding:12px
+}
+.skill.locked{opacity:.45}
+.skill b{display:block}
+.skill small{display:block;color:#8590a8;margin-top:5px;line-height:1.4}
+
+.footer{text-align:center;color:#59637a;font-size:11px;padding:20px}
+</style>
+</head>
+
+<body>
+<div id="app" class="app">
+
+<!-- START -->
+<section id="startScreen" class="start">
+ <div class="startbox">
+  <div class="logo">NEXORA</div>
+  <div class="subtitle">An Open-World Fantasy Roleplay</div>
+  <div class="version">VERSION 1 • AI ARBITER EDITION</div>
+
+  <div class="start-actions">
+   <button class="primary" id="newGameBtn">MULAI PETUALANGAN</button>
+   <button class="secondary" id="continueBtn">LANJUTKAN PETUALANGAN</button>
+   <button class="secondary danger" id="resetBtn">HAPUS SAVE</button>
+  </div>
+
+  <div class="footer">
+   Dunia berubah berdasarkan tindakanmu.<br>
+   "Dialog" • [Aksi] • Bebaskan ceritamu.
+  </div>
+ </div>
+</section>
+
+<!-- SETUP -->
+<section id="setupScreen" class="screen hidden">
+ <div class="panel">
+  <div class="setup-title">Penciptaan Karakter</div>
+  <div class="step" id="setupStep">Langkah 1 / 3</div>
+
+  <div id="setupName">
+   <label class="label">Nama karakter</label>
+   <input id="nameInput" maxlength="24" placeholder="Masukkan nama karaktermu">
+   <button class="primary" id="nameNext">Lanjut</button>
+  </div>
+
+  <div id="setupRace" class="hidden">
+   <h3>Pilih Race</h3>
+   <div id="raceGrid" class="grid"></div>
+   <button class="primary" id="raceNext">Lanjut</button>
+  </div>
+
+  <div id="setupClass" class="hidden">
+   <h3>Pilih Class</h3>
+   <div id="classGrid" class="grid"></div>
+   <button class="primary" id="createBtn">MULAI DUNIA NEXORA</button>
+  </div>
+ </div>
+</section>
+
+<!-- GAME -->
+<section id="gameScreen" class="hidden">
+ <header class="top">
+  <div>
+   <div class="brand">NEXORA</div>
+   <div id="topPlayer" class="level"></div>
+  </div>
+  <div class="topright">
+   <button class="secondary smallbtn" id="profileBtn">PLAYER</button>
+   <button class="secondary smallbtn" id="worldBtn">WORLD</button>
+   <button class="secondary smallbtn" id="questBtn">QUEST</button>
+   <button class="secondary smallbtn" id="bagBtn">BAG</button>
+   <button class="secondary smallbtn" id="aiBtn">AI</button>
+  </div>
+ </header>
+
+ <main class="screen">
+
+  <div id="mainPanel"></div>
+
+  <div id="modalPanel" class="hidden"></div>
+
+  <div class="footer">
+   NEXORA V1 • AI Arbiter Roleplay Engine
+  </div>
+ </main>
+</section>
+
+<div id="toast" class="toast hidden"></div>
+</div>
+
+<script>
+/* ============================================================
+   NEXORA V1
+   Compatibility-first JavaScript
+   No CDN / no external dependency / no optional chaining
+   ============================================================ */
+
+(function(){
+
+"use strict";
+
+/* ---------- DATA ---------- */
+
+var RACES=[
+ {id:"human",name:"Human",desc:"Serbaguna. Mudah berkembang dalam berbagai gaya bermain.",stats:{str:2,agi:2,int:2,vit:2}},
+ {id:"elf",name:"Elf",desc:"Lincah dan dekat dengan sihir serta alam.",stats:{str:1,agi:4,int:3,vit:1}},
+ {id:"dwarf",name:"Dwarf",desc:"Tubuh kuat dan ahli pertahanan serta kerajinan.",stats:{str:4,agi:1,int:1,vit:4}},
+ {id:"beast",name:"Beastkin",desc:"Insting tajam dan kemampuan fisik tinggi.",stats:{str:3,agi:4,int:1,vit:2}},
+ {id:"demon",name:"Demonborn",desc:"Kekuatan ofensif tinggi dengan potensi berbahaya.",stats:{str:5,agi:2,int:3,vit:1}},
+ {id:"dragonkin",name:"Dragonkin",desc:"Garis darah naga dengan daya tahan luar biasa.",stats:{str:4,agi:2,int:3,vit:4}},
+ {id:"spirit",name:"Spiritfolk",desc:"Mahir dalam energi magis dan kemampuan khusus.",stats:{str:1,agi:3,int:5,vit:1}},
+ {id:"halfelf",name:"Half-Elf",desc:"Perpaduan fleksibel antara manusia dan elf.",stats:{str:2,agi:3,int:3,vit:2}}
+];
+
+var CLASSES=[
+ {id:"swordsman",name:"Swordsman",desc:"Petarung pedang seimbang.",stats:{str:4,agi:2,int:0,vit:3}},
+ {id:"knight",name:"Knight",desc:"Tank dengan pertahanan tinggi.",stats:{str:3,agi:0,int:0,vit:6}},
+ {id:"berserker",name:"Berserker",desc:"Damage besar dengan gaya agresif.",stats:{str:7,agi:1,int:0,vit:2}},
+ {id:"assassin",name:"Assassin",desc:"Cepat, kritikal, dan mematikan.",stats:{str:3,agi:7,int:0,vit:0}},
+ {id:"archer",name:"Archer",desc:"Serangan jarak jauh dan presisi.",stats:{str:2,agi:6,int:1,vit:1}},
+ {id:"mage",name:"Mage",desc:"Pengguna sihir ofensif.",stats:{str:0,agi:2,int:8,vit:0}},
+ {id:"healer",name:"Cleric",desc:"Penyembuh dan pendukung kelompok.",stats:{str:0,agi:1,int:7,vit:3}},
+ {id:"spellblade",name:"Spellblade",desc:"Menggabungkan pedang dan sihir.",stats:{str:3,agi:3,int:5,vit:1}},
+ {id:"monk",name:"Monk",desc:"Petarung jarak dekat dengan tubuh kuat.",stats:{str:5,agi:4,int:1,vit:3}},
+ {id:"summoner",name:"Summoner",desc:"Memanggil makhluk untuk membantu bertarung.",stats:{str:0,agi:2,int:8,vit:2}},
+ {id:"ranger",name:"Ranger",desc:"Pemburu dan pengelana.",stats:{str:3,agi:6,int:2,vit:2}},
+ {id:"adventurer",name:"Adventurer",desc:"Class bebas yang mudah beradaptasi.",stats:{str:3,agi:3,int:3,vit:3}}
+];
+
+var MONSTERS=[
+ {id:"slime",name:"Forest Slime",level:1,hp:35,atk:7,def:2,exp:35,gold:15,drop:"Slime Core"},
+ {id:"wolf",name:"Grey Wolf",level:2,hp:55,atk:12,def:4,exp:55,gold:22,drop:"Wolf Fang"},
+ {id:"goblin",name:"Goblin Raider",level:3,hp:75,atk:15,def:5,exp:75,gold:30,drop:"Goblin Ear"},
+ {id:"boar",name:"Wild Boar",level:4,hp:100,atk:19,def:7,exp:90,gold:36,drop:"Boar Hide"},
+ {id:"spider",name:"Cave Spider",level:5,hp:120,atk:22,def:8,exp:110,gold:42,drop:"Spider Silk"},
+ {id:"orc",name:"Orc Warrior",level:7,hp:190,atk:31,def:12,exp:170,gold:70,drop:"Orc Tusk"},
+ {id:"lizard",name:"Marsh Lizard",level:8,hp:210,atk:34,def:14,exp:190,gold:78,drop:"Lizard Scale"},
+ {id:"bandit",name:"Rogue Bandit",level:9,hp:180,atk:38,def:11,exp:210,gold:100,drop:"Bandit Insignia"},
+ {id:"golem",name:"Stone Golem",level:11,hp:420,atk:42,def:27,exp:330,gold:140,drop:"Golem Fragment"},
+ {id:"wyvern",name:"Young Wyvern",level:13,hp:480,atk:50,def:25,exp:450,gold:180,drop:"Wyvern Scale"},
+ {id:"vampire",name:"Night Vampire",level:15,hp:520,atk:60,def:29,exp:570,gold:230,drop:"Blood Crystal"},
+ {id:"lich",name:"Ruined Lich",level:17,hp:650,atk:66,def:34,exp:720,gold:300,drop:"Lich Bone"},
+ {id:"demon",name:"Lesser Demon",level:18,hp:720,atk:75,def:36,exp:820,gold:340,drop:"Demon Shard"},
+ {id:"dragon",name:"Ancient Drake",level:20,hp:900,atk:88,def:44,exp:1100,gold:500,drop:"Drake Scale"},
+ {id:"abyss",name:"Abyss Guardian",level:20,hp:1200,atk:105,def:50,exp:1700,gold:850,drop:"Abyss Core"},
+ {id:"forestqueen",name:"Elder Treant",level:14,hp:600,atk:55,def:31,exp:650,gold:260,drop:"Ancient Wood"},
+ {id:"kraken",name:"Sea Kraken",level:18,hp:820,atk:82,def:39,exp:950,gold:450,drop:"Kraken Tentacle"},
+ {id:"minotaur",name:"Labyrinth Minotaur",level:16,hp:700,atk:72,def:38,exp:780,gold:350,drop:"Minotaur Horn"},
+ {id:"icewolf",name:"Frost Wolf",level:10,hp:260,atk:45,def:17,exp:300,gold:130,drop:"Frost Fang"},
+ {id:"phantom",name:"Ruins Phantom",level:12,hp:350,atk:52,def:19,exp:400,gold:170,drop:"Phantom Essence"}
+];
+
+var LOCATIONS=[
+ {id:"arvandor",name:"Arvandor",type:"Capital",level:1,cost:0,desc:"Kota besar tempat petualang baru memulai perjalanan. Federation Hall, tavern, market, blacksmith, arena."},
+ {id:"greenwood",name:"Greenwood Forest",type:"Forest",level:2,cost:20,desc:"Hutan luas berisi kayu, tanaman, monster, dan jalur rahasia."},
+ {id:"ironmine",name:"Ironfall Mine",type:"Mine",level:4,cost:35,desc:"Tambang tua yang kaya ore dan kristal."},
+ {id:"mistmarsh",name:"Mistmarsh",type:"Swamp",level:7,cost:55,desc:"Rawa berkabut dengan monster beracun dan reruntuhan."},
+ {id:"redcanyon",name:"Red Canyon",type:"Canyon",level:9,cost:70,desc:"Ngarai merah tempat bandit dan monster buas berkeliaran."},
+ {id:"mooncoast",name:"Moon Coast",type:"Sea",level:8,cost:65,desc:"Pantai dan pelabuhan untuk fishing serta perjalanan laut."},
+ {id:"silverbay",name:"Silverbay",type:"Port City",level:10,cost:100,desc:"Kota pelabuhan perdagangan yang ramai."},
+ {id:"frostvale",name:"Frostvale",type:"Snow",level:12,cost:120,desc:"Wilayah dingin dengan monster es."},
+ {id:"sunkenruins",name:"Sunken Ruins",type:"Ruins",level:13,cost:140,desc:"Reruntuhan kuno yang sebagian tenggelam."},
+ {id:"dragonpeak",name:"Dragon Peak",type:"Mountain",level:17,cost:180,desc:"Gunung berbahaya yang dihuni makhluk bersisik."},
+ {id:"abyssgate",name:"Abyss Gate",type:"Abyss",level:20,cost:250,desc:"Gerbang menuju wilayah Abyss. Reputation dan level tinggi diperlukan."},
+ {id:"royalcity",name:"Royal City",type:"Kingdom",level:15,cost:200,desc:"Pusat politik kerajaan dan lokasi quest kelas tinggi."}
+];
+
+var ITEMS=[
+ ["Health Potion","Memulihkan HP.",35],
+ ["Greater Health Potion","Memulihkan HP dalam jumlah besar.",90],
+ ["Mana Potion","Memulihkan MP.",45],
+ ["Greater Mana Potion","Memulihkan MP dalam jumlah besar.",110],
+ ["Antidote","Menghapus racun.",30],
+ ["Burn Salve","Mengurangi efek terbakar.",30],
+ ["Frost Tonic","Meningkatkan ketahanan dingin.",45],
+ ["Stamina Food","Memulihkan stamina.",25],
+ ["Bread","Makanan sederhana.",8],
+ ["Meat","Daging hasil hunting.",18],
+ ["Cooked Meat","Makanan yang telah dimasak.",35],
+ ["Moonberry","Buah langka.",22],
+ ["Sunberry","Buah hangat.",20],
+ ["Iron Ore","Bahan smithing.",12],
+ ["Copper Ore","Bahan smithing.",9],
+ ["Silver Ore","Bahan smithing.",28],
+ ["Gold Ore","Ore berharga.",55],
+ ["Mithril Ore","Logam langka.",120],
+ ["Adamantite Ore","Logam sangat langka.",220],
+ ["Coal","Bahan peleburan.",7],
+ ["Ruby","Permata merah.",80],
+ ["Sapphire","Permata biru.",80],
+ ["Emerald","Permata hijau.",85],
+ ["Topaz","Permata kuning.",65],
+ ["Diamond","Permata langka.",250],
+ ["Amethyst","Kristal ungu.",70],
+ ["Wood","Kayu biasa.",5],
+ ["Oak Wood","Kayu kuat.",12],
+ ["Ancient Wood","Kayu kuno.",70],
+ ["Magic Wood","Kayu bermuatan mana.",90],
+ ["Fiber","Serat tanaman.",4],
+ ["Herb","Herbal dasar.",6],
+ ["Moon Herb","Herbal malam.",25],
+ ["Sun Herb","Herbal siang.",22],
+ ["Healing Herb","Herbal penyembuh.",30],
+ ["Poison Herb","Bahan racun.",18],
+ ["Spider Silk","Benang monster.",20],
+ ["Wolf Fang","Taring serigala.",16],
+ ["Frost Fang","Taring serigala es.",42],
+ ["Boar Hide","Kulit babi hutan.",18],
+ ["Lizard Scale","Sisik reptil.",30],
+ ["Wyvern Scale","Sisik wyvern.",100],
+ ["Drake Scale","Sisik naga.",180],
+ ["Goblin Ear","Drop goblin.",10],
+ ["Orc Tusk","Taring orc.",25],
+ ["Minotaur Horn","Tanduk minotaur.",100],
+ ["Demon Shard","Pecahan iblis.",140],
+ ["Abyss Core","Inti Abyss.",400],
+ ["Slime Core","Inti slime.",12],
+ ["Golem Fragment","Pecahan golem.",55],
+ ["Blood Crystal","Kristal darah.",100],
+ ["Lich Bone","Tulang lich.",80],
+ ["Phantom Essence","Essence hantu.",95],
+ ["Kraken Tentacle","Tentakel kraken.",160],
+ ["Ancient Coin","Koin kuno.",75],
+ ["Ruined Relic","Relik reruntuhan.",110],
+ ["Black Crystal","Kristal gelap.",150],
+ ["White Crystal","Kristal terang.",150],
+ ["Blue Coral","Karang laut.",35],
+ ["Pearl","Mutiara.",90],
+ ["Deep Pearl","Mutiara laut dalam.",180],
+ ["Seaweed","Rumput laut.",8],
+ ["Fresh Fish","Ikan segar.",15],
+ ["Golden Fish","Ikan langka.",100],
+ ["Crab Shell","Cangkang kepiting.",20],
+ ["Turtle Shell","Cangkang kura-kura.",50],
+ ["Leather","Kulit olahan.",25],
+ ["Thick Leather","Kulit tebal.",50],
+ ["Magic Thread","Benang sihir.",80],
+ ["Beast Claw","Cakar beast.",35],
+ ["Beast Pelt","Bulu beast.",45],
+ ["Bandit Insignia","Lencana bandit.",40],
+ ["Broken Blade","Pecahan senjata.",15],
+ ["Iron Ingot","Batangan besi.",30],
+ ["Steel Ingot","Batangan baja.",65],
+ ["Silver Ingot","Batangan perak.",70],
+ ["Mithril Ingot","Batangan mithril.",180],
+ ["Adamantite Ingot","Batangan adamantite.",320],
+ ["Ash","Sisa pembakaran.",4],
+ ["Monster Blood","Darah monster.",20],
+ ["Monster Claw","Cakar monster.",18],
+ ["Monster Eye","Mata monster.",30],
+ ["Monster Core","Inti monster.",45],
+ ["Aether Dust","Debu energi.",90],
+ ["Aether Crystal","Kristal energi.",180],
+ ["Void Fragment","Pecahan kehampaan.",250],
+ ["Dragon Heart","Jantung naga.",500],
+ ["Dragon Scale","Sisik naga.",220],
+ ["Dragon Bone","Tulang naga.",260],
+ ["Royal Seal","Segel kerajaan.",200],
+ ["Federation Badge","Lencana Federation.",100],
+ ["Arena Token","Token arena.",25],
+ ["Dungeon Key","Kunci dungeon.",150],
+ ["Ancient Key","Kunci kuno.",300],
+ ["Quest Letter","Surat quest.",1],
+ ["Tavern Meal","Makanan tavern.",50],
+ ["Traveler Tea","Teh perjalanan.",30],
+ ["Warrior Stew","Stew petarung.",65],
+ ["Mage Cake","Kue mage.",65],
+ ["Hunter Roast","Panggang pemburu.",60],
+ ["Lucky Biscuit","Biskuit keberuntungan.",80],
+ ["Repair Kit","Peralatan repair.",45],
+ ["Forge Catalyst","Katalis forge.",100],
+ ["Skill Crystal","Kristal skill.",150],
+ ["Memory Shard","Pecahan memori.",200],
+ ["Story Fragment","Fragmen cerita.",100],
+ ["Lost Letter","Surat misterius.",60],
+ ["Old Map","Peta tua.",90],
+ ["Treasure Map","Peta harta.",200],
+ ["Merchant Voucher","Voucher pedagang.",100],
+ ["Guild Token","Token guild.",75],
+ ["Reputation Seal","Segel reputasi.",150]
+];
+
+var WEAPONS=[
+ ["Iron Sword",1,8,30],["Steel Sword",5,18,100],["Silver Sword",9,30,220],
+ ["Mithril Sword",15,55,600],["Knight Blade",12,45,450],["Royal Sword",18,70,1000],
+ ["Broken Greatsword",2,14,45],["Iron Greatsword",5,25,140],["War Greatsword",10,48,350],
+ ["Mithril Greatsword",16,75,850],["Iron Dagger",1,7,25],["Assassin Dagger",6,25,130],
+ ["Shadow Dagger",12,50,500],["Moon Dagger",18,75,1100],["Oak Bow",1,8,30],
+ ["Hunter Bow",5,20,110],["Long Bow",9,34,250],["Silver Bow",13,50,550],
+ ["Moon Bow",18,78,1200],["Wood Staff",1,7,28],["Apprentice Staff",4,18,100],
+ ["Mage Staff",8,34,240],["Crystal Staff",13,60,650],["Aether Staff",19,90,1500],
+ ["Iron Spear",2,10,40],["Steel Spear",7,27,160],["Royal Spear",14,55,600],
+ ["Mithril Spear",18,82,1300],["Monk Gauntlet",3,10,45],["Iron Gauntlet",7,25,150],
+ ["Beast Gauntlet",12,48,450],["Dragon Gauntlet",19,85,1400],["Spellblade",8,30,300],
+ ["Arcane Blade",14,58,700],["Void Blade",20,100,1800],["Ranger Knife",4,15,75],
+ ["Forest Bow",8,28,210],["Frost Bow",14,55,650],["Dragon Bow",20,105,1900]
+];
+
+var SKILLS=[
+ ["Power Strike","Serangan fisik kuat.","str",8],
+ ["Quick Slash","Serangan cepat.","agi",8],
+ ["Guard","Mengurangi damage berikutnya.","vit",5],
+ ["Heavy Blow","Serangan berat.","str",12],
+ ["Double Shot","Dua serangan jarak jauh.","agi",12],
+ ["Shadow Step","Serangan cepat dan sulit diprediksi.","agi",15],
+ ["Fireball","Serangan sihir api.","int",10],
+ ["Ice Lance","Serangan sihir es.","int",12],
+ ["Thunder Arc","Petir dengan damage tinggi.","int",16],
+ ["Heal","Memulihkan HP.","int",10],
+ ["Holy Light","Serangan cahaya dan pemulihan.","int",14],
+ ["Summon Wolf","Memanggil bantuan sementara.","int",18],
+ ["Berserk","Meningkatkan serangan dengan risiko.","str",20],
+ ["Dragon Breath","Serangan energi naga.","int",30],
+ ["Abyss Rupture","Serangan kehampaan tingkat tinggi.","int",35],
+ ["Counter","Membalas serangan musuh.","agi",18],
+ ["Poison Edge","Serangan dengan racun.","agi",14],
+ ["Wind Cutter","Tebasan energi angin.","agi",17],
+ ["Earth Breaker","Serangan bumi.","str",18],
+ ["Spirit Nova","Ledakan energi spiritual.","int",25]
+];
+
+/* ---------- STATE ---------- */
+
+var state=null;
+var setupRace=null;
+var setupClass=null;
+var setupPage=1;
+var currentTab="home";
+var typing=false;
+
+function freshState(){
+ return {
+  version:1,
+  created:true,
+  player:{
+   name:"",
+   race:"",
+   class:"",
+   level:1,
+   exp:0,
+   expNext:100,
+   gold:150,
+   hp:100,
+   maxHp:100,
+   mp:50,
+   maxMp:50,
+   stamina:100,
+   maxStamina:100,
+   statPoints:6,
+   stats:{str:5,agi:5,int:5,vit:5},
+   skills:["Power Strike","Quick Slash","Guard"],
+   equipped:"Iron Sword"
+  },
+  location:"arvandor",
+  reputation:{
+   federation:0,
+   royal:0,
+   guild:0,
+   tavern:0
+  },
+  inventory:{
+   "Health Potion":3,
+   "Bread":2,
+   "Iron Ore":3,
+   "Wood":5
+  },
+  quests:[],
+  completed:[],
+  achievements:[],
+  flags:{},
+  history:[],
+  world:{
+   day:1,
+   weather:"Cerah",
+   threat:"Normal"
+  },
+  ai:{
+   endpoint:"",
+   enabled:false,
+   lastError:""
+  },
+  combat:null
+ };
+}
+
+/* ---------- STORAGE ---------- */
+
+function save(){
+ try{
+  localStorage.setItem("NEXORA_V1_SAVE",JSON.stringify(state));
+ }catch(e){}
+}
+
+function load(){
+ try{
+  var x=localStorage.getItem("NEXORA_V1_SAVE");
+  if(!x){return null}
+  var s=JSON.parse(x);
+  if(!s || !s.player){return null}
+  return s;
+ }catch(e){
+  return null;
+ }
+}
+
+function removeSave(){
+ try{localStorage.removeItem("NEXORA_V1_SAVE")}catch(e){}
+}
+
+/* ---------- HELPERS ---------- */
+
+function $(id){return document.getElementById(id)}
+
+function esc(s){
+ s=String(s==null?"":s);
+ return s.replace(/&/g,"&amp;")
+         .replace(/</g,"&lt;")
+         .replace(/>/g,"&gt;")
+         .replace(/"/g,"&quot;");
+}
+
+function notify(text){
+ var t=$("toast");
+ t.innerHTML=esc(text);
+ t.className="toast";
+ setTimeout(function(){t.className="toast hidden"},2300);
+}
+
+function getRace(){
+ for(var i=0;i<RACES.length;i++){
+  if(RACES[i].id===state.player.race){return RACES[i]}
+ }
+ return null;
+}
+
+function getClass(){
+ for(var i=0;i<CLASSES.length;i++){
+  if(CLASSES[i].id===state.player.class){return CLASSES[i]}
+ }
+ return null;
+}
+
+function getLocation(){
+ for(var i=0;i<LOCATIONS.length;i++){
+  if(LOCATIONS[i].id===state.location){return LOCATIONS[i]}
+ }
+ return LOCATIONS[0];
+}
+
+function getMonster(id){
+ for(var i=0;i<MONSTERS.length;i++){
+  if(MONSTERS[i].id===id){return MONSTERS[i]}
+ }
+ return MONSTERS[0];
+}
+
+function getItemPrice(name){
+ for(var i=0;i<ITEMS.length;i++){
+  if(ITEMS[i][0]===name){return ITEMS[i][2]}
+ }
+ return 10;
+}
+
+function addItem(name,n){
+ if(!state.inventory[name])state.inventory[name]=0;
+ state.inventory[name]+=n;
+}
+
+function hasItem(name,n){
+ return (state.inventory[name]||0)>=n;
+}
+
+function spendGold(n){
+ if(state.player.gold<n){
+  notify("Gold tidak cukup.");
+  return false;
+ }
+ state.player.gold-=n;
+ return true;
+}
+
+function gainExp(n){
+ var p=state.player;
+ p.exp+=n;
+ notify("EXP +" + n);
+ while(p.exp>=p.expNext){
+  p.exp-=p.expNext;
+  p.level++;
+  p.expNext=Math.floor(p.expNext*1.22)+25;
+  p.statPoints+=6;
+  p.maxHp+=12;
+  p.maxMp+=6;
+  p.maxStamina+=5;
+  p.hp=p.maxHp;
+  p.mp=p.maxMp;
+  p.stamina=p.maxStamina;
+  notify("LEVEL UP! Level " + p.level + " • +6 Stat Point");
+ }
+}
+
+function addRep(f,n){
+ if(!state.reputation[f])state.reputation[f]=0;
+ state.reputation[f]+=n;
+ if(n>0)notify(f+" Reputation +" + n);
+}
+
+function addHistory(text){
+ state.history.push({
+  day:state.world.day,
+  location:state.location,
+  text:text
+ });
+ if(state.history.length>80)state.history.shift();
+}
+
+/* ---------- START / SETUP ---------- */
+
+function showOnly(id){
+ var ids=["startScreen","setupScreen","gameScreen"];
+ for(var i=0;i<ids.length;i++){
+  $(ids[i]).className=ids[i]===id ? (id==="startScreen"?"start":"") : "hidden";
+ }
+}
+
+function beginNew(){
+ state=freshState();
+ setupRace=null;
+ setupClass=null;
+ setupPage=1;
+ showOnly("setupScreen");
+ renderSetup();
+}
+
+function continueGame(){
+ var s=load();
+ if(!s){
+  notify("Belum ada save.");
+  return;
+ }
+ state=s;
+ showOnly("gameScreen");
+ renderGame();
+}
+
+function resetGame(){
+ removeSave();
+ state=null;
+ showOnly("startScreen");
+ notify("Save NEXORA dihapus.");
+}
+
+function renderSetup(){
+ $("setupName").className=setupPage===1?"":"hidden";
+ $("setupRace").className=setupPage===2?"":"hidden";
+ $("setupClass").className=setupPage===3?"":"hidden";
+ $("setupStep").innerHTML="Langkah "+setupPage+" / 3";
+
+ if(setupPage===2){
+  var rhtml="";
+  for(var i=0;i<RACES.length;i++){
+   var r=RACES[i];
+   rhtml+='<button class="choice '+(setupRace===r.id?"selected":"")+'" data-race="'+r.id+'">';
+   rhtml+="<b>"+esc(r.name)+"</b>";
+   rhtml+="<span>"+esc(r.desc)+"<br>STR "+r.stats.str+" • AGI "+r.stats.agi+" • INT "+r.stats.int+" • VIT "+r.stats.vit+"</span>";
+   rhtml+="</button>";
+  }
+  $("raceGrid").innerHTML=rhtml;
+  var rb=$("raceGrid").querySelectorAll("[data-race]");
+  for(var j=0;j<rb.length;j++){
+   rb[j].onclick=function(){
+    setupRace=this.getAttribute("data-race");
+    renderSetup();
+   };
+  }
+ }
+
+ if(setupPage===3){
+  var chtml="";
+  for(var k=0;k<CLASSES.length;k++){
+   var c=CLASSES[k];
+   chtml+='<button class="choice '+(setupClass===c.id?"selected":"")+'" data-class="'+c.id+'">';
+   chtml+="<b>"+esc(c.name)+"</b>";
+   chtml+="<span>"+esc(c.desc)+"<br>STR "+c.stats.str+" • AGI "+c.stats.agi+" • INT "+c.stats.int+" • VIT "+c.stats.vit+"</span>";
+   chtml+="</button>";
+  }
+  $("classGrid").innerHTML=chtml;
+  var cb=$("classGrid").querySelectorAll("[data-class]");
+  for(var m=0;m<cb.length;m++){
+   cb[m].onclick=function(){
+    setupClass=this.getAttribute("data-class");
+    renderSetup();
+   };
+  }
+ }
+}
+
+function finishCreation(){
+ var name=$("nameInput").value.replace(/^\s+|\s+$/g,"");
+ if(!name){
+  notify("Masukkan nama karakter.");
+  return;
+ }
+ if(!setupRace){
+  notify("Pilih race.");
+  return;
+ }
+ if(!setupClass){
+  notify("Pilih class.");
+  return;
+ }
+
+ state=freshState();
+ state.player.name=name;
+ state.player.race=setupRace;
+ state.player.class=setupClass;
+
+ var r=getRace();
+ var c=getClass();
+
+ state.player.stats.str+=r.stats.str+c.stats.str;
+ state.player.stats.agi+=r.stats.agi+c.stats.agi;
+ state.player.stats.int+=r.stats.int+c.stats.int;
+ state.player.stats.vit+=r.stats.vit+c.stats.vit;
+
+ state.player.maxHp=100+state.player.stats.vit*5;
+ state.player.hp=state.player.maxHp;
+ state.player.maxMp=50+state.player.stats.int*3;
+ state.player.mp=state.player.maxMp;
+
+ state.quests=generateQuests();
+
+ addHistory("Perjalanan "+name+" dimulai di Arvandor.");
+ addHistory("Race: "+r.name+" • Class: "+c.name);
+
+ save();
+ showOnly("gameScreen");
+ renderGame();
+ notify("Selamat datang di NEXORA, "+name+"!");
+}
+
+/* ---------- QUEST SYSTEM ---------- */
+
+function generateQuests(){
+ var p=state.player;
+ var list=[];
+ var seed=new Date().getDate()+new Date().getMonth()*31+p.level;
+
+ var templates=[
+  {type:"hunt",title:"Federation Hunt",desc:"Kalahkan 3 monster di wilayah yang sesuai levelmu.",need:3,target:"monster",reward:220,exp:180,rep:4},
+  {type:"gather",title:"Gathering Request",desc:"Kumpulkan 5 material dari alam.",need:5,target:"material",reward:180,exp:150,rep:3},
+  {type:"mine",title:"Mine Supply",desc:"Tambang 4 ore untuk persediaan Federation.",need:4,target:"ore",reward:260,exp:220,rep:5},
+  {type:"fish",title:"Coastal Supply",desc:"Tangkap 4 ikan dari area laut.",need:4,target:"fish",reward:240,exp:200,rep:4},
+  {type:"delivery",title:"Urgent Delivery",desc:"Antarkan pesan ke lokasi tujuan.",need:1,target:"travel",reward:300,exp:250,rep:6},
+  {type:"investigate",title:"Strange Rumor",desc:"Cari tahu sumber kejadian misterius melalui RP.",need:1,target:"rp",reward:350,exp:300,rep:8},
+  {type:"rescue",title:"Rescue Mission",desc:"Bantu seseorang yang ditemui dalam perjalanan.",need:1,target:"rp",reward:400,exp:350,rep:10},
+  {type:"dungeon",title:"Dungeon Expedition",desc:"Masuki dungeon dan selesaikan ekspedisi.",need:1,target:"dungeon",reward:600,exp:500,rep:12},
+  {type:"arena",title:"Royal Arena Trial",desc:"Menangkan satu pertarungan arena.",need:1,target:"arena",reward:500,exp:450,rep:7},
+  {type:"craft",title:"Smithing Request",desc:"Buat atau upgrade sebuah equipment.",need:1,target:"craft",reward:300,exp:250,rep:5},
+  {type:"reality",title:"Reality Quest",desc:"Arbiter akan memberikan situasi dinamis yang berubah berdasarkan tindakanmu.",need:1,target:"rp",reward:700,exp:650,rep:12}
+ ];
+
+ for(var i=0;i<templates.length;i++){
+  var t=templates[(i+seed)%templates.length];
+  list.push({
+   id:"Q"+Date.now()+"_"+i,
+   type:t.type,
+   title:t.title,
+   desc:t.desc,
+   need:t.need,
+   progress:0,
+   target:t.target,
+   reward:t.reward+p.level*15,
+   exp:t.exp+p.level*12,
+   rep:t.rep,
+   done:false
+  });
+ }
+ return list;
+}
+
+function questProgress(target,n){
+ for(var i=0;i<state.quests.length;i++){
+  var q=state.quests[i];
+  if(q.done)continue;
+  if(q.target===target){
+   q.progress+=n;
+   if(q.progress>q.need)q.progress=q.need;
+   if(q.progress>=q.need){
+    completeQuest(q);
+   }
+  }
+ }
+}
+
+function completeQuest(q){
+ if(q.done)return;
+ q.done=true;
+ state.player.gold+=q.reward;
+ gainExp(q.exp);
+ addRep("federation",q.rep);
+ state.completed.push(q.title);
+ addHistory("Quest selesai: "+q.title);
+ notify("Quest selesai! Gold +"+q.reward);
+ save();
+}
+
+function refreshQuests(){
+ var active=0;
+ for(var i=0;i<state.quests.length;i++){
+  if(!state.quests[i].done)active++;
+ }
+ if(active<5){
+  var fresh=generateQuests();
+  for(var j=0;j<fresh.length && active<8;j++){
+   state.quests.push(fresh[j]);
+   active++;
+  }
+ }
+}
+
+/* ---------- RENDER ---------- */
+
+function renderGame(){
+ refreshQuests();
+
+ var p=state.player;
+ $("topPlayer").innerHTML=esc(p.name)+" • Lv."+p.level+" • "+esc((getClass()||{}).name||"");
+
+ if(currentTab==="home")renderHome();
+ else if(currentTab==="profile")renderProfile();
+ else if(currentTab==="world")renderWorld();
+ else if(currentTab==="quests")renderQuests();
+ else if(currentTab==="bag")renderBag();
+ else if(currentTab==="ai")renderAI();
+ else if(currentTab==="blacksmith")renderBlacksmith();
+ else if(currentTab==="tavern")renderTavern();
+ else if(currentTab==="arena")renderArena();
+ else if(currentTab==="dungeon")renderDungeon();
+ else if(currentTab==="skills")renderSkills();
+}
+
+function playerSummary(){
+ var p=state.player;
+ var expPct=Math.min(100,Math.floor((p.exp/p.expNext)*100));
+ var hpPct=Math.min(100,Math.floor((p.hp/p.maxHp)*100));
+
+ return '<div class="panel">'+
+ '<div class="grid3">'+
+ '<div class="cardstat"><div class="muted">LEVEL</div><div class="big">'+p.level+'</div></div>'+
+ '<div class="cardstat"><div class="muted">GOLD</div><div class="big gold">'+p.gold+'</div></div>'+
+ '<div class="cardstat"><div class="muted">STAT POINT</div><div class="big">'+p.statPoints+'</div></div>'+
+ '</div>'+
+ '<div style="margin-top:12px">HP '+p.hp+' / '+p.maxHp+
+ '<div class="hpbar"><div class="hpfill" style="width:'+hpPct+'%"></div></div></div>'+
+ '<div style="margin-top:10px">EXP '+p.exp+' / '+p.expNext+
+ '<div class="expbar"><div class="expfill" style="width:'+expPct+'%"></div></div></div>'+
+ '</div>';
+}
+
+function renderHome(){
+ var l=getLocation();
+ var p=state.player;
+
+ var html=playerSummary();
+
+ html+='<div class="tabs">'+
+ '<button class="secondary tab active" id="homeTab">RP</button>'+
+ '<button class="secondary tab" id="locationTab">LOKASI</button>'+
+ '<button class="secondary tab" id="activityTab">AKTIVITAS</button>'+
+ '<button class="secondary tab" id="systemTab">SYSTEM</button></div>';
+
+ html+='<div class="location">'+
+ '<div class="muted">'+esc(l.type)+' • Recommended Lv.'+l.level+'</div>'+
+ '<div class="location-name">'+esc(l.name)+'</div>'+
+ '<div class="location-desc">'+esc(l.desc)+'</div>'+
+ '</div>';
+
+ html+='<div class="panel" style="margin-top:14px">'+
+ '<h2>Roleplay</h2>'+
+ '<div class="muted">Tulis bebas. Gunakan "..." untuk dialog dan [...] untuk aksi.</div>'+
+ '<div id="rpLog" class="rp">';
+
+ if(state.history.length===0){
+  html+='<div class="msg arbiter"><div class="who">Arbiter</div><div class="body">Dunia NEXORA menunggumu.</div></div>';
+ }else{
+  var start=Math.max(0,state.history.length-18);
+  for(var i=start;i<state.history.length;i++){
+   var h=state.history[i];
+   html+='<div class="msg arbiter"><div class="who">Arbiter</div><div class="body">'+esc(h.text)+'</div></div>';
+  }
+ }
+ html+='</div>';
+
+ html+='<div class="rpform">'+
+ '<textarea id="rpInput" placeholder=\'Contoh: "Aku mencari pekerjaan." [memasuki tavern dengan tenang]\'></textarea>'+
+ '<div class="rpbuttons">'+
+ '<button class="primary" id="sendRp">Kirim ke Arbiter</button>'+
+ '<button class="secondary" id="quickFight">Cari Monster</button>'+
+ '</div></div></div>';
+
+ html+='<div class="panel"><h3>Akses Cepat</h3><div class="grid">'+
+ '<button class="secondary" id="blacksmithQuick">Blacksmith</button>'+
+ '<button class="secondary" id="tavernQuick">Tavern</button>'+
+ '<button class="secondary" id="arenaQuick">Royal Arena</button>'+
+ '<button class="secondary" id="dungeonQuick">Dungeon</button>'+
+ '</div></div>';
+
+ $("mainPanel").innerHTML=html;
+
+ $("sendRp").onclick=sendRoleplay;
+ $("quickFight").onclick=startRandomCombat;
+ $("blacksmithQuick").onclick=function(){currentTab="blacksmith";renderGame()};
+ $("tavernQuick").onclick=function(){currentTab="tavern";renderGame()};
+ $("arenaQuick").onclick=function(){currentTab="arena";renderGame()};
+ $("dungeonQuick").onclick=function(){currentTab="dungeon";renderGame()};
+}
+
+function renderProfile(){
+ var p=state.player,r=getRace(),c=getClass();
+ var html=playerSummary();
+
+ html+='<div class="panel"><h2>Player Profile</h2>'+
+ '<div class="grid">'+
+ '<div><span class="label">Nama</span><b>'+esc(p.name)+'</b></div>'+
+ '<div><span class="label">Race</span><b>'+esc(r?r.name:"-")+'</b></div>'+
+ '<div><span class="label">Class</span><b>'+esc(c?c.name:"-")+'</b></div>'+
+ '<div><span class="label">Lokasi</span><b>'+esc(getLocation().name)+'</b></div>'+
+ '</div></div>';
+
+ html+='<div class="panel"><h3>Stats</h3>';
+ html+=statButton("STR","str");
+ html+=statButton("AGI","agi");
+ html+=statButton("INT","int");
+ html+=statButton("VIT","vit");
+ html+='</div>';
+
+ html+='<div class="panel"><h3>Reputation</h3>'+
+ '<div class="statline"><span class="statname">Federation</span><b>'+state.reputation.federation+'</b></div>'+
+ '<div class="statline"><span class="statname">Royal</span><b>'+state.reputation.royal+'</b></div>'+
+ '<div class="statline"><span class="statname">Guild</span><b>'+state.reputation.guild+'</b></div>'+
+ '<div class="statline"><span class="statname">Tavern</span><b>'+state.reputation.tavern+'</b></div>'+
+ '</div>';
+
+ html+='<div class="panel"><h3>Equipment</h3>'+
+ '<div class="item"><div><div class="item-name">'+esc(p.equipped)+'</div><div class="item-desc">Senjata utama</div></div></div>'+
+ '</div>';
+
+ html+='<button class="secondary" id="backHome">Kembali ke RP</button>';
+
+ $("mainPanel").innerHTML=html;
+ $("backHome").onclick=function(){currentTab="home";renderGame()};
+}
+
+function statButton(label,key){
+ var p=state.player;
+ return '<div class="statline">'+
+ '<span><b>'+label+'</b> <span class="statname">'+p.stats[key]+'</span></span>'+
+ '<button class="secondary smallbtn" data-stat="'+key+'" '+(p.statPoints<=0?"disabled":"")+'>+1</button>'+
+ '</div>';
+}
+
+function renderWorld(){
+ var html='<div class="panel"><h2>World Map</h2>'+
+ '<div class="muted">Perjalanan membutuhkan Gold. Area dengan level tinggi berbahaya.</div></div>';
+
+ for(var i=0;i<LOCATIONS.length;i++){
+  var l=LOCATIONS[i];
+  var locked=state.player.level<l.level;
+  if(l.id==="abyssgate" && state.reputation.federation<40)locked=true;
+
+  html+='<div class="panel worldrow">'+
+   '<div><b>'+esc(l.name)+'</b><div class="muted">'+esc(l.type)+' • Lv.'+l.level+'+ • Travel '+l.cost+' Gold</div></div>'+
+   '<button class="secondary" data-travel="'+l.id+'" '+(locked?"disabled":"")+'>'
+   +(locked?"TERKUNCI":"PERGI")+'</button></div>';
+ }
+
+ $("mainPanel").innerHTML=html;
+
+ var buttons=$("mainPanel").querySelectorAll("[data-travel]");
+ for(var j=0;j<buttons.length;j++){
+  buttons[j].onclick=function(){
+   travel(this.getAttribute("data-travel"));
+  };
+ }
+}
+
+function travel(id){
+ var l=null;
+ for(var i=0;i<LOCATIONS.length;i++){
+  if(LOCATIONS[i].id===id)l=LOCATIONS[i];
+ }
+ if(!l)return;
+
+ if(state.player.level<l.level){
+  notify("Level belum cukup. Recommended Lv."+l.level);
+  return;
+ }
+
+ if(l.id==="abyssgate" && state.reputation.federation<40){
+  notify("Federation Reputation minimal 40 diperlukan.");
+  return;
+ }
+
+ if(!spendGold(l.cost))return;
+
+ state.location=l.id;
+ state.world.day++;
+ state.world.weather=randomWeather();
+ addHistory("Kau melakukan perjalanan menuju "+l.name+".");
+ questProgress("travel",1);
+ save();
+ notify("Tiba di "+l.name+".");
+ renderGame();
+}
+
+function randomWeather(){
+ var x=["Cerah","Mendung","Hujan","Berkabut","Angin Kencang","Langit Berbintang"];
+ return x[Math.floor(Math.random()*x.length)];
+}
+
+function renderQuests(){
+ refreshQuests();
+ var html='<div class="panel"><h2>Federation Quest Board</h2>'+
+ '<div class="muted">Quest diperbarui secara dinamis. Beberapa quest dapat berkembang melalui Roleplay.</div></div>';
+
+ for(var i=0;i<state.quests.length;i++){
+  var q=state.quests[i];
+  html+='<div class="quest">'+
+   '<div class="quest-title">'+esc(q.title)+(q.done?' ✓':'')+'</div>'+
+   '<div class="quest-meta">'+esc(q.type.toUpperCase())+' • '+q.progress+'/'+q.need+'</div>'+
+   '<div class="quest-desc">'+esc(q.desc)+'</div>'+
+   '<div class="quest-meta">Reward: '+q.reward+' Gold • '+q.exp+' EXP • Federation +'+q.rep+'</div>'+
+   '</div>';
+ }
+
+ $("mainPanel").innerHTML=html;
+}
+
+function renderBag(){
+ var html='<div class="panel"><h2>Inventory</h2>'+
+ '<div class="muted">Material dapat digunakan untuk crafting, quest, makanan, atau dijual.</div></div>';
+
+ var keys=[];
+ for(var k in state.inventory){
+  if(state.inventory.hasOwnProperty(k) && state.inventory[k]>0)keys.push(k);
+ }
+
+ if(keys.length===0){
+  html+='<div class="panel muted">Inventory kosong.</div>';
+ }else{
+  for(var i=0;i<keys.length;i++){
+   var name=keys[i];
+   html+='<div class="panel item">'+
+    '<div><div class="item-name">'+esc(name)+'</div><div class="item-desc">Value '+getItemPrice(name)+' Gold</div></div>'+
+    '<div class="item-right">x'+state.inventory[name]+'</div></div>';
+  }
+ }
+
+ $("mainPanel").innerHTML=html;
+}
+
+function renderBlacksmith(){
+ var html='<div class="panel"><h2>Blacksmith</h2>'+
+ '<div class="muted">Beli weapon dan lakukan upgrade menggunakan Gold + material.</div></div>';
+
+ for(var i=0;i<WEAPONS.length;i++){
+  var w=WEAPONS[i];
+  var owned=state.player.equipped===w[0];
+  html+='<div class="panel item">'+
+   '<div><div class="item-name">'+esc(w[0])+'</div>'+
+   '<div class="item-desc">Lv.'+w[1]+' • ATK +'+w[2]+'</div></div>'+
+   '<div class="item-right">'+
+   '<div class="gold">'+w[3]+' G</div>'+
+   '<button class="secondary smallbtn" data-buyweapon="'+i+'" '+(state.player.level<w[1]?"disabled":"")+'>'+
+   (owned?"Equipped":"Buy")+'</button></div></div>';
+ }
+
+ $("mainPanel").innerHTML=html;
+
+ var b=$("mainPanel").querySelectorAll("[data-buyweapon]");
+ for(var j=0;j<b.length;j++){
+  b[j].onclick=function(){
+   var w=WEAPONS[parseInt(this.getAttribute("data-buyweapon"),10)];
+   if(state.player.level<w[1]){
+    notify("Level belum cukup.");
+    return;
+   }
+   if(!spendGold(w[3]))return;
+   state.player.equipped=w[0];
+   addHistory("Kau membeli dan memakai "+w[0]+" dari Blacksmith.");
+   save();
+   notify(w[0]+" berhasil dipasang.");
+   renderGame();
+  };
+ }
+}
+
+function renderTavern(){
+ var foods=[
+  ["Bread","HP +10",8],
+  ["Cooked Meat","HP +30",35],
+  ["Tavern Meal","HP +60",50],
+  ["Warrior Stew","HP +90 • STR sementara",65],
+  ["Mage Cake","MP +60 • INT sementara",65],
+  ["Hunter Roast","Stamina +60",60],
+  ["Traveler Tea","Stamina +35",30],
+  ["Lucky Biscuit","EXP bonus kecil",80]
+ ];
+
+ var html='<div class="panel"><h2>Moonlit Tavern</h2>'+
+ '<div class="muted">Tempat istirahat, rumor, makanan, minuman, dan quest NPC.</div></div>';
+
+ for(var i=0;i<foods.length;i++){
+  var f=foods[i];
+  html+='<div class="panel item">'+
+   '<div><div class="item-name">'+esc(f[0])+'</div><div class="item-desc">'+esc(f[1])+'</div></div>'+
+   '<div class="item-right">'+f[2]+' G<br><button class="secondary smallbtn" data-food="'+i+'">Beli</button></div></div>';
+ }
+
+ html+='<div class="panel"><button class="secondary" id="tavernRest">Istirahat • 20 Gold</button></div>';
+ $("mainPanel").innerHTML=html;
+
+ var fb=$("mainPanel").querySelectorAll("[data-food]");
+ for(var j=0;j<fb.length;j++){
+  fb[j].onclick=function(){
+   var f=foods[parseInt(this.getAttribute("data-food"),10)];
+   if(!spendGold(f[2]))return;
+   addItem(f[0],1);
+   if(f[0]==="Bread")state.player.hp=Math.min(state.player.maxHp,state.player.hp+10);
+   if(f[0]==="Cooked Meat")state.player.hp=Math.min(state.player.maxHp,state.player.hp+30);
+   if(f[0]==="Tavern Meal")state.player.hp=Math.min(state.player.maxHp,state.player.hp+60);
+   if(f[0]==="Mage Cake")state.player.mp=Math.min(state.player.maxMp,state.player.mp+60);
+   if(f[0]==="Traveler Tea")state.player.stamina=Math.min(state.player.maxStamina,state.player.stamina+35);
+   if(f[0]==="Hunter Roast")state.player.stamina=Math.min(state.player.maxStamina,state.player.stamina+60);
+   if(f[0]==="Lucky Biscuit")gainExp(30);
+   addRep("tavern",1);
+   save();
+   notify("Membeli "+f[0]+".");
+   renderGame();
+  };
+ }
+
+ $("tavernRest").onclick=function(){
+  if(!spendGold(20))return;
+  state.player.hp=state.player.maxHp;
+  state.player.mp=state.player.maxMp;
+  state.player.stamina=state.player.maxStamina;
+  addHistory("Kau beristirahat di Tavern hingga kondisi pulih.");
+  save();
+  notify("HP, MP, dan Stamina pulih.");
+  renderGame();
+ };
+}
+
+function renderArena(){
+ var html='<div class="panel"><h2>Royal Arena</h2>'+
+ '<div class="muted">Pertarungan arena memberikan Gold, EXP, Arena Token, dan material.</div></div>';
+
+ var enemies=[
+  {name:"Arena Recruit",level:3,hp:100,atk:18,def:6,reward:100,exp:90},
+  {name:"Arena Knight",level:8,hp:260,atk:38,def:16,reward:260,exp:250},
+  {name:"Arena Champion",level:14,hp:550,atk:65,def:28,reward:600,exp:600},
+  {name:"Royal Champion",level:20,hp:900,atk:95,def:42,reward:1200,exp:1200}
+ ];
+
+ for(var i=0;i<enemies.length;i++){
+  var e=enemies[i];
+  html+='<div class="panel item"><div>'+
+   '<div class="item-name">'+e.name+'</div>'+
+   '<div class="item-desc">Recommended Lv.'+e.level+' • HP '+e.hp+' • ATK '+e.atk+'</div></div>'+
+   '<button class="secondary" data-arena="'+i+'" '+(state.player.level<e.level?"disabled":"")+
+   '>Fight</button></div>';
+ }
+
+ $("mainPanel").innerHTML=html;
+
+ var b=$("mainPanel").querySelectorAll("[data-arena]");
+ for(var j=0;j<b.length;j++){
+  b[j].onclick=function(){
+   var enemies2=[
+    {name:"Arena Recruit",level:3,hp:100,atk:18,def:6,reward:100,exp:90},
+    {name:"Arena Knight",level:8,hp:260,atk:38,def:16,reward:260,exp:250},
+    {name:"Arena Champion",level:14,hp:550,atk:65,def:28,reward:600,exp:600},
+    {name:"Royal Champion",level:20,hp:900,atk:95,def:42,reward:1200,exp:1200}
+   ];
+   var e=enemies2[parseInt(this.getAttribute("data-arena"),10)];
+   startCombatObject(e,true);
+  };
+ }
+}
+
+function renderDungeon(){
+ var dungeons=[
+  {name:"Goblin Cave",level:5,cost:80,hp:250,atk:30,def:10,exp:300,gold:150,drop:"Goblin Ear"},
+  {name:"Forgotten Ruins",level:10,cost:160,hp:550,atk:52,def:22,exp:650,gold:320,drop:"Ruined Relic"},
+  {name:"Dragon Crypt",level:16,cost:300,hp:850,atk:82,def:38,exp:1100,gold:650,drop:"Dragon Bone"},
+  {name:"Abyss Chamber",level:20,cost:500,hp:1200,atk:105,def:50,exp:1800,gold:1000,drop:"Abyss Core"}
+ ];
+
+ var html='<div class="panel"><h2>Dungeon</h2>'+
+ '<div class="muted">Masuk membutuhkan Gold. Dungeon menyimpan reward besar.</div></div>';
+
+ for(var i=0;i<dungeons.length;i++){
+  var d=dungeons[i];
+  html+='<div class="panel item"><div>'+
+   '<div class="item-name">'+d.name+'</div>'+
+   '<div class="item-desc">Recommended Lv.'+d.level+' • Entry '+d.cost+' Gold</div>'+
+   '</div><button class="secondary" data-dungeon="'+i+'" '+(state.player.level<d.level?"disabled":"")+'>Enter</button></div>';
+ }
+
+ $("mainPanel").innerHTML=html;
+
+ var b=$("mainPanel").querySelectorAll("[data-dungeon]");
+ for(var j=0;j<b.length;j++){
+  b[j].onclick=function(){
+   var ds=[
+    {name:"Goblin Cave",level:5,cost:80,hp:250,atk:30,def:10,exp:300,gold:150,drop:"Goblin Ear"},
+    {name:"Forgotten Ruins",level:10,cost:160,hp:550,atk:52,def:22,exp:650,gold:320,drop:"Ruined Relic"},
+    {name:"Dragon Crypt",level:16,cost:300,hp:850,atk:82,def:38,exp:1100,gold:650,drop:"Dragon Bone"},
+    {name:"Abyss Chamber",level:20,cost:500,hp:1200,atk:105,def:50,exp:1800,gold:1000,drop:"Abyss Core"}
+   ];
+   var d=ds[parseInt(this.getAttribute("data-dungeon"),10)];
+   if(!spendGold(d.cost))return;
+   questProgress("dungeon",1);
+   startCombatObject(d,false);
+  };
+ }
+}
+
+function renderSkills(){
+ var html='<div class="panel"><h2>Skill Tree</h2>'+
+ '<div class="muted">Skill yang sudah dibuka dapat digunakan secara situasional melalui RP/combat.</div></div>';
+
+ for(var i=0;i<SKILLS.length;i++){
+  var s=SKILLS[i];
+  var unlocked=state.player.level>=Math.max(1,Math.floor(s[3]/3));
+  var has=state.player.skills.indexOf(s[0])>=0;
+
+  html+='<div class="skill '+(!unlocked?"locked":"")+'">'+
+   '<b>'+esc(s[0])+'</b>'+
+   '<small>'+esc(s[1])+' • '+s[2].toUpperCase()+' • Requirement Lv.'+Math.max(1,Math.floor(s[3]/3))+'</small>'+
+   (unlocked && !has?'<button class="secondary smallbtn" data-skill="'+i+'" style="margin-top:8px">Pelajari</button>':
+   has?'<span class="tag">Dikuasai</span>':"")+
+   '</div><br>';
+ }
+
+ $("mainPanel").innerHTML=html;
+
+ var b=$("mainPanel").querySelectorAll("[data-skill]");
+ for(var j=0;j<b.length;j++){
+  b[j].onclick=function(){
+   var s=SKILLS[parseInt(this.getAttribute("data-skill"),10)];
+   if(state.player.skills.indexOf(s[0])<0){
+    if(state.player.skills.length>=8){
+     state.player.skills.shift();
+     notify("Skill lama diganti.");
+    }
+    state.player.skills.push(s[0]);
+    save();
+    renderGame();
+   }
+  };
+ }
+}
+
+function renderAI(){
+ var html='<div class="panel"><h2>AI Arbiter</h2>'+
+ '<div class="muted">AI digunakan untuk menghidupkan narasi. Game tetap dapat dimainkan tanpa koneksi.</div></div>';
+
+ html+='<div class="panel">'+
+ '<label class="label">AI Endpoint</label>'+
+ '<input id="aiEndpoint" value="'+esc(state.ai.endpoint||"")+'" placeholder="https://domain-kamu/api/arbiter">'+
+ '<div class="muted" style="margin-top:7px">Jangan menaruh API key rahasia langsung di GitHub Pages.</div>'+
+ '<button class="primary" id="saveAI">Simpan Endpoint</button>'+
+ '</div>';
+
+ html+='<div class="panel"><h3>Status</h3>'+
+ '<div class="statline"><span class="statname">Mode</span><b>'+(state.ai.endpoint?"Online Endpoint":"Local Arbiter")+'</b></div>'+
+ '<div class="statline"><span class="statname">Fallback</span><b class="good">AKTIF</b></div>'+
+ '</div>';
+
+ if(state.ai.lastError){
+  html+='<div class="panel"><div class="bad">'+esc(state.ai.lastError)+'</div></div>';
+ }
+
+ $("mainPanel").innerHTML=html;
+
+ $("saveAI").onclick=function(){
+  state.ai.endpoint=$("aiEndpoint").value.replace(/^\s+|\s+$/g,"");
+  save();
+  notify("Endpoint AI disimpan.");
+  renderGame();
+ };
+}
+
+/* ---------- COMBAT ---------- */
+
+function startRandomCombat(){
+ var p=state.player;
+ var available=[];
+ for(var i=0;i<MONSTERS.length;i++){
+  var m=MONSTERS[i];
+  if(m.level<=p.level+3 && m.level>=Math.max(1,p.level-4))available.push(m);
+ }
+
+ if(available.length===0)available=[MONSTERS[0]];
+
+ var m=available[Math.floor(Math.random()*available.length)];
+ startCombatObject(m,false);
+}
+
+function startCombatObject(enemy,isArena){
+ if(state.combat){
+  notify("Kamu sedang bertarung.");
+  return;
+ }
+
+ state.combat={
+  enemy:{
+   name:enemy.name,
+   level:enemy.level,
+   hp:enemy.hp,
+   maxHp:enemy.hp,
+   atk:enemy.atk,
+   def:enemy.def,
+   exp:enemy.exp||0,
+   gold:enemy.gold||0,
+   drop:enemy.drop||"Arena Token"
+  },
+  arena:isArena,
+  defending:false,
+  log:[]
+ };
+
+ currentTab="combat";
+ renderCombat();
+}
+
+function renderCombat(){
+ var c=state.combat;
+ if(!c){currentTab="home";renderGame();return}
+
+ var p=state.player;
+ var e=c.enemy;
+
+ var html='<div class="panel">'+
+ '<div class="muted">COMBAT • '+(c.arena?"ROYAL ARENA":"FIELD")+'</div>'+
+ '<h2>'+esc(e.name)+'</h2>'+
+ '<div class="tag">Recommended Lv.'+e.level+'</div>'+
+ '<div class="tag">Enemy HP '+e.hp+'/'+e.maxHp+'</div>'+
+ '<div class="tag">ATK '+e.atk+'</div>'+
+ '</div>';
+
+ html+='<div class="panel">'+
+ '<div><b>'+esc(p.name)+'</b> • Lv.'+p.level+'</div>'+
+ '<div class="hpbar"><div class="hpfill" style="width:'+Math.max(0,Math.floor(p.hp/p.maxHp*100))+'%"></div></div>'+
+ '<div class="muted">HP '+p.hp+'/'+p.maxHp+' • MP '+p.mp+'/'+p.maxMp+'</div>'+
+ '</div>';
+
+ html+='<div class="panel"><h3>Battle Log</h3><div class="rp">';
+ for(var i=0;i<c.log.length;i++){
+  html+='<div class="msg system"><div class="body">'+esc(c.log[i])+'</div></div>';
+ }
+ if(c.log.length===0){
+  html+='<div class="msg arbiter"><div class="body">Arbiter: '+esc(e.name)+' berdiri di hadapanmu.</div></div>';
+ }
+ html+='</div></div>';
+
+ html+='<div class="panel"><div class="grid">';
+ html+='<button class="primary" id="attackBtn">Serang</button>';
+ html+='<button class="secondary" id="defendBtn">Bertahan</button>';
+ html+='<button class="secondary" id="skillBtn">Gunakan Skill</button>';
+ html+='<button class="secondary danger" id="runBtn">Kabur</button>';
+ html+='</div></div>';
+
+ $("mainPanel").innerHTML=html;
+
+ $("attackBtn").onclick=function(){combatAttack()};
+ $("defendBtn").onclick=function(){combatDefend()};
+ $("skillBtn").onclick=function(){combatSkill()};
+ $("runBtn").onclick=function(){combatRun()};
+}
+
+function playerAttackDamage(){
+ var p=state.player;
+ var weaponBonus=5;
+ for(var i=0;i<WEAPONS.length;i++){
+  if(WEAPONS[i][0]===p.equipped){
+   weaponBonus=WEAPONS[i][2];
+  }
+ }
+ return Math.max(1,p.stats.str*2+weaponBonus+Math.floor(Math.random()*8));
+}
+
+function enemyTurn(){
+ var c=state.combat;
+ var p=state.player;
+ var e=c.enemy;
+
+ var dmg=Math.max(1,e.atk-p.stats.vit-Math.floor(Math.random()*5));
+ if(c.defending)dmg=Math.floor(dmg*.45);
+
+ p.hp-=dmg;
+ c.log.push(e.name+" menyerang. Damage "+dmg+".");
+
+ if(p.hp<=0){
+  p.hp=1;
+  c.log.push("Kamu jatuh dan kehilangan kesempatan.");
+  state.player.gold=Math.max(0,state.player.gold-Math.floor(state.player.gold*.08));
+  state.combat=null;
+  currentTab="home";
+  save();
+  notify("Kalah. Sebagian Gold hilang.");
+  renderGame();
+ }
+}
+
+function combatAttack(){
+ if(!state.combat)return;
+ var c=state.combat;
+ var e=c.enemy;
+ var dmg=playerAttackDamage();
+ dmg=Math.max(1,dmg-e.def);
+ e.hp-=dmg;
+ c.log.push("Kamu menyerang "+e.name+". Damage "+dmg+".");
+ c.defending=false;
+
+ if(e.hp<=0){
+  winCombat();
+  return;
+ }
+ enemyTurn();
+ if(state.combat)renderCombat();
+}
+
+function combatDefend(){
+ if(!state.combat)return;
+ state.combat.defending=true;
+ state.combat.log.push("Kamu mengambil posisi bertahan.");
+ enemyTurn();
+ if(state.combat)renderCombat();
+}
+
+function combatSkill(){
+ if(!state.combat)return;
+ var p=state.player;
+ var c=state.combat;
+ var e=c.enemy;
+
+ if(p.skills.length===0){
+  notify("Tidak ada skill.");
+  return;
+ }
+
+ var sName=p.skills[Math.floor(Math.random()*p.skills.length)];
+ var power=20+Math.floor(p.stats.int*1.5+p.stats.str+Math.random()*15);
+ var dmg=Math.max(2,power-e.def);
+
+ if(sName==="Heal"){
+  var heal=30+p.stats.int*2;
+  p.hp=Math.min(p.maxHp,p.hp+heal);
+  c.log.push("Kamu menggunakan Heal. HP +"+heal+".");
+ }else{
+  e.hp-=dmg;
+  p.mp=Math.max(0,p.mp-5);
+  c.log.push("Kamu menggunakan "+sName+". Damage "+dmg+".");
+ }
+
+ if(e.hp<=0){
+  winCombat();
+  return;
+ }
+
+ enemyTurn();
+ if(state.combat)renderCombat();
+}
+
+function combatRun(){
+ if(!state.combat)return;
+ if(Math.random()<.65){
+  state.combat=null;
+  currentTab="home";
+  notify("Kamu berhasil kabur.");
+  renderGame();
+ }else{
+  state.combat.log.push("Kamu gagal melarikan diri.");
+  enemyTurn();
+  if(state.combat)renderCombat();
+ }
+}
+
+function winCombat(){
+ var c=state.combat;
+ var e=c.enemy;
+ var p=state.player;
+
+ p.hp=Math.min(p.maxHp,p.hp+10);
+
+ var exp=e.exp||100;
+ var gold=e.gold||50;
+
+ p.gold+=gold;
+ gainExp(exp);
+
+ var drop=e.drop||"Arena Token";
+ addItem(drop,1);
+
+ if(c.arena){
+  addItem("Arena Token",2);
+  addRep("royal",3);
+  questProgress("arena",1);
+ }
+
+ questProgress("monster",1);
+
+ addHistory("Kemenangan melawan "+e.name+". Reward: "+exp+" EXP, "+gold+" Gold, "+drop+".");
+ save();
+
+ state.combat=null;
+ currentTab="home";
+
+ notify("MENANG! EXP +"+exp+" • Gold +"+gold+" • "+drop+" x1");
+ renderGame();
+}
+
+/* ---------- RP / ARBITER ---------- */
+
+function parseRP(text){
+ var dialog=[];
+ var actions=[];
+ var clean=text;
+
+ var quoteRe=/"([^"]*)"/g;
+ var m;
+ while((m=quoteRe.exec(text))!==null){
+  dialog.push(m[1]);
+ }
+
+ var actionRe=/\[([^\]]*)\]/g;
+ while((m=actionRe.exec(text))!==null){
+  actions.push(m[1]);
+ }
+
+ return {dialog:dialog,actions:actions,raw:text,clean:clean};
+}
+
+function localArbiter(parsed){
+ var p=state.player;
+ var l=getLocation();
+ var text=parsed.raw.toLowerCase();
+ var result="";
+
+ var hasAction=parsed.actions.length>0;
+ var hasDialog=parsed.dialog.length>0;
+
+ if(text.indexOf("tavern")>=0 || text.indexOf("bar")>=0){
+  result="Pintu tavern terbuka di hadapanmu. Kehangatan, aroma makanan, dan suara percakapan memenuhi ruangan. Seorang bartender memperhatikanmu.";
+  if(hasDialog)result+="\n\nBartender: \"Kalau kau mencari pekerjaan, Federation sering mengirim petualang ke sini.\"";
+  addRep("tavern",1);
+  return result;
+ }
+
+ if(text.indexOf("federation")>=0 || text.indexOf("quest")>=0 || text.indexOf("pekerjaan")>=0){
+  result="Seorang petugas Federation menatapmu dari balik meja.\n\nPetugas: \"Kalau kau ingin mengambil pekerjaan, buktikan dulu bahwa kau bisa bertanggung jawab atas keputusanmu.\"";
+  questProgress("rp",1);
+  return result;
+ }
+
+ if(text.indexOf("serang")>=0 || text.indexOf("bunuh")>=0 || text.indexOf("pedang")>=0){
+  result="Gerakanmu membuat suasana berubah. Orang-orang di sekitar mulai memperhatikan. Dunia bereaksi terhadap tindakanmu.";
+  if(l.type==="Capital"){
+   result+="\n\nPenjaga kota: \"Simpan senjatamu. Jangan membuat keributan di dalam kota.\"";
+  }else{
+   result+="\n\nSesuatu dari balik pepohonan mulai bergerak...";
+  }
+  return result;
+ }
+
+ if(text.indexOf("bantu")>=0 || text.indexOf("menolong")>=0){
+  result="Kau memilih untuk membantu. Orang yang berada di hadapanmu tampak terkejut karena tidak menyangka seorang petualang akan turun tangan.";
+  addRep("federation",3);
+  questProgress("rp",1);
+  return result;
+ }
+
+ if(text.indexOf("pergi")>=0 || text.indexOf("jalan")>=0){
+  result="Kau melanjutkan perjalanan. Suasana berubah ketika jarak dari tempat sebelumnya semakin jauh.";
+  return result;
+ }
+
+ if(l.type==="Forest"){
+  result="Hutan "+l.name+" berbisik diterpa angin. Daun bergerak tanpa suara yang jelas. Sesuatu mungkin sedang mengawasimu.";
+ }else if(l.type==="Sea" || l.type==="Port City"){
+  result="Angin laut menerpa wajahmu. Kapal-kapal bergerak perlahan di kejauhan sementara para pelaut berteriak membawa barang.";
+ }else if(l.type==="Ruins"){
+  result="Reruntuhan tua berdiri dalam keheningan. Simbol yang hampir terkikis terlihat di salah satu dinding.";
+ }else if(l.type==="Mine"){
+  result="Suara logam menghantam batu terdengar dari dalam tambang. Udara terasa lebih berat semakin dalam kau berjalan.";
+ }else if(l.type==="Snow"){
+  result="Salju turun perlahan. Jejak kaki makhluk besar terlihat di kejauhan.";
+ }else if(l.type==="Abyss"){
+  result="Udara di Abyss Gate terasa berbeda. Cahaya seolah kehilangan kekuatannya. Sesuatu dari balik gerbang memperhatikanmu.";
+ }else{
+  result="Dunia tetap bergerak di sekitarmu. NPC berbicara, pedagang bertransaksi, dan para petualang menjalani urusannya masing-masing.";
+ }
+
+ if(hasAction)result+="\n\nArbiter mencatat tindakanmu. Keputusan ini dapat memengaruhi kejadian berikutnya.";
+ if(hasDialog)result+="\n\nArbiter memahami ucapanmu dan dunia menunggu respons berikutnya.";
+
+ return result;
+}
+
+function sendRoleplay(){
+ if(typing)return;
+
+ var input=$("rpInput");
+ var text=input.value.replace(/^\s+|\s+$/g,"");
+
+ if(!text){
+  notify("Tulis dialog atau aksi terlebih dahulu.");
+  return;
+ }
+
+ var parsed=parseRP(text);
+
+ addHistory("Kamu: "+text);
+
+ input.value="";
+ typing=true;
+ renderGame();
+
+ setTimeout(function(){
+  useArbiter(parsed);
+ },350);
+}
+
+function useArbiter(parsed){
+ var endpoint=state.ai.endpoint;
+
+ if(endpoint){
+  callOnlineArbiter(endpoint,parsed);
+ }else{
+  var answer=localArbiter(parsed);
+  finishArbiter(answer);
+ }
+}
+
+function buildPrompt(parsed){
+ var p=state.player;
+ var l=getLocation();
+
+ return [
+  "Kamu adalah AI ARBITER dalam game NEXORA V1.",
+  "Tugasmu adalah menjadi narator roleplay fantasy yang responsif.",
+  "Jangan memberikan pilihan A/B/C/D.",
+  "Player bebas menentukan tindakan.",
+  "Teks dalam tanda kutip adalah dialog player.",
+  "Teks dalam tanda kurung siku adalah aksi player.",
+  "Jangan mengambil alih keputusan player.",
+  "NPC dan dunia boleh bereaksi secara natural.",
+  "Jaga kontinuitas cerita.",
+  "Jangan mengubah level, EXP, Gold, inventory atau stat secara langsung.",
+  "Game engine yang mengatur angka.",
+  "",
+  "PLAYER:",
+  "Nama: "+p.name,
+  "Race: "+p.race,
+  "Class: "+p.class,
+  "Level: "+p.level,
+  "Lokasi: "+l.name,
+  "Reputation Federation: "+state.reputation.federation,
+  "",
+  "TINDAKAN PLAYER:",
+  parsed.raw,
+  "",
+  "Tulis respons Arbiter dalam bahasa Indonesia.",
+  "Gunakan narasi atmosferik dan dialog NPC bila diperlukan.",
+  "Jangan menutup cerita secara paksa.",
+  "Akhiri dengan keadaan yang memberi ruang bagi player untuk bertindak."
+ ].join("\n");
+}
+
+function callOnlineArbiter(endpoint,parsed){
+ var payload={
+  game:"NEXORA V1",
+  system:"AI Arbiter fantasy roleplay",
+  prompt:buildPrompt(parsed),
+  player:{
+   name:state.player.name,
+   race:state.player.race,
+   class:state.player.class,
+   level:state.player.level,
+   location:getLocation().name
+  }
+ };
+
+ try{
+  var xhr=new XMLHttpRequest();
+  xhr.open("POST",endpoint,true);
+  xhr.setRequestHeader("Content-Type","application/json");
+
+  xhr.onreadystatechange=function(){
+   if(xhr.readyState!==4)return;
+
+   if(xhr.status>=200 && xhr.status<300){
+    try{
+     var data=JSON.parse(xhr.responseText);
+     var answer="";
+
+     if(data.reply)answer=data.reply;
+     else if(data.response)answer=data.response;
+     else if(data.message)answer=data.message;
+     else if(data.content)answer=data.content;
+     else if(data.choices && data.choices[0]){
+      if(data.choices[0].message)answer=data.choices[0].message.content;
+      else if(data.choices[0].text)answer=data.choices[0].text;
+     }
+
+     if(answer){
+      state.ai.lastError="";
+      finishArbiter(answer);
+      return;
+     }
+    }catch(e){}
+   }
+
+   state.ai.lastError="AI endpoint gagal. Local Arbiter digunakan.";
+   var fallback=localArbiter(parsed);
+   finishArbiter(fallback);
+  };
+
+  xhr.onerror=function(){
+   state.ai.lastError="Koneksi AI gagal. Local Arbiter digunakan.";
+   finishArbiter(localArbiter(parsed));
+  };
+
+  xhr.ontimeout=function(){
+   state.ai.lastError="AI timeout. Local Arbiter digunakan.";
+   finishArbiter(localArbiter(parsed));
+  };
+
+  xhr.timeout=12000;
+  xhr.send(JSON.stringify(payload));
+
+ }catch(e){
+  state.ai.lastError="AI tidak dapat dihubungi. Local Arbiter digunakan.";
+  finishArbiter(localArbiter(parsed));
+ }
+}
+
+function finishArbiter(answer){
+ typing=false;
+
+ if(!answer)answer="Arbiter terdiam sejenak. Dunia tetap bergerak.";
+
+ addHistory(answer);
+
+ /* RP actions can influence quest progress */
+ var lower=answer.toLowerCase();
+
+ if(lower.indexOf("quest")>=0)questProgress("rp",1);
+ if(lower.indexOf("federation")>=0)addRep("federation",1);
+
+ save();
+
+ currentTab="home";
+ renderGame();
+}
+
+/* ---------- GATHERING ---------- */
+
+function gather(type){
+ var loc=getLocation();
+
+ if(type==="forest"){
+  if(loc.type!=="Forest"){
+   notify("Pergilah ke area Forest.");
+   return;
+  }
+  addItem("Wood",2+Math.floor(Math.random()*3));
+  addItem("Herb",1+Math.floor(Math.random()*2));
+  questProgress("material",1);
+  gainExp(20);
+  notify("Gathering berhasil.");
+ }
+
+ if(type==="mine"){
+  if(loc.type!=="Mine"){
+   notify("Pergilah ke Mine.");
+   return;
+  }
+  var ores=["Iron Ore","Copper Ore","Silver Ore"];
+  var ore=ores[Math.floor(Math.random()*ores.length)];
+  addItem(ore,1+Math.floor(Math.random()*2));
+  questProgress("ore",1);
+  gainExp(35);
+  notify("Menambang "+ore+".");
+ }
+
+ if(type==="fish"){
+  if(loc.type!=="Sea" && loc.type!=="Port City"){
+   notify("Pergilah ke area laut/pelabuhan.");
+   return;
+  }
+  var fish=["Fresh Fish","Crab Shell","Blue Coral","Pearl"];
+  var f=fish[Math.floor(Math.random()*fish.length)];
+  addItem(f,1);
+  questProgress("fish",1);
+  gainExp(30);
+  notify("Fishing mendapatkan "+f+".");
+ }
+
+ save();
+ renderGame();
+}
+
+/* ---------- SYSTEM TAB ---------- */
+
+function renderSystem(){
+}
+
+/* ---------- EVENTS ---------- */
+
+$("newGameBtn").onclick=beginNew;
+$("continueBtn").onclick=continueGame;
+$("resetBtn").onclick=function(){
+ if(confirm("Hapus save NEXORA V1?")){
+  resetGame();
+ }
+};
+
+$("nameNext").onclick=function(){
+ var n=$("nameInput").value.replace(/^\s+|\s+$/g,"");
+ if(!n){
+  notify("Nama belum diisi.");
+  return;
+ }
+ setupPage=2;
+ renderSetup();
+};
+
+$("raceNext").onclick=function(){
+ if(!setupRace){
+  notify("Pilih race terlebih dahulu.");
+  return;
+ }
+ setupPage=3;
+ renderSetup();
+};
+
+$("createBtn").onclick=finishCreation;
+
+$("profileBtn").onclick=function(){currentTab="profile";renderGame()};
+$("worldBtn").onclick=function(){currentTab="world";renderGame()};
+$("questBtn").onclick=function(){currentTab="quests";renderGame()};
+$("bagBtn").onclick=function(){currentTab="bag";renderGame()};
+$("aiBtn").onclick=function(){currentTab="ai";renderGame()};
+
+/* event delegation for stats */
+$("mainPanel").onclick=function(e){
+ var target=e.target;
+
+ if(target && target.getAttribute("data-stat")){
+  var key=target.getAttribute("data-stat");
+  if(state.player.statPoints<=0)return;
+
+  state.player.stats[key]++;
+  state.player.statPoints--;
+
+  if(key==="vit"){
+   state.player.maxHp+=5;
+   state.player.hp=Math.min(state.player.maxHp,state.player.hp+5);
+  }
+  if(key==="int"){
+   state.player.maxMp+=3;
+   state.player.mp=Math.min(state.player.maxMp,state.player.mp+3);
+  }
+
+  save();
+  renderGame();
+ }
+};
+
+/* ---------- INIT ---------- */
+
+function init(){
+ var existing=load();
+
+ if(existing){
+  $("continueBtn").disabled=false;
+ }else{
+  $("continueBtn").disabled=true;
+ }
+
+ showOnly("startScreen");
+}
+
+init();
+
+})();
+</script>
+</body>
+</html>
