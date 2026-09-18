@@ -1,0 +1,3114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#080b14">
+<title>NEXORA — Open World Fantasy RPG</title>
+
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#070a11;color:#eef3ff;font-family:Arial,Helvetica,sans-serif}
+body{min-height:100vh;background:
+radial-gradient(circle at 50% -10%,#26365b 0,#111827 35%,#070a11 75%);overflow-x:hidden}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.4;cursor:not-allowed}
+.hidden{display:none!important}
+
+:root{
+ --bg:#070a11;
+ --panel:#0e1421;
+ --card:#121a2a;
+ --border:#293750;
+ --text:#eef3ff;
+ --muted:#93a0b8;
+ --blue:#79aaff;
+ --gold:#e3bf6c;
+ --green:#62d49b;
+ --red:#e06d78;
+ --purple:#b68cff;
+}
+
+.app{max-width:1080px;margin:auto;padding:12px}
+.top{
+ display:flex;align-items:center;justify-content:space-between;
+ padding:8px 4px 12px;position:sticky;top:0;z-index:50;
+ background:rgba(7,10,17,.94);backdrop-filter:blur(10px)
+}
+.logo{font-weight:1000;font-size:25px;letter-spacing:3px}
+.logo span{color:var(--blue)}
+.topright{display:flex;gap:7px;align-items:center}
+.pill{
+ border:1px solid var(--border);background:#11192a;
+ padding:7px 10px;border-radius:99px;font-size:12px
+}
+.iconbtn{
+ border:1px solid var(--border);background:#11192a;color:white;
+ border-radius:11px;width:40px;height:38px
+}
+
+.screen{min-height:calc(100vh - 70px)}
+.hero{
+ border:1px solid var(--border);border-radius:22px;padding:20px;
+ margin-bottom:12px;background:linear-gradient(145deg,#172238,#0c111d);
+ box-shadow:0 14px 45px #0007
+}
+.card{
+ background:var(--card);border:1px solid var(--border);
+ border-radius:16px;padding:15px;box-shadow:0 7px 24px #0004
+}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+
+h1{font-size:32px;margin:6px 0 12px}
+h2{font-size:23px;margin:5px 0 12px}
+h3{margin:0 0 8px}
+p{line-height:1.55}
+.muted{color:var(--muted);font-size:13px}
+.eyebrow{
+ color:#8fa8d2;font-size:10px;letter-spacing:3px;
+ font-weight:bold;text-transform:uppercase
+}
+.big{font-size:27px;font-weight:1000}
+.section{
+ font-size:13px;color:#aab8d0;font-weight:bold;
+ margin:15px 2px 8px
+}
+
+.btn{
+ width:100%;border:0;border-radius:12px;padding:12px;
+ margin-top:9px;background:var(--blue);color:#07101e;font-weight:900
+}
+.btn.alt{
+ background:#182237;color:#edf3ff;border:1px solid #33425f
+}
+.btn.gold{background:var(--gold);color:#211706}
+.btn.green{background:var(--green);color:#07170f}
+.btn.red{background:var(--red);color:white}
+.btn.purple{background:var(--purple);color:#160b26}
+
+.titleScreen{
+ min-height:92vh;display:grid;place-items:center;text-align:center
+}
+.titleLogo{
+ font-size:58px;font-weight:1000;letter-spacing:8px;
+ text-shadow:0 0 35px #6e9cff77
+}
+.titleLogo span{color:var(--blue)}
+.subtitle{color:#98a8c5;letter-spacing:5px;font-size:11px;margin:8px 0 28px}
+.sigil{font-size:72px;margin-bottom:2px}
+
+.field{display:grid;gap:6px;margin:10px 0}
+.field label{font-size:11px;color:#9eabc2}
+input,select,textarea{
+ width:100%;background:#090f1a;color:white;border:1px solid #34425e;
+ padding:11px;border-radius:11px;outline:none
+}
+textarea{min-height:85px;resize:vertical}
+
+.choice{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.choice button{
+ background:#111a2a;color:#dfe8fa;border:1px solid #30405d;
+ border-radius:12px;padding:12px;text-align:left
+}
+.choice button.selected{
+ border-color:var(--blue);background:#1a2b4b;
+ box-shadow:0 0 0 1px #79aaff44 inset
+}
+
+.bar{height:9px;background:#252d3d;border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--blue)}
+.bar.hp i{background:var(--green)}
+.bar.enemy i{background:var(--red)}
+.bar.xp i{background:var(--purple)}
+
+.stat{
+ display:flex;justify-content:space-between;align-items:center;
+ padding:9px 0;border-bottom:1px solid #202b40
+}
+.stat:last-child{border-bottom:0}
+
+.nav{
+ display:grid;grid-template-columns:repeat(6,1fr);gap:5px;
+ position:sticky;bottom:6px;z-index:40;margin-top:13px;
+ padding:6px;background:#080d16ed;border:1px solid #27344d;
+ border-radius:16px;backdrop-filter:blur(10px)
+}
+.nav button{
+ border:0;background:#111827;color:#9caac2;border-radius:10px;
+ padding:9px 3px;font-size:10px
+}
+.nav button.active{background:#253654;color:white}
+
+.map{
+ min-height:390px;border:1px solid #3b4962;border-radius:20px;
+ position:relative;overflow:hidden;
+ background:
+ radial-gradient(circle at 30% 25%,#344c3e 0,transparent 20%),
+ radial-gradient(circle at 75% 70%,#4b3e34 0,transparent 22%),
+ linear-gradient(145deg,#182c2c,#101c29 55%,#151425)
+}
+.map:before,.map:after{
+ content:"";position:absolute;inset:-30%;
+ background:linear-gradient(25deg,transparent 48%,#6a705855 49%,#6a705855 50%,transparent 51%);
+ transform:rotate(12deg);opacity:.4
+}
+.map:after{transform:rotate(-18deg);opacity:.25}
+.location{
+ position:absolute;z-index:4;transform:translate(-50%,-50%);
+ min-width:88px;padding:8px;border-radius:13px;
+ background:#0c1422eF;color:white;border:1px solid #55657f;
+ text-align:center;font-size:10px;box-shadow:0 7px 20px #0009
+}
+.location b{display:block;font-size:24px}
+.l1{left:50%;top:48%}
+.l2{left:22%;top:25%}
+.l3{left:77%;top:24%}
+.l4{left:18%;top:67%}
+.l5{left:50%;top:78%}
+.l6{left:80%;top:65%}
+.l7{left:32%;top:51%}
+.l8{left:68%;top:47%}
+.l9{left:55%;top:19%}
+.l10{left:90%;top:40%}
+.l11{left:8%;top:43%}
+.l12{left:38%;top:82%}
+
+.placeIcon{
+ width:48px;height:48px;border-radius:14px;
+ display:grid;place-items:center;background:#202d44;font-size:25px
+}
+.placeRow{display:flex;gap:10px;align-items:center}
+
+.tag{
+ display:inline-block;padding:4px 7px;border-radius:99px;
+ background:#1b2940;color:#a8c6ff;font-size:9px;margin:2px
+}
+.tag.gold{background:#3b301d;color:#f0cf78}
+.tag.green{background:#173629;color:#7de0ac}
+.tag.red{background:#3b2026;color:#ff9ca4}
+.tag.purple{background:#302343;color:#c8a9ff}
+
+.item{
+ display:flex;justify-content:space-between;gap:8px;
+ align-items:center;padding:9px 0;border-bottom:1px solid #202b40
+}
+.item:last-child{border-bottom:0}
+
+.skill{
+ background:#10192a;border:1px solid #31415d;
+ padding:11px;border-radius:13px
+}
+.skill.locked{opacity:.45}
+.skill.active{border-color:var(--gold);background:#2b2519}
+
+.skillgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+
+.combat{
+ background:
+ radial-gradient(circle at 50% 10%,#402b46 0,#191522 42%,#090c13 100%);
+ border-color:#543c62
+}
+.enemyArt{
+ min-height:175px;display:grid;place-items:center;text-align:center;
+ position:relative
+}
+.monster{
+ width:135px;height:135px;border-radius:50%;
+ display:grid;place-items:center;font-size:78px;
+ background:radial-gradient(circle,#5c4b75,#211b32 65%,#0c0d15);
+ border:2px solid #735d8e;
+ box-shadow:0 0 50px #7d61a655
+}
+.enemyName{font-size:19px;font-weight:900;margin-top:8px}
+.rec{
+ display:inline-block;margin-top:5px;padding:5px 8px;
+ border-radius:99px;background:#34241c;color:#f2bd78;font-size:10px
+}
+
+.rewardBox{
+ border:1px solid #4b5870;background:#10192a;
+ border-radius:14px;padding:12px
+}
+
+.log{
+ max-height:230px;overflow:auto;background:#080d15;
+ border-radius:12px;padding:10px;font-size:12px
+}
+.log div{padding:7px 0;border-bottom:1px solid #172135}
+
+.notice{
+ position:fixed;z-index:100;left:50%;top:20px;
+ transform:translateX(-50%);background:#eef3ff;color:#07101e;
+ padding:11px 15px;border-radius:12px;display:none;
+ font-weight:900;font-size:12px;box-shadow:0 10px 35px #0009;
+ max-width:90%
+}
+
+.modal{
+ position:fixed;inset:0;z-index:90;background:#000b;
+ display:grid;place-items:center;padding:15px
+}
+.modalBox{width:100%;max-width:520px;max-height:90vh;overflow:auto}
+
+.error{
+ background:#170d12;border:1px solid #733844;
+ border-radius:18px;padding:20px;color:#ffdfe3
+}
+
+@media(max-width:650px){
+ .titleLogo{font-size:42px}
+ h1{font-size:27px}
+ .grid4{grid-template-columns:repeat(2,1fr)}
+ .grid3{grid-template-columns:repeat(3,1fr)}
+ .nav button{font-size:9px}
+ .map{min-height:330px}
+}
+@media(max-width:430px){
+ .grid{grid-template-columns:1fr}
+ .choice{grid-template-columns:1fr}
+ .grid3{grid-template-columns:repeat(2,1fr)}
+ .titleLogo{font-size:36px;letter-spacing:5px}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<header class="top hidden" id="topbar">
+ <div class="logo">NEX<span>ORA</span></div>
+ <div class="topright">
+  <div class="pill">Lv <b id="topLv">1</b> • <b id="topRank">F</b></div>
+  <button class="iconbtn" id="soundBtn">🔊</button>
+ </div>
+</header>
+
+<main id="app"></main>
+<div class="notice" id="notice"></div>
+
+</div>
+
+<script>
+"use strict";
+
+/* =====================================================
+   NEXORA V3
+   Single-file offline fantasy RPG
+   Designed for TrebEdit / Android
+===================================================== */
+
+const SAVE_KEY="NEXORA_V3_SAVE";
+
+/* ---------- BASIC DATA ---------- */
+
+const RACES={
+ Human:{hp:110,mp:50,atk:11,def:10,spd:10,luck:10,desc:"Seimbang dan mudah beradaptasi."},
+ Elf:{hp:92,mp:72,atk:9,def:8,spd:14,luck:13,desc:"Cepat, lincah dan dekat dengan arcane."},
+ Dwarf:{hp:135,mp:38,atk:14,def:15,spd:7,luck:8,desc:"Tubuh kuat dan pertahanan tinggi."},
+ Beastkin:{hp:105,mp:48,atk:13,def:9,spd:13,luck:14,desc:"Naluri liar meningkatkan kecepatan dan keberuntungan."}
+};
+
+const CLASSES={
+ Warrior:{hp:30,mp:5,atk:7,def:6,spd:0,desc:"Petarung garis depan dengan damage dan defense tinggi."},
+ Mage:{hp:5,mp:35,atk:10,def:1,spd:3,desc:"Pengendali sihir dengan serangan besar."},
+ Archer:{hp:10,mp:12,atk:6,def:2,spd:7,desc:"Penembak cepat dengan critical dan dodge."},
+ Assassin:{hp:4,mp:15,atk:9,def:1,spd:10,desc:"Pembunuh bayangan dengan critical tinggi."}
+};
+
+/* ---------- WORLD ---------- */
+
+const WORLD=[
+ {id:"city",name:"Astera",icon:"🏰",cost:0,level:1,rep:0,desc:"Kota utama para petualang."},
+ {id:"square",name:"Astera Plaza",icon:"⛲",cost:0,level:1,rep:0,desc:"Alun-alun pusat kota."},
+ {id:"federation",name:"Adventurer Federation",icon:"🏛️",cost:10,level:1,rep:0,desc:"Pusat quest dan reputasi."},
+ {id:"tavern",name:"Moonlit Tavern",icon:"🍺",cost:15,level:1,rep:0,desc:"Rumor, makanan, minuman dan istirahat."},
+ {id:"market",name:"Grand Market",icon:"🛒",cost:20,level:1,rep:0,desc:"Pusat perdagangan."},
+ {id:"blacksmith",name:"Royal Blacksmith",icon:"⚒️",cost:25,level:2,rep:20,desc:"Senjata, armor, upgrade dan repair."},
+ {id:"forest",name:"Whispering Forest",icon:"🌲",cost:30,level:2,rep:10,desc:"Zona hunting dan gathering."},
+ {id:"hunter",name:"Hunter Camp",icon:"🏹",cost:40,level:4,rep:40,desc:"Tempat para pemburu berlatih."},
+ {id:"silverlake",name:"Silverlake",icon:"🌊",cost:50,level:5,rep:70,desc:"Danau luas untuk memancing."},
+ {id:"elvenwood",name:"Elvenwood",icon:"🌳",cost:70,level:7,rep:120,desc:"Wilayah kuno bangsa Elf."},
+ {id:"mine",name:"Ironveil Mine",icon:"⛏️",cost:65,level:6,rep:100,desc:"Tambang besi dan kristal."},
+ {id:"dwarfhold",name:"Dwarfhold",icon:"🏔️",cost:90,level:9,rep:180,desc:"Benteng bangsa Dwarf."},
+ {id:"swamp",name:"Murkfen Swamp",icon:"🐊",cost:80,level:8,rep:150,desc:"Rawa beracun penuh monster."},
+ {id:"ruins",name:"Ruined Cathedral",icon:"⛪",cost:100,level:10,rep:220,desc:"Reruntuhan suci yang ditinggalkan."},
+ {id:"canyon",name:"Ashen Canyon",icon:"🌋",cost:120,level:12,rep:300,desc:"Jurang panas dengan monster kuat."},
+ {id:"coast",name:"Azure Coast",icon:"🏖️",cost:110,level:10,rep:250,desc:"Pantai dan pelabuhan."},
+ {id:"wharf",name:"Fisherman's Wharf",icon:"🎣",cost:120,level:11,rep:280,desc:"Pusat perdagangan hasil laut."},
+ {id:"arena",name:"Royal Arena",icon:"⚔️",cost:45,level:3,rep:30,desc:"Pertarungan PvE arena."},
+ {id:"moonfall",name:"Moonfall Village",icon:"🏘️",cost:140,level:14,rep:380,desc:"Desa kecil di bawah cahaya bulan."},
+ {id:"abyss",name:"Abyss Gate",icon:"🌀",cost:180,level:18,rep:500,desc:"Gerbang menuju dungeon kuno."},
+ {id:"dungeon",name:"Ancient Dungeon",icon:"🏯",cost:200,level:20,rep:650,desc:"Dungeon penuh boss dan material langka."},
+ {id:"sky",name:"Sky Shrine",icon:"☁️",cost:260,level:25,rep:900,desc:"Kuil di atas awan."}
+];
+
+/* ---------- MONSTERS ---------- */
+
+const MONSTERS=[
+ {id:"slime",name:"Forest Slime",icon:"🟢",level:1,hp:95,atk:9,def:3,xp:110,gold:35,drops:["Slime Core","Green Herb"]},
+ {id:"wolf",name:"Dire Wolf",icon:"🐺",level:3,hp:160,atk:17,def:6,xp:180,gold:55,drops:["Wolf Fang","Soft Hide"]},
+ {id:"goblin",name:"Goblin Scout",icon:"👺",level:5,hp:220,atk:22,def:9,xp:260,gold:75,drops:["Goblin Ear","Copper Ore"]},
+ {id:"bat",name:"Shadow Bat",icon:"🦇",level:8,hp:300,atk:28,def:7,xp:340,gold:95,drops:["Shadow Wing","Dark Essence"]},
+ {id:"treant",name:"Ancient Treant",icon:"🌲",level:11,hp:520,atk:35,def:15,xp:520,gold:150,drops:["Ancient Bark","Forest Crystal"]},
+ {id:"knight",name:"Ruin Knight",icon:"💀",level:15,hp:800,atk:45,def:23,xp:850,gold:240,drops:["Ruin Steel","Broken Crest"]},
+ {id:"guardian",name:"Abyss Guardian",icon:"👹",level:20,hp:1450,atk:60,def:28,xp:1800,gold:600,boss:true,drops:["Abyss Core","Guardian Plate","Dark Crystal"]},
+ {id:"dragon",name:"Ashen Dragon",icon:"🐉",level:25,hp:2400,atk:78,def:35,xp:3500,gold:1200,boss:true,drops:["Dragon Scale","Dragon Heart","Flame Crystal"]},
+ {id:"seraph",name:"Sky Seraph",icon:"🪽",level:30,hp:3300,atk:95,def:42,xp:5200,gold:1800,boss:true,drops:["Seraph Feather","Celestial Crystal","Sky Sigil"]}
+];
+
+/* ---------- SKILLS ---------- */
+
+const SKILLS={
+ Warrior:[
+  {name:"Power Slash",icon:"⚔️",cost:5,mul:1.55,req:1,desc:"Serangan berat."},
+  {name:"Guard Break",icon:"🛡️",cost:7,mul:1.35,req:2,defBreak:true,desc:"Damage tinggi dan mengurangi defense."},
+  {name:"Whirlwind",icon:"🌪️",cost:10,mul:1.8,req:5,desc:"Serangan berputar."},
+  {name:"Titan Blow",icon:"💥",cost:15,mul:2.3,req:10,crit:true,desc:"Pukulan raksasa."},
+  {name:"Iron Will",icon:"🗿",cost:12,mul:1.5,req:15,heal:true,desc:"Menyerang sambil memulihkan HP."},
+  {name:"Royal Execution",icon:"👑",cost:22,mul:3.1,req:20,crit:true,desc:"Finisher warrior."}
+ ],
+ Mage:[
+  {name:"Arcane Bolt",icon:"✨",cost:7,mul:1.7,req:1,desc:"Proyektil arcane."},
+  {name:"Frost Nova",icon:"❄️",cost:12,mul:2.05,req:2,desc:"Ledakan es."},
+  {name:"Fire Lance",icon:"🔥",cost:14,mul:2.25,req:5,desc:"Tombak api."},
+  {name:"Thunderfall",icon:"⚡",cost:18,mul:2.6,req:10,crit:true,desc:"Petir besar."},
+  {name:"Mana Bloom",icon:"🔮",cost:15,mul:1.8,req:15,heal:true,desc:"Serangan sekaligus recovery."},
+  {name:"Astral Cataclysm",icon:"🌌",cost:28,mul:3.4,req:20,crit:true,desc:"Ledakan astral."}
+ ],
+ Archer:[
+  {name:"Piercing Shot",icon:"🏹",cost:6,mul:1.65,req:1,desc:"Panah menembus armor."},
+  {name:"Rapid Arrow",icon:"💨",cost:9,mul:1.9,req:2,desc:"Serangan cepat."},
+  {name:"Poison Arrow",icon:"☠️",cost:11,mul:2.0,req:5,desc:"Panah beracun."},
+  {name:"Rain of Arrows",icon:"🌧️",cost:17,mul:2.55,req:10,crit:true,desc:"Hujan panah."},
+  {name:"Hunter Focus",icon:"🎯",cost:14,mul:2.2,req:15,crit:true,desc:"Critical tinggi."},
+  {name:"Moonshot",icon:"🌙",cost:25,mul:3.2,req:20,crit:true,desc:"Panah pamungkas."}
+ ],
+ Assassin:[
+  {name:"Shadow Strike",icon:"🗡️",cost:6,mul:1.75,req:1,crit:true,desc:"Serangan bayangan."},
+  {name:"Night Fang",icon:"🌑",cost:10,mul:2.15,req:2,crit:true,desc:"Tebasan mematikan."},
+  {name:"Bleeding Edge",icon:"🩸",cost:12,mul:2.1,req:5,crit:true,desc:"Critical dan bleed."},
+  {name:"Phantom Step",icon:"👤",cost:15,mul:2.4,req:10,crit:true,desc:"Serangan dari bayangan."},
+  {name:"Death Mark",icon:"☠️",cost:19,mul:2.8,req:15,crit:true,desc:"Serangan target."},
+  {name:"Void Execution",icon:"🌀",cost:27,mul:3.5,req:20,crit:true,desc:"Finisher assassin."}
+ ]
+};
+
+/* ---------- ITEMS / MATERIALS ---------- */
+
+const MATERIAL_NAMES=[
+ "Green Herb","Red Herb","Blue Herb","Moon Herb","Silver Herb","Golden Herb","Azure Herb",
+ "Iron Ore","Copper Ore","Silver Ore","Gold Ore","Mithril Ore","Obsidian Ore","Star Ore",
+ "Rough Ruby","Rough Sapphire","Rough Emerald","Moonstone","Sunstone","Void Crystal",
+ "Wood","Hardwood","Ancient Bark","Mystic Branch","Moonwood","Elfwood","Dwarfwood",
+ "Slime Core","Wolf Fang","Soft Hide","Goblin Ear","Shadow Wing","Dark Essence",
+ "Forest Crystal","Ruin Steel","Broken Crest","Abyss Core","Guardian Plate","Dark Crystal",
+ "Dragon Scale","Dragon Heart","Flame Crystal","Seraph Feather","Celestial Crystal","Sky Sigil",
+ "River Fish","Silver Carp","Moon Eel","Blue Tuna","Golden Koi","Deepwater Pearl",
+ "Coral Shard","Sea Shell","Abyss Pearl","Salt Crystal","Wet Scale",
+ "Swamp Moss","Poison Fang","Bog Eye","Venom Sac","Rotten Root",
+ "Canyon Stone","Ember Rock","Magma Shard","Ashen Bone","Fire Dust",
+ "Ancient Dust","Holy Fragment","Broken Relic","Cathedral Glass","Old Coin",
+ "Leather","Thick Leather","Wolf Pelt","Dragon Leather","Spider Silk","Night Silk",
+ "Mana Dust","Magic Thread","Arcane Shard","Light Essence","Shadow Essence",
+ "Feather","Beast Claw","Beast Horn","Bear Claw","Dire Horn","Hunter Badge",
+ "Dungeon Key","Abyss Fragment","Sky Fragment","Star Fragment","Ancient Coin"
+];
+
+const WEAPON_NAMES=[
+ ["Iron Sword","Warrior",35,8],
+ ["Steel Sword","Warrior",90,15],
+ ["Knight Sword","Warrior",180,24],
+ ["Royal Blade","Warrior",360,35],
+ ["Mithril Greatsword","Warrior",700,50],
+ ["Abyss Cleaver","Warrior",1300,70],
+ ["Celestial Blade","Warrior",2400,95],
+ ["Iron Staff","Mage",40,7],
+ ["Oak Staff","Mage",95,14],
+ ["Crystal Staff","Mage",210,23],
+ ["Arcane Rod","Mage",400,34],
+ ["Astral Staff","Mage",800,50],
+ ["Void Scepter","Mage",1500,72],
+ ["Celestial Grimoire","Mage",2600,98],
+ ["Hunter Bow","Archer",45,8],
+ ["Longbow","Archer",100,15],
+ ["Silver Bow","Archer",220,24],
+ ["Elven Bow","Archer",420,36],
+ ["Moon Bow","Archer",850,52],
+ ["Dragon Bow","Archer",1550,74],
+ ["Sky Piercer","Archer",2700,100],
+ ["Bronze Dagger","Assassin",40,8],
+ ["Steel Dagger","Assassin",100,16],
+ ["Shadow Dagger","Assassin",220,26],
+ ["Night Fang","Assassin",430,38],
+ ["Void Daggers","Assassin",880,55],
+ ["Abyss Fang","Assassin",1600,78],
+ ["Starbreaker","Assassin",2800,105]
+];
+
+/* ---------- QUEST TYPES ---------- */
+
+const QUEST_TYPES=[
+ {type:"Hunt",names:["Perburuan Senja","Pemburu Monster","Pembersihan Jalur","Jejak Darah"],zone:"forest"},
+ {type:"Gather",names:["Ramuan untuk Alchemist","Koleksi Material","Herbalist Request","Bahan Crafting"],zone:"forest"},
+ {type:"Mine",names:["Suara dari Tambang","Bijih untuk Blacksmith","Crystal Rush","Deep Mining"],zone:"mine"},
+ {type:"Fish",names:["Tangkap Ikan","Hasil Laut Silverlake","Nelayan Pemula","Deepwater Harvest"],zone:"silverlake"},
+ {type:"Craft",names:["Pesanan Blacksmith","Crafting Challenge","Tempa Senjata","Workshop Request"],zone:"blacksmith"},
+ {type:"Explore",names:["Peta yang Hilang","Jelajah Wilayah","Beyond the Gate","Jejak Penjelajah"],zone:"city"},
+ {type:"Arena",names:["Ujian Arena","Royal Duel","Arena Streak","Champion's Trial"],zone:"arena"},
+ {type:"Reality",names:["Reality Quest: Rutinitas Petualang","Reality Quest: Survival","Reality Quest: Explorer","Reality Quest: Grind"],zone:"city"}
+];
+
+/* ---------- STATE ---------- */
+
+function freshState(){
+ return {
+  started:false,
+  name:"",
+  race:"Human",
+  class:"Warrior",
+  level:1,
+  xp:0,
+  gold:300,
+  hp:0,
+  mp:0,
+  statPoints:6,
+  stats:{str:5,vit:5,int:5,dex:5,luk:5},
+  computed:{maxHp:0,maxMp:0,atk:0,def:0,spd:0,luck:0},
+  location:"city",
+  reputation:0,
+  rank:"F",
+  rebirth:0,
+  rebirthPoints:0,
+  kills:0,
+  arenaWins:0,
+  arenaTokens:0,
+  inventory:[],
+  equipment:{weapon:"Rusty Sword",armor:"Traveler Clothes",accessory:"None"},
+  unlockedSkills:[],
+  equippedSkills:[],
+  completedQuests:[],
+  activeQuest:null,
+  dailyQuests:[],
+  dailyStamp:"",
+  achievements:[],
+  titles:[],
+  activeTitle:"Novice Adventurer",
+  foodBuff:null,
+  logs:["NEXORA terbangun.","Selamat datang di Astera."],
+  custom:[],
+  member:true,
+  combat:null,
+  lastReward:null
+ };
+}
+
+function makeItem(name,type,qty,extra){
+ return Object.assign({name:name,type:type,qty:qty||1,rarity:"Common"},extra||{});
+}
+
+function initializeInventory(){
+ return [
+  makeItem("Rusty Sword","Weapon",1,{rarity:"Common",atk:3}),
+  makeItem("Traveler Clothes","Armor",1,{rarity:"Common",def:3}),
+  makeItem("Small Potion","Potion",5,{rarity:"Common",heal:80}),
+  makeItem("Small Ether","Potion",2,{rarity:"Common",mana:45}),
+  makeItem("Bread","Food",2,{rarity:"Common",heal:40}),
+  makeItem("Water","Drink",2,{rarity:"Common",mana:25})
+ ];
+}
+
+function normalizeState(raw){
+ const s=freshState();
+ if(!raw||typeof raw!=="object")return s;
+
+ Object.keys(s).forEach(k=>{
+  if(raw[k]!==undefined)s[k]=raw[k];
+ });
+
+ s.stats=Object.assign(freshState().stats,raw.stats||{});
+ s.computed=Object.assign(freshState().computed,raw.computed||{});
+ s.equipment=Object.assign(freshState().equipment,raw.equipment||{});
+
+ if(!Array.isArray(s.inventory)||!s.inventory.length)s.inventory=initializeInventory();
+ if(!Array.isArray(s.unlockedSkills))s.unlockedSkills=[];
+ if(!Array.isArray(s.equippedSkills))s.equippedSkills=[];
+ if(!Array.isArray(s.completedQuests))s.completedQuests=[];
+ if(!Array.isArray(s.dailyQuests))s.dailyQuests=[];
+ if(!Array.isArray(s.logs))s.logs=[];
+ if(!Array.isArray(s.achievements))s.achievements=[];
+ if(!Array.isArray(s.titles))s.titles=[];
+ if(!Array.isArray(s.custom))s.custom=[];
+
+ return s;
+}
+
+let state;
+let soundOn=true;
+let audioCtx=null;
+let currentScreen="home";
+let battleTimer=null;
+
+/* ---------- STORAGE ---------- */
+
+function load(){
+ try{
+  const raw=JSON.parse(localStorage.getItem(SAVE_KEY)||"null");
+  return normalizeState(raw);
+ }catch(e){
+  return freshState();
+ }
+}
+
+function save(){
+ try{
+  localStorage.setItem(SAVE_KEY,JSON.stringify(state));
+ }catch(e){}
+}
+
+function resetGame(){
+ if(confirm("Reset semua progress NEXORA?")){
+  localStorage.removeItem(SAVE_KEY);
+  location.reload();
+ }
+}
+
+/* ---------- UTIL ---------- */
+
+function esc(value){
+ return String(value??"").replace(/[&<>"']/g,m=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+ }[m]));
+}
+
+function toast(text){
+ const n=document.getElementById("notice");
+ if(!n)return;
+ n.textContent=text;
+ n.style.display="block";
+ clearTimeout(window.__toast);
+ window.__toast=setTimeout(()=>n.style.display="none",2100);
+}
+
+function log(text){
+ state.logs.unshift(text);
+ state.logs=state.logs.slice(0,40);
+ save();
+}
+
+function random(arr){
+ return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function clamp(n,min,max){
+ return Math.max(min,Math.min(max,n));
+}
+
+function todayKey(){
+ const d=new Date();
+ return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+}
+
+/* ---------- AUDIO ---------- */
+
+function beep(freq=440,dur=.07,type="sine"){
+ if(!soundOn)return;
+ try{
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC)return;
+  audioCtx=audioCtx||new AC();
+  if(audioCtx.state==="suspended")audioCtx.resume();
+
+  const o=audioCtx.createOscillator();
+  const g=audioCtx.createGain();
+  o.type=type;
+  o.frequency.value=freq;
+  g.gain.value=.035;
+  o.connect(g);
+  g.connect(audioCtx.destination);
+  o.start();
+
+  g.gain.exponentialRampToValueAtTime(
+   .0001,audioCtx.currentTime+dur
+  );
+  o.stop(audioCtx.currentTime+dur);
+ }catch(e){}
+}
+
+function sfx(kind){
+ if(kind==="hit")beep(120,.08,"sawtooth");
+ else if(kind==="crit"){
+  beep(500,.08);
+  setTimeout(()=>beep(760,.1),60);
+ }else if(kind==="win"){
+  [440,550,660,800].forEach((f,i)=>setTimeout(()=>beep(f,.1),i*90));
+ }else if(kind==="level"){
+  [500,650,800,1000].forEach((f,i)=>setTimeout(()=>beep(f,.12),i*100));
+ }else beep(300,.05);
+}
+
+/* ---------- STATS ---------- */
+
+function recalc(){
+ const r=RACES[state.race]||RACES.Human;
+ const c=CLASSES[state.class]||CLASSES.Warrior;
+ const s=state.stats||{str:5,vit:5,int:5,dex:5,luk:5};
+
+ state.computed.maxHp=
+  r.hp+c.hp+
+  (state.level-1)*18+
+  s.vit*14+
+  state.rebirth*35;
+
+ state.computed.maxMp=
+  r.mp+c.mp+
+  (state.level-1)*7+
+  s.int*9;
+
+ state.computed.atk=
+  r.atk+c.atk+
+  (state.level-1)*4+
+  s.str*4+
+  state.rebirth*3;
+
+ state.computed.def=
+  r.def+c.def+
+  (state.level-1)*2+
+  s.vit*2;
+
+ state.computed.spd=
+  r.spd+c.spd+
+  (state.level-1)+
+  s.dex*2;
+
+ state.computed.luck=
+  r.luck+
+  Math.floor((state.level-1)/2)+
+  s.luk*2;
+
+ const weapon=findItem(state.equipment.weapon);
+ const armor=findItem(state.equipment.armor);
+
+ if(weapon)state.computed.atk+=Number(weapon.atk||0);
+ if(armor)state.computed.def+=Number(armor.def||0);
+
+ state.hp=clamp(
+  state.hp||state.computed.maxHp,
+  0,state.computed.maxHp
+ );
+ state.mp=clamp(
+  state.mp||state.computed.maxMp,
+  0,state.computed.maxMp
+ );
+}
+
+function xpNeed(){
+ return Math.floor(
+  180+
+  state.level*125+
+  state.level*state.level*22
+ );
+}
+
+function gainXP(amount){
+ amount=Math.max(0,Math.floor(amount));
+ state.xp+=amount;
+
+ let levels=0;
+
+ while(state.xp>=xpNeed()){
+  state.xp-=xpNeed();
+  state.level++;
+  state.statPoints+=6;
+  levels++;
+  recalc();
+  state.hp=state.computed.maxHp;
+  state.mp=state.computed.maxMp;
+  sfx("level");
+  log("Naik ke Level "+state.level+". +6 Stat Point.");
+ }
+
+ if(levels){
+  toast("✨ LEVEL UP! Lv "+state.level+" • +"+levels*6+" Stat Point");
+ }
+
+ updateRank();
+ checkAchievements();
+ save();
+}
+
+function spendStat(stat){
+ if(state.statPoints<=0){
+  toast("Stat Point habis.");
+  return;
+ }
+
+ if(!["str","vit","int","dex","luk"].includes(stat))return;
+
+ state.stats[stat]++;
+ state.statPoints--;
+ recalc();
+
+ if(stat==="vit")state.hp=Math.min(state.computed.maxHp,state.hp+14);
+ if(stat==="int")state.mp=Math.min(state.computed.maxMp,state.mp+9);
+
+ save();
+ render(currentScreen);
+ toast("+"+stat.toUpperCase()+" berhasil.");
+}
+
+function updateRank(){
+ const r=state.reputation;
+ state.rank=
+  r>=1600?"S":
+  r>=1100?"A":
+  r>=750?"B":
+  r>=450?"C":
+  r>=220?"D":
+  r>=80?"E":"F";
+}
+
+/* ---------- ITEMS ---------- */
+
+function findItem(name){
+ return state.inventory.find(x=>x.name===name);
+}
+
+function addItem(name,type,qty,extra){
+ let item=findItem(name);
+
+ if(item){
+  item.qty+=qty;
+ }else{
+  state.inventory.push(makeItem(name,type,qty,extra));
+ }
+
+ save();
+}
+
+function removeItem(name,qty){
+ const item=findItem(name);
+ if(!item||item.qty<qty)return false;
+
+ item.qty-=qty;
+ if(item.qty<=0){
+  state.inventory=state.inventory.filter(x=>x!==item);
+ }
+ save();
+ return true;
+}
+
+function hasItem(name,qty=1){
+ const i=findItem(name);
+ return !!i&&i.qty>=qty;
+}
+
+/* Generate 100+ materials as actual inventory catalog */
+function materialCatalog(){
+ return MATERIAL_NAMES.map((name,i)=>({
+  name:name,
+  type:"Material",
+  rarity:
+   i>85?"Legendary":
+   i>65?"Epic":
+   i>45?"Rare":
+   i>25?"Uncommon":"Common"
+ }));
+}
+
+function weaponCatalog(){
+ return WEAPON_NAMES.map((x,i)=>({
+  name:x[0],
+  type:"Weapon",
+  class:x[1],
+  price:x[2],
+  atk:x[3],
+  rarity:
+   i>=24?"Legendary":
+   i>=17?"Epic":
+   i>=10?"Rare":
+   i>=5?"Uncommon":"Common"
+ }));
+}
+
+const ARMORS=[
+ ["Traveler Clothes",30,3,"Common"],
+ ["Leather Armor",80,7,"Common"],
+ ["Hunter Vest",150,11,"Uncommon"],
+ ["Iron Armor",260,17,"Uncommon"],
+ ["Steel Armor",430,24,"Rare"],
+ ["Elven Guard",650,31,"Rare"],
+ ["Mithril Armor",950,40,"Epic"],
+ ["Dragon Armor",1500,52,"Epic"],
+ ["Abyss Plate",2300,68,"Legendary"],
+ ["Celestial Armor",3600,88,"Legendary"]
+];
+
+const ACCESSORIES=[
+ ["Copper Ring",70,3],
+ ["Silver Ring",180,6],
+ ["Hunter Charm",320,10],
+ ["Moon Pendant",600,15],
+ ["Abyss Amulet",1200,22],
+ ["Celestial Sigil",2600,35]
+];
+
+/* ---------- QUEST SYSTEM ---------- */
+
+const MAIN_QUESTS=[
+ {id:"m1",name:"Awakening di Astera",type:"Main",desc:"Daftarkan dirimu di Adventurer Federation.",level:1,rep:20,xp:500,gold:250},
+ {id:"m2",name:"Bisikan Hutan",type:"Main",desc:"Kalahkan 3 monster di Whispering Forest.",level:2,rep:35,xp:800,gold:400,kills:3},
+ {id:"m3",name:"Jalan Menuju Tambang",type:"Main",desc:"Capai Level 6 dan kumpulkan 3 Iron Ore.",level:6,rep:70,xp:1500,gold:650,item:["Iron Ore",3]},
+ {id:"m4",name:"Penjaga Reruntuhan",type:"Main",desc:"Kalahkan Ruin Knight.",level:15,rep:140,xp:3500,gold:1200,monster:"knight"},
+ {id:"m5",name:"Gerbang Abyss",type:"Main",desc:"Kalahkan Abyss Guardian.",level:20,rep:250,xp:6500,gold:2500,monster:"guardian"},
+ {id:"m6",name:"Naga Abu",type:"Main",desc:"Kalahkan Ashen Dragon.",level:25,rep:400,xp:11000,gold:5000,monster:"dragon"}
+];
+
+function generateDailyQuests(){
+ const stamp=todayKey();
+
+ if(state.dailyStamp===stamp&&state.dailyQuests.length)return;
+
+ const seed=new Date().getDate()+new Date().getMonth()*31;
+ const list=[];
+
+ for(let i=0;i<6;i++){
+  const q=QUEST_TYPES[(seed+i*3)%QUEST_TYPES.length];
+  const hard=i>=4;
+  const names=q.names;
+  const name=names[(seed+i)%names.length];
+
+  let amount=hard?8+(i*2):3+i;
+
+  list.push({
+   id:"D"+stamp+"_"+i,
+   name:name,
+   type:q.type,
+   area:q.zone,
+   desc:
+    q.type==="Hunt"?"Kalahkan "+amount+" monster.":
+    q.type==="Gather"?"Kumpulkan "+amount+" material.",
+    level:hard?12+i*2:2+i,
+    rep:hard?45:18,
+    xp:hard?3000+i*500:650+i*180,
+    gold:hard?1100+i*200:220+i*80,
+    target:amount
+  });
+ }
+
+ state.dailyQuests=list;
+ state.dailyStamp=stamp;
+ save();
+}
+
+/* ---------- ACHIEVEMENTS ---------- */
+
+const ACHIEVEMENTS=[
+ {id:"first",name:"First Blood",desc:"Kalahkan monster pertama.",check:()=>state.kills>=1,reward:100},
+ {id:"hunter10",name:"Monster Hunter",desc:"Kalahkan 10 monster.",check:()=>state.kills>=10,reward:500},
+ {id:"hunter50",name:"Elite Hunter",desc:"Kalahkan 50 monster.",check:()=>state.kills>=50,reward:1500},
+ {id:"gold",name:"Treasure Seeker",desc:"Miliki 5000 Gold.",check:()=>state.gold>=5000,reward:700},
+ {id:"arena",name:"Arena Victor",desc:"Menangkan 5 duel.",check:()=>state.arenaWins>=5,reward:1000},
+ {id:"mine",name:"Deep Miner",desc:"Kumpulkan 20 material.",check:()=>state.inventory.reduce((a,b)=>a+b.qty,0)>=30,reward:500},
+ {id:"rebirth",name:"Reborn",desc:"Lakukan Rebirth.",check:()=>state.rebirth>=1,reward:2000},
+ {id:"level30",name:"Limit Breaker",desc:"Capai Level 30.",check:()=>state.level>=30,reward:3000}
+];
+
+function checkAchievements(){
+ ACHIEVEMENTS.forEach(a=>{
+  if(a.check()&&!state.achievements.includes(a.id)){
+   state.achievements.push(a.id);
+   state.gold+=a.reward;
+   if(!state.titles.includes(a.name))state.titles.push(a.name);
+   log("Achievement: "+a.name+" • +"+a.reward+" Gold");
+   toast("🏆 Achievement: "+a.name);
+  }
+ });
+ save();
+}
+
+/* ---------- TRAVEL ---------- */
+
+function getPlace(id){
+ return WORLD.find(p=>p.id===id);
+}
+
+function canTravel(place){
+ if(state.level<place.level){
+  toast("Butuh Level "+place.level+".");
+  return false;
+ }
+ if(state.reputation<place.rep){
+  toast("Butuh Reputation "+place.rep+".");
+  return false;
+ }
+ if(state.gold<place.cost){
+  toast("Gold tidak cukup. Travel: "+place.cost+" Gold.");
+  return false;
+ }
+ return true;
+}
+
+function travel(id){
+ const p=getPlace(id);
+ if(!p)return;
+
+ if(!canTravel(p))return;
+
+ state.gold-=p.cost;
+ state.location=id;
+
+ log("Berangkat ke "+p.name+" • -"+p.cost+" Gold.");
+ toast("📍 Tiba di "+p.name);
+
+ save();
+ render("world");
+}
+
+/* ---------- GATHERING ---------- */
+
+function gather(kind){
+ const actions={
+  forest:{
+   cost:0,
+   pool:["Green Herb","Wood","Hardwood","Soft Hide","Wolf Fang","Forest Crystal","Spider Silk"]
+  },
+  mine:{
+   cost:10,
+   pool:["Iron Ore","Copper Ore","Silver Ore","Rough Ruby","Rough Sapphire","Mithril Ore"]
+  },
+  fish:{
+   cost:5,
+   pool:["River Fish","Silver Carp","Moon Eel","Golden Koi","Deepwater Pearl","Coral Shard"]
+  },
+  swamp:{
+   cost:8,
+   pool:["Swamp Moss","Poison Fang","Bog Eye","Venom Sac","Rotten Root"]
+  },
+  canyon:{
+   cost:12,
+   pool:["Canyon Stone","Ember Rock","Magma Shard","Ashen Bone","Fire Dust"]
+  }
+ };
+
+ const a=actions[kind];
+ if(!a)return;
+
+ if(state.gold<a.cost){
+  toast("Gold tidak cukup.");
+  return;
+ }
+
+ state.gold-=a.cost;
+
+ const amount=2+Math.floor(Math.random()*3);
+
+ for(let i=0;i<amount;i++){
+  const name=random(a.pool);
+  addItem(name,"Material",1,{
+   rarity:"Common"
+  });
+ }
+
+ state.reputation+=2;
+ log("Gathering "+kind+" menghasilkan "+amount+" material.");
+ toast("⛏️ Gathering berhasil • +"+amount+" Material");
+ checkAchievements();
+ save();
+ render(currentScreen);
+}
+
+/* ---------- QUEST ---------- */
+
+function allQuests(){
+ generateDailyQuests();
+ return MAIN_QUESTS.concat(state.dailyQuests);
+}
+
+function questDone(id){
+ return state.completedQuests.includes(id);
+}
+
+function questCanStart(q){
+ if(questDone(q.id))return false;
+ if(state.activeQuest)return false;
+ if(state.level<(q.level||1))return false;
+
+ if(q.kills&&state.kills<q.kills)return false;
+
+ if(q.item){
+  if(!hasItem(q.item[0],q.item[1]))return false;
+ }
+
+ return true;
+}
+
+function acceptQuest(id){
+ const q=allQuests().find(x=>x.id===id);
+ if(!q)return;
+
+ if(!questCanStart(q)){
+  toast("Quest belum memenuhi syarat.");
+  return;
+ }
+
+ state.activeQuest=id;
+ log("Quest diterima: "+q.name);
+ toast("📜 Quest diterima!");
+ save();
+ render("quests");
+}
+
+function checkActiveQuest(){
+ const q=allQuests().find(x=>x.id===state.activeQuest);
+ if(!q)return;
+
+ let ready=true;
+
+ if(q.kills&&state.kills<q.kills)ready=false;
+ if(q.item&&!hasItem(q.item[0],q.item[1]))ready=false;
+ if(q.monster&&!state.completedQuests.includes(q.id))ready=false;
+
+ if(q.target){
+  const count=state.kills;
+  if(q.type==="Hunt"&&count<q.target)ready=false;
+ }
+
+ if(q.level&&state.level<q.level)ready=false;
+
+ if(ready)finishQuest(q);
+ else toast("Progress belum selesai.");
+}
+
+function finishQuest(q){
+ if(!q||questDone(q.id))return;
+
+ state.completedQuests.push(q.id);
+ state.activeQuest=null;
+
+ state.gold+=q.gold||0;
+ state.reputation+=q.rep||0;
+
+ gainXP(q.xp||0);
+
+ log(
+  "Quest selesai: "+q.name+
+  " • +"+(q.xp||0)+" XP"+
+  " • +"+(q.gold||0)+" Gold"+
+  " • REP +"+(q.rep||0)
+ );
+
+ toast("📜 QUEST SELESAI!");
+ sfx("win");
+ checkAchievements();
+ save();
+ render("quests");
+}
+
+/* ---------- COMBAT ---------- */
+
+function chooseMonster(){
+ const available=MONSTERS.filter(m=>m.level<=state.level+4);
+ return random(available.length?available:[MONSTERS[0]]);
+}
+
+function startEncounter(forceBoss=false){
+ let monster;
+
+ if(forceBoss){
+  monster=MONSTERS.find(m=>m.id==="guardian")||MONSTERS[6];
+ }else{
+  monster=chooseMonster();
+ }
+
+ if(state.level<monster.level){
+  toast("⚠️ Recommended Level "+monster.level+"+");
+ }
+
+ state.combat={
+  enemy:Object.assign({},monster,{maxHp:monster.hp}),
+  arena:false,
+  dungeon:false
+ };
+
+ log("Bertemu "+monster.name+" • Recommended Lv "+monster.level);
+ save();
+ render("combat");
+ beep(90,.15,"sawtooth");
+}
+
+function startDungeon(){
+ const p=getPlace("dungeon");
+
+ if(!canTravel(p))return;
+
+ state.gold-=p.cost;
+
+ const pool=MONSTERS.filter(m=>m.level>=20);
+ const monster=random(pool.length?pool:[MONSTERS[6]]);
+
+ state.location="dungeon";
+ state.combat={
+  enemy:Object.assign({},monster,{maxHp:monster.hp}),
+  arena:false,
+  dungeon:true
+ };
+
+ log("Dungeon dimulai: "+monster.name);
+ save();
+ render("combat");
+}
+
+function startArena(){
+ const cost=60;
+
+ if(state.gold<cost){
+  toast("Arena Entry membutuhkan 60 Gold.");
+  return;
+ }
+
+ state.gold-=cost;
+
+ const lv=Math.max(3,state.level);
+ const hp=500+lv*65;
+
+ state.combat={
+  enemy:{
+   id:"arena",
+   name:"Royal Challenger",
+   icon:"⚔️",
+   level:lv,
+   hp:hp,
+   maxHp:hp,
+   atk:Math.floor(22+lv*3.2),
+   def:Math.floor(8+lv*1.4),
+   xp:900+lv*130,
+   gold:500+lv*55,
+   drops:["Arena Medal"]
+  },
+  arena:true,
+  dungeon:false
+ };
+
+ log("Arena duel dimulai • Entry -60 Gold.");
+ save();
+ render("combat");
+}
+
+function attack(skillIndex){
+ if(!state.combat)return;
+
+ const c=state.combat;
+ const e=c.enemy;
+
+ if(battleTimer){
+  toast("Tunggu giliran...");
+  return;
+ }
+
+ let dmg=
+  state.computed.atk+
+  Math.floor(Math.random()*Math.max(4,state.computed.spd*.4));
+
+ let crit=
+  Math.random()<
+  clamp(.06+state.computed.luck/500,.06,.45);
+
+ if(skillIndex!==null){
+  const skill=SKILLS[state.class][skillIndex];
+
+  if(!skill){
+   toast("Skill tidak ditemukan.");
+   return;
+  }
+
+  if(state.level<skill.req){
+   toast("Skill membutuhkan Lv "+skill.req+".");
+   return;
+  }
+
+  if(state.mp<skill.cost){
+   toast("MP tidak cukup.");
+   return;
+  }
+
+  state.mp-=skill.cost;
+  dmg=Math.floor(dmg*skill.mul);
+
+  if(skill.crit){
+   crit=Math.random()<
+    clamp(.25+state.computed.luck/350,.25,.7);
+  }
+
+  if(skill.heal){
+   state.hp=Math.min(
+    state.computed.maxHp,
+    state.hp+Math.floor(state.computed.maxHp*.08)
+   );
+  }
+
+  if(skill.defBreak){
+   e.def=Math.max(0,Math.floor(e.def*.75));
+  }
+ }
+
+ if(crit)dmg=Math.floor(dmg*1.7);
+
+ dmg=Math.max(1,dmg-Math.floor(e.def*.35));
+ e.hp-=dmg;
+
+ toast((crit?"💥 CRITICAL ":"")+"-"+dmg+" Damage");
+ sfx(crit?"crit":"hit");
+
+ if(e.hp<=0){
+  winBattle();
+  return;
+ }
+
+ save();
+ render("combat");
+
+ battleTimer=setTimeout(()=>{
+  battleTimer=null;
+  enemyTurn();
+ },650);
+}
+
+function enemyTurn(){
+ if(!state.combat)return;
+
+ const e=state.combat.enemy;
+
+ const dodgeChance=clamp(state.computed.spd/500,.02,.25);
+
+ if(Math.random()<dodgeChance){
+  log("Kamu menghindari serangan "+e.name+".");
+  toast("💨 DODGE!");
+  render("combat");
+  return;
+ }
+
+ let dmg=
+  e.atk+
+  Math.floor(Math.random()*8)-
+  Math.floor(state.computed.def*.32);
+
+ dmg=Math.max(1,dmg);
+
+ state.hp-=dmg;
+
+ log(e.name+" menyerang • -"+dmg+" HP");
+ sfx("hit");
+
+ if(state.hp<=0){
+  defeatBattle();
+  return;
+ }
+
+ save();
+ render("combat");
+}
+
+function winBattle(){
+ if(!state.combat)return;
+
+ const e=state.combat.enemy;
+
+ let xp=e.xp;
+ let gold=e.gold;
+
+ if(state.foodBuff&&state.foodBuff.xp){
+  xp=Math.floor(xp*(1+state.foodBuff.xp));
+ }
+
+ if(state.foodBuff&&state.foodBuff.gold){
+  gold=Math.floor(gold*(1+state.foodBuff.gold));
+ }
+
+ state.gold+=gold;
+ state.kills++;
+
+ if(!state.combat.arena){
+  state.reputation+=e.boss?60:4;
+ }
+
+ const drops=[];
+
+ if(Array.isArray(e.drops)){
+  e.drops.forEach(name=>{
+   if(Math.random()<.72||e.boss){
+    addItem(name,"Material",1);
+    drops.push(name);
+   }
+  });
+ }
+
+ if(state.combat.arena){
+  state.arenaWins++;
+  state.arenaTokens+=3;
+  addItem("Arena Medal","Material",2);
+  drops.push("Arena Medal x2");
+ }
+
+ if(state.combat.dungeon){
+  state.arenaTokens+=1;
+ }
+
+ state.lastReward={
+  enemy:e.name,
+  xp:xp,
+  gold:gold,
+  drops:drops
+ };
+
+ gainXP(xp);
+
+ log(
+  "MENANG melawan "+e.name+
+  " • +"+xp+" XP • +"+gold+" Gold"
+ );
+
+ if(drops.length){
+  log("Drop: "+drops.join(", "));
+ }
+
+ state.combat=null;
+ state.hp=Math.min(state.computed.maxHp,state.hp+Math.floor(state.computed.maxHp*.25));
+ state.mp=Math.min(state.computed.maxMp,state.mp+Math.floor(state.computed.maxMp*.25));
+
+ checkAchievements();
+ save();
+ sfx("win");
+ showReward();
+}
+
+function showReward(){
+ const r=state.lastReward;
+ if(!r)return;
+
+ const app=document.getElementById("app");
+
+ app.innerHTML=`
+ <section class="hero">
+  <div class="eyebrow">VICTORY</div>
+  <h1>🏆 Victory!</h1>
+  <p class="muted">Pertarungan selesai. Berikut hasil perjalananmu.</p>
+
+  <div class="rewardBox">
+   <h3>⚔️ ${esc(r.enemy)}</h3>
+
+   <div class="grid3">
+    <div class="card">
+     <small>EXP</small>
+     <div class="big">+${r.xp}</div>
+    </div>
+
+    <div class="card">
+     <small>GOLD</small>
+     <div class="big">+${r.gold}</div>
+    </div>
+
+    <div class="card">
+     <small>DROP</small>
+     <div class="big">${r.drops.length}</div>
+    </div>
+   </div>
+
+   <div class="section">Material / Item</div>
+   <p class="muted">
+    ${r.drops.length?r.drops.map(x=>`<span class="tag gold">${esc(x)}</span>`).join(""):"Tidak ada drop tambahan."}
+   </p>
+
+   <button class="btn" data-action="home">LANJUTKAN</button>
+   <button class="btn alt" data-action="world">KEMBALI KE WORLD</button>
+  </div>
+ </section>
+ ${navHTML("home")}
+ `;
+
+ currentScreen="home";
+ bind();
+}
+
+function defeatBattle(){
+ if(battleTimer){
+  clearTimeout(battleTimer);
+  battleTimer=null;
+ }
+
+ const loss=Math.min(
+  state.gold,
+  Math.floor(state.gold*.08)
+ );
+
+ state.gold-=loss;
+ state.hp=Math.floor(state.computed.maxHp*.45);
+ state.mp=Math.floor(state.computed.maxMp*.45);
+ state.location="city";
+ state.combat=null;
+
+ log("Kalah dalam pertarungan • kehilangan "+loss+" Gold.");
+ toast("💀 Kamu kalah. -"+loss+" Gold.");
+ save();
+ render("home");
+}
+
+function useBattlePotion(){
+ const potion=state.inventory.find(
+  x=>x.type==="Potion"&&x.heal&&x.qty>0
+ );
+
+ if(!potion){
+  toast("Tidak ada Health Potion.");
+  return;
+ }
+
+ state.hp=Math.min(
+  state.computed.maxHp,
+  state.hp+potion.heal
+ );
+
+ potion.qty--;
+
+ if(potion.qty<=0){
+  state.inventory=state.inventory.filter(x=>x!==potion);
+ }
+
+ save();
+ render("combat");
+}
+
+function flee(){
+ if(!state.combat)return;
+ state.combat=null;
+ log("Kabur dari pertarungan.");
+ save();
+ render("world");
+}
+
+/* ---------- SHOP ---------- */
+
+function buyWeapon(index){
+ const w=weaponCatalog()[index];
+ if(!w)return;
+
+ if(state.level<Math.max(1,Math.floor(index/3)+1)){
+  toast("Level belum cukup untuk senjata ini.");
+  return;
+ }
+
+ if(state.gold<w.price){
+  toast("Gold tidak cukup.");
+  return;
+ }
+
+ state.gold-=w.price;
+ addItem(w.name,"Weapon",1,{
+  atk:w.atk,
+  rarity:w.rarity,
+  class:w.class
+ });
+
+ toast("🗡️ "+w.name+" dibeli.");
+ save();
+ render("blacksmith");
+}
+
+function buyArmor(index){
+ const a=ARMORS[index];
+ if(!a)return;
+
+ if(state.gold<a[1]){
+  toast("Gold tidak cukup.");
+  return;
+ }
+
+ state.gold-=a[1];
+ addItem(a[0],"Armor",1,{
+  def:a[2],
+  rarity:a[3]
+ });
+
+ toast("🛡️ Armor dibeli.");
+ save();
+ render("blacksmith");
+}
+
+function equipItem(index){
+ const item=state.inventory[index];
+ if(!item)return;
+
+ if(item.type==="Weapon"){
+  state.equipment.weapon=item.name;
+  recalc();
+  save();
+  toast("⚔️ "+item.name+" dipasang.");
+ }
+
+ if(item.type==="Armor"){
+  state.equipment.armor=item.name;
+  recalc();
+  save();
+  toast("🛡️ "+item.name+" dipasang.");
+ }
+
+ render("inventory");
+}
+
+function repair(){
+ const cost=80+state.level*20;
+
+ if(state.gold<cost){
+  toast("Gold tidak cukup.");
+  return;
+ }
+
+ state.gold-=cost;
+ toast("⚒️ Equipment diperbaiki.");
+ log("Repair equipment • -"+cost+" Gold.");
+ save();
+ render("blacksmith");
+}
+
+function upgradeWeapon(){
+ const w=findItem(state.equipment.weapon);
+
+ if(!w||w.type!=="Weapon"){
+  toast("Tidak ada senjata.");
+  return;
+ }
+
+ const cost=120+(w.atk||1)*35;
+
+ if(state.gold<cost){
+  toast("Butuh "+cost+" Gold.");
+  return;
+ }
+
+ state.gold-=cost;
+ w.atk=Math.floor((w.atk||1)*1.12)+1;
+
+ log("Upgrade "+w.name+" • ATK sekarang "+w.atk);
+ recalc();
+ save();
+ render("blacksmith");
+ toast("⚒️ Senjata berhasil di-upgrade.");
+}
+
+/* ---------- TAVERN ---------- */
+
+function buyFood(type){
+ const foods={
+  bread:{name:"Royal Bread",price:45,heal:150,desc:"Pulihkan HP.",healOnly:true},
+  stew:{name:"Hunter Stew",price:100,heal:350,desc:"HP besar + buff XP 10%.",xp:.10},
+  tea:{name:"Moon Tea",price:90,mana:250,desc:"MP besar + buff Gold 10%.",gold:.10},
+  feast:{name:"Adventurer Feast",price:220,heal:500,mana:350,desc:"HP/MP + XP 20%.",xp:.20}
+ };
+
+ const f=foods[type];
+ if(!f)return;
+
+ if(state.gold<f.price){
+  toast("Gold tidak cukup.");
+  return;
+ }
+
+ state.gold-=f.price;
+
+ if(f.heal){
+  state.hp=Math.min(state.computed.maxHp,state.hp+f.heal);
+ }
+
+ if(f.mana){
+  state.mp=Math.min(state.computed.maxMp,state.mp+f.mana);
+ }
+
+ state.foodBuff={
+  name:f.name,
+  xp:f.xp||0,
+  gold:f.gold||0
+ };
+
+ log("Mengonsumsi "+f.name+".");
+ toast("🍲 "+f.name+" aktif.");
+ save();
+ render("tavern");
+}
+
+function rest(){
+ const cost=40;
+
+ if(state.gold<cost){
+  toast("Istirahat membutuhkan 40 Gold.");
+  return;
+ }
+
+ state.gold-=cost;
+ state.hp=state.computed.maxHp;
+ state.mp=state.computed.maxMp;
+
+ log("Beristirahat di Moonlit Tavern.");
+ toast("❤️ HP & MP penuh.");
+ save();
+ render("tavern");
+}
+
+/* ---------- SKILL TREE ---------- */
+
+function toggleSkill(index){
+ const skill=SKILLS[state.class][index];
+ if(!skill)return;
+
+ if(state.level<skill.req){
+  toast("Butuh Lv "+skill.req+".");
+  return;
+ }
+
+ const key=state.class+"_"+index;
+
+ if(!state.unlockedSkills.includes(key)){
+  state.unlockedSkills.push(key);
+  toast("✨ Skill dibuka: "+skill.name);
+ }else{
+  const pos=state.equippedSkills.indexOf(key);
+
+  if(pos>=0){
+   state.equippedSkills.splice(pos,1);
+   toast("Skill dilepas.");
+  }else{
+   if(state.equippedSkills.length>=4){
+    toast("Maksimal 4 skill terpasang.");
+    return;
+   }
+   state.equippedSkills.push(key);
+   toast("Skill dipasang.");
+  }
+ }
+
+ save();
+ render("skills");
+}
+
+/* ---------- REBIRTH ---------- */
+
+function rebirth(){
+ if(state.level<30){
+  toast("Rebirth membutuhkan Level 30.");
+  return;
+ }
+
+ if(!confirm("Rebirth akan mengembalikan Level ke 1. Lanjutkan?"))return;
+
+ state.rebirth++;
+ state.rebirthPoints+=3;
+
+ state.level=1;
+ state.xp=0;
+ state.statPoints=6;
+
+ state.stats={
+  str:5+state.rebirth,
+  vit:5+state.rebirth,
+  int:5+state.rebirth,
+  dex:5+state.rebirth,
+  luk:5+state.rebirth
+ };
+
+ state.completedQuests=[];
+ state.activeQuest=null;
+ state.kills=0;
+ state.reputation=0;
+ state.rank="F";
+
+ recalc();
+ state.hp=state.computed.maxHp;
+ state.mp=state.computed.maxMp;
+
+ log(
+  "REBIRTH "+state.rebirth+
+  " berhasil • +3 Rebirth Point permanen."
+ );
+
+ toast("♻️ REBIRTH "+state.rebirth+"!");
+ save();
+ render("status");
+}
+
+/* ---------- CREATOR ---------- */
+
+function balanceScore(power,def){
+ const score=Math.round(
+  50+
+  Number(power||0)*1.5+
+  Number(def||0)*1.1
+ );
+
+ return {
+  score:score,
+  text:
+   score<=85?"BALANCED":
+   score<=120?"STRONG":
+   score<=155?"OVERPOWERED":"EXTREME"
+ };
+}
+
+function submitCreator(){
+ const name=document.getElementById("customName").value.trim();
+
+ if(!name){
+  toast("Isi nama konten.");
+  return;
+ }
+
+ const power=Number(document.getElementById("customPower").value)||0;
+ const def=Number(document.getElementById("customDef").value)||0;
+ const type=document.getElementById("customType").value;
+ const desc=document.getElementById("customDesc").value.trim();
+
+ const balance=balanceScore(power,def);
+
+ state.custom.push({
+  name:name,
+  type:type,
+  power:power,
+  def:def,
+  desc:desc,
+  balance:balance.text,
+  score:balance.score,
+  status:"Pending",
+  by:state.name
+ });
+
+ save();
+ toast("📨 Konten dikirim ke Owner.");
+ render("creator");
+}
+
+function moderate(index,approve){
+ const item=state.custom[index];
+ if(!item)return;
+
+ item.status=approve?"Approved":"Rejected";
+
+ save();
+ toast(approve?"✓ Content Approved":"✕ Content Rejected");
+ render("owner");
+}
+
+/* ---------- HTML ---------- */
+
+function navHTML(active){
+ return `
+ <nav class="nav">
+  <button class="${active==="home"?"active":""}" data-action="home">🏠<br>Home</button>
+  <button class="${active==="world"?"active":""}" data-action="world">🌌<br>World</button>
+  <button class="${active==="quests"?"active":""}" data-action="quests">📜<br>Quest</button>
+  <button class="${active==="status"?"active":""}" data-action="status">📊<br>Status</button>
+  <button class="${active==="inventory"?"active":""}" data-action="inventory">🎒<br>Bag</button>
+  <button class="${active==="menu"?"active":""}" data-action="menu">☰<br>Menu</button>
+ </nav>`;
+}
+
+function titleHTML(){
+ return `
+ <section class="titleScreen">
+  <div style="width:100%;max-width:540px">
+   <div class="sigil">✦</div>
+   <div class="titleLogo">NEX<span>ORA</span></div>
+   <div class="subtitle">OPEN WORLD • FANTASY • OFFLINE RPG</div>
+
+   <div class="card" style="text-align:left">
+    <div class="eyebrow">VERSION 3</div>
+    <h2>Bangkitkan Takdirmu</h2>
+
+    <p class="muted">
+     Jelajahi Astera, kumpulkan material, tempa equipment,
+     naikkan stat secara manual, buka skill, selesaikan quest,
+     lawan boss dan bangun legenda milikmu.
+    </p>
+
+    <button class="btn" data-action="newgame">
+     ✦ MULAI PETUALANGAN
+    </button>
+
+    <button class="btn alt" data-action="continue">
+     ↻ LANJUTKAN SAVE
+    </button>
+
+    <p class="muted" style="text-align:center;margin-top:15px">
+     Created by <b>Kyy Arthev</b> — Creator & Owner
+    </p>
+   </div>
+  </div>
+ </section>`;
+}
+
+function createHTML(){
+ let race=state.race;
+ let cls=state.class;
+
+ return `
+ <section class="hero">
+  <div class="eyebrow">CHAPTER 0 • AWAKENING</div>
+  <h1>⚔️ Buat Karaktermu</h1>
+
+  <div class="field">
+   <label>NAMA PETUALANG</label>
+   <input id="charName" maxlength="18" placeholder="Contoh: Kaii" value="${esc(state.name)}">
+  </div>
+
+  <h3>Race</h3>
+
+  <div class="choice" id="raceChoice">
+   ${Object.entries(RACES).map(([k,v])=>`
+    <button data-race="${k}" class="${k===race?"selected":""}">
+     <b>${k}</b><br>
+     <small>${v.desc}</small>
+    </button>
+   `).join("")}
+  </div>
+
+  <h3 style="margin-top:16px">Class</h3>
+
+  <div class="choice" id="classChoice">
+   ${Object.entries(CLASSES).map(([k,v])=>`
+    <button data-class="${k}" class="${k===cls?"selected":""}">
+     <b>${k}</b><br>
+     <small>${v.desc}</small>
+    </button>
+   `).join("")}
+  </div>
+
+  <button class="btn" data-action="create">
+   ⚔️ LAHIRKAN PETUALANG
+  </button>
+ </section>`;
+}
+
+function homeHTML(){
+ const need=xpNeed();
+ const pct=clamp(state.xp/need*100,0,100);
+
+ return `
+ <section class="hero">
+  <div class="eyebrow">${esc(state.location.toUpperCase())}</div>
+  <h1>Selamat datang, ${esc(state.name)}.</h1>
+
+  <p class="muted">
+   “Nama besar tidak diwariskan. Ia ditempa.”
+  </p>
+
+  <div class="grid3">
+   <div class="card">
+    <small>LEVEL</small>
+    <div class="big">${state.level}</div>
+   </div>
+
+   <div class="card">
+    <small>RANK</small>
+    <div class="big">${state.rank}</div>
+   </div>
+
+   <div class="card">
+    <small>GOLD</small>
+    <div class="big">🪙 ${state.gold}</div>
+   </div>
+  </div>
+
+  <div style="margin-top:13px">
+   <div class="stat">
+    <span>EXP</span>
+    <span>${state.xp}/${need}</span>
+   </div>
+   <div class="bar xp"><i style="width:${pct}%"></i></div>
+  </div>
+ </section>
+
+ <div class="grid">
+  <div class="card">
+   <div class="eyebrow">ACTIVE QUEST</div>
+   <h3>
+    ${state.activeQuest?
+      esc((allQuests().find(q=>q.id===state.activeQuest)||{}).name||"Quest"):
+      "Belum ada quest"}
+   </h3>
+
+   <p class="muted">
+    ${state.activeQuest?
+      esc((allQuests().find(q=>q.id===state.activeQuest)||{}).desc||""):
+      "Buka Quest Board untuk mengambil quest."}
+   </p>
+
+   <button class="btn" data-action="quests">📜 QUEST BOARD</button>
+  </div>
+
+  <div class="card">
+   <div class="eyebrow">PLAYER</div>
+   <h3>${esc(state.race)} ${esc(state.class)}</h3>
+   <p class="muted">
+    ATK ${state.computed.atk} • DEF ${state.computed.def}<br>
+    SPD ${state.computed.spd} • LUCK ${state.computed.luck}
+   </p>
+
+   <button class="btn alt" data-action="status">📊 STATUS</button>
+  </div>
+ </div>
+
+ <div class="section">🔔 NOTIFICATION / LOG</div>
+ <div class="card log">
+  ${state.logs.slice(0,10).map(x=>`<div>${esc(x)}</div>`).join("")}
+ </div>
+
+ ${navHTML("home")}`;
+}
+
+function worldHTML(){
+ const positions=["l1","l2","l3","l4","l5","l6","l7","l8","l9","l10","l11","l12"];
+
+ return `
+ <section class="hero">
+  <div class="eyebrow">OPEN WORLD</div>
+  <h1>🌌 ASTERA CONTINENT</h1>
+  <p class="muted">
+   Semakin jauh wilayah yang kamu buka, semakin mahal perjalanan
+   dan semakin tinggi Reputation yang dibutuhkan.
+  </p>
+
+  <div class="map">
+   ${WORLD.slice(0,12).map((p,i)=>`
+    <button class="location ${positions[i]}" data-place="${p.id}">
+     <b>${p.icon}</b>${esc(p.name)}
+    </button>
+   `).join("")}
+  </div>
+ </section>
+
+ <div class="grid">
+  ${WORLD.map(p=>{
+   const locked=state.level<p.level||state.reputation<p.rep;
+
+   return `
+   <div class="card">
+    <div class="placeRow">
+     <div class="placeIcon">${p.icon}</div>
+     <div>
+      <h3>${esc(p.name)}</h3>
+      <small>${esc(p.desc)}</small>
+     </div>
+    </div>
+
+    <div style="margin-top:8px">
+     <span class="tag">Lv ${p.level}+</span>
+     <span class="tag gold">🪙 ${p.cost}</span>
+     <span class="tag purple">REP ${p.rep}</span>
+    </div>
+
+    <button class="btn alt" data-place="${p.id}" ${locked?"disabled":""}>
+     ${locked?"🔒 TERKUNCI":"📍 PERGI"}
+    </button>
+   </div>`;
+  }).join("")}
+ </div>
+
+ ${navHTML("world")}`;
+}
+
+function questsHTML(){
+ const quests=allQuests();
+
+ return `
+ <section class="hero">
+  <div class="eyebrow">ADVENTURER FEDERATION</div>
+  <h1>📜 Quest Board</h1>
+  <p class="muted">
+   Rank ${state.rank} • Reputation ${state.reputation}
+  </p>
+
+  <div class="grid3">
+   <div class="card">
+    <small>MAIN</small>
+    <div class="big">${MAIN_QUESTS.length}</div>
+   </div>
+   <div class="card">
+    <small>DAILY</small>
+    <div class="big">${state.dailyQuests.length}</div>
+   </div>
+   <div class="card">
+    <small>ACTIVE</small>
+    <div class="big">${state.activeQuest?"1":"0"}</div>
+   </div>
+  </div>
+ </section>
+
+ ${quests.map(q=>{
+  const done=questDone(q.id);
+  const active=state.activeQuest===q.id;
+  const available=questCanStart(q);
+
+  return `
+  <div class="card" style="margin-bottom:9px;border-left:3px solid ${
+   done?"#62d49b":active?"#e3bf6c":"#79aaff"
+  }">
+
+   <span class="tag ${q.type==="Reality"?"purple":""}">
+    ${esc(q.type||"Quest")}
+   </span>
+
+   ${active?`<span class="tag gold">ACTIVE</span>`:""}
+   ${done?`<span class="tag green">COMPLETED</span>`:""}
+
+   <h3>${esc(q.name)}</h3>
+   <p class="muted">${esc(q.desc)}</p>
+
+   <small>
+    Lv ${q.level||1} •
+    ✨ ${q.xp||0} XP •
+    🪙 ${q.gold||0} •
+    REP +${q.rep||0}
+   </small>
+
+   ${
+    !done&&!active&&available?
+    `<button class="btn" data-quest="${esc(q.id)}">⚔️ TERIMA QUEST</button>`:
+    ""
+   }
+
+   ${
+    active?
+    `<button class="btn gold" data-action="checkquest">🔎 CEK PROGRESS</button>`:
+    ""
+   }
+  </div>`;
+ }).join("")}
+
+ ${navHTML("quests")}`;
+}
+
+function statusHTML(){
+ const p=state.computed;
+
+ const stats=[
+  ["STR","str","Physical Attack"],
+  ["VIT","vit","HP & Defense"],
+  ["INT","int","Magic & MP"],
+  ["DEX","dex","Speed & Dodge"],
+  ["LUK","luk","Critical & Drop"]
+ ];
+
+ return `
+ <section class="hero">
+  <div class="eyebrow">CHARACTER STATUS</div>
+  <h1>${esc(state.name)}</h1>
+
+  <p class="muted">
+   ${esc(state.race)} • ${esc(state.class)} •
+   Rank ${state.rank} • Rebirth ${state.rebirth}
+  </p>
+
+  <div class="grid3">
+   <div class="card"><small>HP</small><div class="big">${state.hp}/${p.maxHp}</div></div>
+   <div class="card"><small>MP</small><div class="big">${state.mp}/${p.maxMp}</div></div>
+   <div class="card"><small>STAT POINT</small><div class="big">${state.statPoints}</div></div>
+   <div class="card"><small>ATK</small><div class="big">${p.atk}</div></div>
+   <div class="card"><small>DEF</small><div class="big">${p.def}</div></div>
+   <div class="card"><small>SPD</small><div class="big">${p.spd}</div></div>
+  </div>
+ </section>
+
+ <div class="card">
+  <h3>📈 Manual Stat Allocation</h3>
+  <p class="muted">Setiap level memberi 6 Stat Point.</p>
+
+  ${stats.map(s=>`
+   <div class="stat">
+    <div>
+     <b>${s[0]}</b><br>
+     <small>${s[2]}</small>
+    </div>
+
+    <div style="display:flex;gap:8px;align-items:center">
+     <b>${state.stats[s[1]]}</b>
+     <button class="btn alt" style="width:auto;margin:0;padding:8px 13px"
+      data-stat="${s[1]}">+</button>
+    </div>
+   </div>
+  `).join("")}
+ </div>
+
+ <div class="grid" style="margin-top:10px">
+  <div class="card">
+   <h3>⚔️ Equipment</h3>
+   <p class="muted">Weapon: ${esc(state.equipment.weapon)}</p>
+   <p class="muted">Armor: ${esc(state.equipment.armor)}</p>
+   <p class="muted">Title: ${esc(state.activeTitle)}</p>
+  </div>
+
+  <div class="card">
+   <h3>♻️ Rebirth</h3>
+   <p class="muted">
+    Syarat: Level 30<br>
+    Rebirth Point: ${state.rebirthPoints}
+   </p>
+
+   <button class="btn gold" data-action="rebirth"
+    ${state.level<30?"disabled":""}>
+    ♻️ REBIRTH
+   </button>
+  </div>
+ </div>
+
+ ${navHTML("status")}`;
+}
+
+function inventoryHTML(){
+ return `
+ <section class="hero">
+  <div class="eyebrow">PLAYER INVENTORY</div>
+  <h1>🎒 Bag</h1>
+  <p class="muted">
+   ${state.inventory.reduce((a,b)=>a+b.qty,0)} item units •
+   🪙 ${state.gold} Gold
+  </p>
+ </section>
+
+ <div class="card">
+  ${state.inventory.length?
+   state.inventory.map((it,i)=>`
+    <div class="item">
+     <div>
+      <b>${esc(it.name)}</b><br>
+      <small>
+       ${esc(it.type)} •
+       ${esc(it.rarity||"Common")} •
+       x${it.qty}
+      </small>
+     </div>
+
+     ${
+      it.type==="Weapon"||it.type==="Armor"?
+      `<button class="btn alt" style="width:auto;margin:0"
+       data-equip="${i}">EQUIP</button>`:""
+     }
+    </div>
+   `).join(""):
+   `<p class="muted">Inventory kosong.</p>`
+  }
+ </div>
+
+ ${navHTML("inventory")}`;
+}
+
+function combatHTML(){
+ if(!state.combat){
+  return `
+  <section class="hero">
+   <h1>Tidak ada pertarungan.</h1>
+   <button class="btn" data-action="world">Kembali ke World</button>
+  </section>
+  ${navHTML("world")}`;
+ }
+
+ const e=state.combat.enemy;
+
+ const enemyPct=clamp(e.hp/e.maxHp*100,0,100);
+ const myPct=clamp(state.hp/state.computed.maxHp*100,0,100);
+
+ return `
+ <section class="card combat">
+  <div class="eyebrow">
+   ${state.combat.arena?"ROYAL ARENA":
+     state.combat.dungeon?"ANCIENT DUNGEON":"WILD ENCOUNTER"}
+  </div>
+
+  <div class="enemyArt">
+   <div>
+    <div class="monster">${e.icon}</div>
+    <div class="enemyName">${esc(e.name)}</div>
+    <span class="rec">
+     Recommended Level ${e.level}+
+    </span>
+   </div>
+  </div>
+
+  <div class="bar enemy">
+   <i style="width:${enemyPct}%"></i>
+  </div>
+
+  <div class="stat">
+   <span>Enemy HP</span>
+   <b>${Math.max(0,e.hp)}/${e.maxHp}</b>
+  </div>
+
+  <div style="margin-top:12px">
+   <div class="stat">
+    <b>${esc(state.name)} • Lv ${state.level}</b>
+    <span>HP ${state.hp}/${state.computed.maxHp}</span>
+   </div>
+
+   <div class="bar hp">
+    <i style="width:${myPct}%"></i>
+   </div>
+
+   <div class="stat">
+    <span>MP</span>
+    <b>${state.mp}/${state.computed.maxMp}</b>
+   </div>
+  </div>
+
+  <h3 style="margin-top:16px">⚔️ Combat Skills</h3>
+
+  <div class="skillgrid">
+   <button class="skill" data-attack="-1">
+    ⚔️ <b>Basic Attack</b><br>
+    <small>Serangan biasa • 0 MP</small>
+   </button>
+
+   ${SKILLS[state.class].map((s,i)=>{
+    const key=state.class+"_"+i;
+    const unlocked=state.level>=s.req;
+
+    return `
+    <button class="skill ${unlocked?"":"locked"}"
+     data-attack="${i}"
+     ${unlocked?"":"disabled"}>
+     ${s.icon} <b>${esc(s.name)}</b><br>
+     <small>${s.cost} MP • ${esc(s.desc)}</small>
+    </button>`;
+   }).join("")}
+  </div>
+
+  <button class="btn alt" data-action="battlepotion">
+   🧪 Gunakan Potion
+  </button>
+
+  <button class="btn red" data-action="flee">
+   🏃 Kabur
+  </button>
+ </section>`;
+}
+
+function skillsHTML(){
+ return `
+ <section class="hero">
+  <div class="eyebrow">SKILL TREE</div>
+  <h1>✨ ${esc(state.class)} Skills</h1>
+  <p class="muted">
+   Buka skill sesuai level dan pasang maksimal 4 skill.
+  </p>
+ </section>
+
+ <div class="grid">
+ ${SKILLS[state.class].map((s,i)=>{
+  const key=state.class+"_"+i;
+  const unlocked=state.unlockedSkills.includes(key);
+  const equipped=state.equippedSkills.includes(key);
+
+  return `
+  <div class="skill ${equipped?"active":""} ${unlocked?"":"locked"}">
+   <div style="font-size:28px">${s.icon}</div>
+   <h3>${esc(s.name)}</h3>
+   <p class="muted">${esc(s.desc)}</p>
+   <span class="tag">Lv ${s.req}</span>
+   <span class="tag purple">${s.cost} MP</span>
+
+   <button class="btn ${equipped?"gold":"alt"}"
+    data-skill="${i}">
+    ${
+     equipped?"✓ TERPASANG":
+     unlocked?"＋ PASANG":
+     "🔒 TERKUNCI"
+    }
+   </button>
+  </div>`;
+ }).join("")}
+ </div>
+
+ <div class="card" style="margin-top:10px">
+  <h3>Active Loadout</h3>
+  <p class="muted">
+   ${state.equippedSkills.length?
+    state.equippedSkills.map(x=>{
+     const i=Number(x.split("_")[1]);
+     return SKILLS[state.class][i]?.name||"";
+    }).join(" • "):
+    "Belum memasang skill."}
+  </p>
+ </div>
+
+ ${navHTML("menu")}`;
+}
+
+function blacksmithHTML(){
+ const weapons=weaponCatalog();
+
+ return `
+ <section class="hero">
+  <div class="eyebrow">ROYAL BLACKSMITH</div>
+  <h1>⚒️ Blacksmith</h1>
+  <p class="muted">
+   Gold bisa digunakan untuk membeli, memperbaiki dan meningkatkan equipment.
+  </p>
+
+  <button class="btn gold" data-action="upgrade">
+   ⚒️ UPGRADE ${esc(state.equipment.weapon)}
+  </button>
+
+  <button class="btn alt" data-action="repair">
+   🔧 REPAIR EQUIPMENT
+  </button>
+ </section>
+
+ <div class="section">🗡️ WEAPON SHOP</div>
+
+ <div class="grid">
+ ${weapons.map((w,i)=>`
+  <div class="card">
+   <span class="tag">${esc(w.class)}</span>
+   <span class="tag gold">${esc(w.rarity)}</span>
+   <h3>⚔️ ${esc(w.name)}</h3>
+   <p class="muted">ATK +${w.atk}</p>
+   <b>🪙 ${w.price}</b>
+   <button class="btn" data-buyweapon="${i}">BELI</button>
+  </div>
+ `).join("")}
+ </div>
+
+ <div class="section">🛡️ ARMOR</div>
+
+ <div class="grid">
+ ${ARMORS.map((a,i)=>`
+  <div class="card">
+   <span class="tag">${a[3]}</span>
+   <h3>🛡️ ${esc(a[0])}</h3>
+   <p class="muted">DEF +${a[2]}</p>
+   <b>🪙 ${a[1]}</b>
+   <button class="btn alt" data-buyarmor="${i}">BELI</button>
+  </div>
+ `).join("")}
+ </div>`;
+}
+
+function tavernHTML(){
+ return `
+ <section class="hero">
+  <div class="eyebrow">MOONLIT TAVERN</div>
+  <h1>🍺 Tavern</h1>
+  <p class="muted">
+   Bukan cuma tempat rest. Makanan dan minuman memberi efek sementara.
+  </p>
+
+  <div class="card">
+   <h3>Current Buff</h3>
+   <p class="muted">
+    ${state.foodBuff?
+     esc(state.foodBuff.name)+" aktif.":
+     "Tidak ada buff aktif."}
+   </p>
+
+   <button class="btn alt" data-action="rest">
+    🛏️ REST • 40 GOLD
+   </button>
+  </div>
+ </section>
+
+ <div class="grid">
+  <div class="card">
+   <h3>🍞 Royal Bread</h3>
+   <p class="muted">Pulihkan 150 HP.</p>
+   <button class="btn" data-food="bread">🪙 45</button>
+  </div>
+
+  <div class="card">
+   <h3>🍲 Hunter Stew</h3>
+   <p class="muted">HP +350 • XP +10%.</p>
+   <button class="btn" data-food="stew">🪙 100</button>
+  </div>
+
+  <div class="card">
+   <h3>🍵 Moon Tea</h3>
+   <p class="muted">MP +250 • Gold +10%.</p>
+   <button class="btn" data-food="tea">🪙 90</button>
+  </div>
+
+  <div class="card">
+   <h3>🍗 Adventurer Feast</h3>
+   <p class="muted">HP +500 • MP +350 • XP +20%.</p>
+   <button class="btn gold" data-food="feast">🪙 220</button>
+  </div>
+ </div>
+
+ ${navHTML("menu")}`;
+}
+
+function marketHTML(){
+ const consumables=[
+  ["Small Potion","Potion",30,{heal:80}],
+  ["Large Potion","Potion",90,{heal:250}],
+  ["Mega Potion","Potion",240,{heal:700}],
+  ["Small Ether","Potion",40,{mana:45}],
+  ["Large Ether","Potion",120,{mana:180}],
+  ["Antidote","Potion",55,{heal:30}],
+  ["Teleport Stone","Utility",150,{}],
+  ["Dungeon Key","Material",500,{}]
+ ];
+
+ return `
+ <section class="hero">
+  <div class="eyebrow">GRAND MARKET</div>
+  <h1>🛒 Market</h1>
+  <p class="muted">Gold: 🪙 ${state.gold}</p>
+ </section>
+
+ <div class="grid">
+ ${consumables.map((x,i)=>`
+  <div class="card">
+   <h3>${esc(x[0])}</h3>
+   <p class="muted">${x[1]}</p>
+   <b>🪙 ${x[2]}</b>
+   <button class="btn" data-market="${i}">BELI</button>
+  </div>
+ `).join("")}
+ </div>
+
+ ${navHTML("menu")}`;
+}
+
+function gatherHTML(){
+ return `
+ <section class="hero">
+  <div class="eyebrow">GRINDING ZONES</div>
+  <h1>🌿 Gathering</h1>
+  <p class="muted">
+   Kumpulkan material untuk crafting, upgrade dan quest.
+  </p>
+ </section>
+
+ <div class="grid">
+  <div class="card">
+   <h3>🌲 Whispering Forest</h3>
+   <p class="muted">Herb, Wood, Hide, Fang.</p>
+   <button class="btn" data-gather="forest">GATHER</button>
+  </div>
+
+  <div class="card">
+   <h3>⛏️ Ironveil Mine</h3>
+   <p class="muted">Ore dan gemstone.</p>
+   <button class="btn" data-gather="mine">MINE • 10G</button>
+  </div>
+
+  <div class="card">
+   <h3>🎣 Silverlake</h3>
+   <p class="muted">Fish dan pearl.</p>
+   <button class="btn" data-gather="fish">FISH • 5G</button>
+  </div>
+
+  <div class="card">
+   <h3>🐊 Murkfen Swamp</h3>
+   <p class="muted">Poison material.</p>
+   <button class="btn" data-gather="swamp">GATHER • 8G</button>
+  </div>
+
+  <div class="card">
+   <h3>🌋 Ashen Canyon</h3>
+   <p class="muted">Fire material.</p>
+   <button class="btn" data-gather="canyon">GATHER • 12G</button>
+  </div>
+ </div>
+
+ <div class="card" style="margin-top:10px">
+  <h3>📦 Material Database</h3>
+  <p class="muted">
+   NEXORA memiliki ${MATERIAL_NAMES.length} material berbeda
+   untuk grinding, crafting dan drop monster.
+  </p>
+ </div>
+
+ ${navHTML("menu")}`;
+}
+
+function menuHTML(){
+ return `
+ <section class="hero">
+  <div class="eyebrow">PLAYER MENU</div>
+  <h1>☰ Player Menu</h1>
+  <p class="muted">
+   ${esc(state.name)} • ${esc(state.race)} • ${esc(state.class)}
+  </p>
+ </section>
+
+ <div class="grid">
+  <div class="card">
+   <h3>✨ Skill Tree</h3>
+   <p class="muted">Atur skill situasional.</p>
+   <button class="btn" data-action="skills">BUKA SKILL</button>
+  </div>
+
+  <div class="card">
+   <h3>⚒️ Blacksmith</h3>
+   <p class="muted">Weapon, armor, upgrade.</p>
+   <button class="btn" data-action="blacksmith">BLACKSMITH</button>
+  </div>
+
+  <div class="card">
+   <h3>🍺 Tavern</h3>
+   <p class="muted">Food, drink dan recovery.</p>
+   <button class="btn" data-action="tavern">TAVERN</button>
+  </div>
+
+  <div class="card">
+   <h3>🛒 Market</h3>
+   <p class="muted">Consumable dan utility.</p>
+   <button class="btn" data-action="market">MARKET</button>
+  </div>
+
+  <div class="card">
+   <h3>🌿 Gathering</h3>
+   <p class="muted">Grinding material.</p>
+   <button class="btn" data-action="gather">GATHERING</button>
+  </div>
+
+  <div class="card">
+   <h3>🏆 Achievements</h3>
+   <p class="muted">${state.achievements.length}/${ACHIEVEMENTS.length}</p>
+   <button class="btn" data-action="achievements">ACHIEVEMENT</button>
+  </div>
+
+  <div class="card">
+   <h3>👑 Owner</h3>
+   <p class="muted">Creator: Kyy Arthev</p>
+   <button class="btn alt" data-action="owner">OWNER PANEL</button>
+  </div>
+
+  <div class="card">
+   <h3>⚙️ Settings</h3>
+   <button class="btn alt" data-action="settings">SETTINGS</button>
+  </div>
+ </div>
+
+ ${navHTML("menu")}`;
+}
+
+function achievementsHTML(){
+ return `
+ <section class="hero">
+  <div class="eyebrow">ACHIEVEMENTS</div>
+  <h1>🏆 Achievements</h1>
+  <p class="muted">
+   ${state.achievements.length}/${ACHIEVEMENTS.length} unlocked
+  </p>
+ </section>
+
+ <div class="grid">
+ ${ACHIEVEMENTS.map(a=>{
+  const done=state.achievements.includes(a.id);
+
+  return `
+  <div class="card">
+   <span class="tag ${done?"green":"red"}">
+    ${done?"UNLOCKED":"LOCKED"}
+   </span>
+
+   <h3>${done?"🏆":"🔒"} ${esc(a.name)}</h3>
+   <p class="muted">${esc(a.desc)}</p>
+   <small>Reward: +${a.reward} Gold</small>
+  </div>`;
+ }).join("")}
+ </div>
+
+ ${navHTML("menu")}`;
+}
+
+function settingsHTML(){
+ return `
+ <section class="hero">
+  <div class="eyebrow">SYSTEM</div>
+  <h1>⚙️ Settings</h1>
+ </section>
+
+ <div class="card">
+  <h3>🔊 Sound</h3>
+  <button class="btn alt" data-action="sound">
+   ${soundOn?"🔊 SOUND ON":"🔇 SOUND OFF"}
+  </button>
+
+  <button class="btn red" data-action="reset">
+   ♻️ RESET SAVE
+  </button>
+ </div>
+
+ ${navHTML("menu")}`;
+}
+
+function creatorHTML(){
+ return `
+ <section class="hero">
+  <div class="eyebrow">MEMBER CREATOR</div>
+  <h1>✦ Custom Creator</h1>
+  <p class="muted">
+   Member dapat membuat konsep Race, Class, Skill, Weapon,
+   Armor atau Passive. Semua submission offline masuk antrean Owner.
+  </p>
+ </section>
+
+ <div class="card">
+  <div class="field">
+   <label>NAMA CONTENT</label>
+   <input id="customName" placeholder="Contoh: Frostborn">
+  </div>
+
+  <div class="field">
+   <label>TYPE</label>
+   <select id="customType">
+    <option>Race</option>
+    <option>Class</option>
+    <option>Skill</option>
+    <option>Weapon</option>
+    <option>Armor</option>
+    <option>Passive</option>
+   </select>
+  </div>
+
+  <div class="grid">
+   <div class="field">
+    <label>POWER / ATK</label>
+    <input id="customPower" type="number" value="10">
+   </div>
+
+   <div class="field">
+    <label>DEF / EFFECT</label>
+    <input id="customDef" type="number" value="10">
+   </div>
+  </div>
+
+  <div class="field">
+   <label>DESCRIPTION</label>
+   <textarea id="customDesc"></textarea>
+  </div>
+
+  <button class="btn" data-action="submitcreator">
+   📨 KIRIM KE OWNER
+  </button>
+ </div>
+
+ <div class="card" style="margin-top:10px">
+  <h3>My Submissions</h3>
+  ${
+   state.custom.length?
+   state.custom.map(x=>`
+    <div class="item">
+     <div>
+      <b>${esc(x.name)}</b><br>
+      <small>${esc(x.type)} • ${esc(x.status)} • Score ${x.score}</small>
+     </div>
+    </div>
+   `).join(""):
+   `<p class="muted">Belum ada submission.</p>`
+  }
+ </div>
+
+ ${navHTML("menu")}`;
+}
+
+function ownerHTML(){
+ return `
+ <section class="hero">
+  <div class="eyebrow">CREATOR CONTROL</div>
+  <h1>👑 Owner Dashboard</h1>
+  <p class="muted">
+   Kyy Arthev — Creator & Owner
+  </p>
+
+  <div class="grid3">
+   <div class="card"><small>QUESTS</small><div class="big">${MAIN_QUESTS.length+state.dailyQuests.length}</div></div>
+   <div class="card"><small>ITEMS</small><div class="big">${MATERIAL_NAMES.length+WEAPON_NAMES.length}</div></div>
+   <div class="card"><small>PENDING</small><div class="big">${state.custom.filter(x=>x.status==="Pending").length}</div></div>
+  </div>
+ </section>
+
+ <div class="card">
+  <h3>📨 Member Submissions</h3>
+
+  ${
+   state.custom.length?
+   state.custom.map((x,i)=>`
+    <div class="card" style="margin-top:8px">
+     <b>${esc(x.name)}</b>
+     <span class="tag">${esc(x.type)}</span>
+     <p class="muted">${esc(x.desc||"No description")}</p>
+
+     <small>
+      Balance: ${esc(x.balance)} • Score ${x.score}<br>
+      Status: ${esc(x.status)}
+     </small>
+
+     ${
+      x.status==="Pending"?
+      `<div class="grid">
+       <button class="btn green" data-approve="${i}">✓ APPROVE</button>
+       <button class="btn red" data-reject="${i}">✕ REJECT</button>
+      </div>`:""
+     }
+    </div>
+   `).join(""):
+   `<p class="muted">Belum ada submission.</p>`
+  }
+ </div>
+
+ ${navHTML("menu")}`;
+}
+
+/* ---------- RENDER ---------- */
+
+function render(screen="home"){
+ try{
+  currentScreen=screen;
+
+  const app=document.getElementById("app");
+  const top=document.getElementById("topbar");
+
+  if(!app||!top)return;
+
+  top.classList.toggle("hidden",!state.started);
+
+  const lv=document.getElementById("topLv");
+  const rank=document.getElementById("topRank");
+
+  if(lv)lv.textContent=state.level;
+  if(rank)rank.textContent=state.rank;
+
+  if(!state.started){
+   app.innerHTML=titleHTML();
+   bind();
+   return;
+  }
+
+  generateDailyQuests();
+  recalc();
+
+  const screens={
+   home:homeHTML,
+   world:worldHTML,
+   quests:questsHTML,
+   status:statusHTML,
+   inventory:inventoryHTML,
+   combat:combatHTML,
+   menu:menuHTML,
+   skills:skillsHTML,
+   blacksmith:blacksmithHTML,
+   tavern:tavernHTML,
+   market:marketHTML,
+   gather:gatherHTML,
+   achievements:achievementsHTML,
+   settings:settingsHTML,
+   creator:creatorHTML,
+   owner:ownerHTML
+  };
+
+  app.innerHTML=(screens[screen]||homeHTML)();
+  bind();
+
+ }catch(err){
+  showError(err);
+ }
+}
+
+/* ---------- EVENT SYSTEM ---------- */
+
+function bind(){
+ document.querySelectorAll("[data-action]").forEach(el=>{
+  el.addEventListener("click",()=>{
+   const a=el.dataset.action;
+
+   if(a==="home")render("home");
+   else if(a==="world")render("world");
+   else if(a==="quests")render("quests");
+   else if(a==="status")render("status");
+   else if(a==="inventory")render("inventory");
+   else if(a==="menu")render("menu");
+   else if(a==="skills")render("skills");
+   else if(a==="blacksmith")render("blacksmith");
+   else if(a==="tavern")render("tavern");
+   else if(a==="market")render("market");
+   else if(a==="gather")render("gather");
+   else if(a==="achievements")render("achievements");
+   else if(a==="settings")render("settings");
+   else if(a==="creator")render("creator");
+   else if(a==="owner")render("owner");
+   else if(a==="newgame"){
+    state=freshState();
+    state.inventory=initializeInventory();
+    renderCreate();
+   }
+   else if(a==="continue"){
+    if(state.name){
+     state.started=true;
+     recalc();
+     save();
+     render("home");
+    }else{
+     renderCreate();
+    }
+   }
+   else if(a==="create")createCharacter();
+   else if(a==="rebirth")rebirth();
+   else if(a==="checkquest")checkActiveQuest();
+   else if(a==="battlepotion")useBattlePotion();
+   else if(a==="flee")flee();
+   else if(a==="rest")rest();
+   else if(a==="repair")repair();
+   else if(a==="upgrade")upgradeWeapon();
+   else if(a==="sound"){
+    soundOn=!soundOn;
+    if(soundOn)beep(400,.05);
+    render("settings");
+   }
+   else if(a==="reset")resetGame();
+   else if(a==="submitcreator")submitCreator();
+  });
+ });
+
+ document.querySelectorAll("[data-place]").forEach(el=>{
+  el.addEventListener("click",()=>{
+   const id=el.dataset.place;
+   const p=getPlace(id);
+   if(!p)return;
+
+   if(id==="forest"){
+    if(canTravel(p))startEncounter(false);
+   }else if(id==="arena"){
+    if(canTravel(p))startArena();
+   }else if(id==="dungeon"){
+    startDungeon();
+   }else{
+    travel(id);
+
+    if(id==="tavern")render("tavern");
+    if(id==="blacksmith")render("blacksmith");
+    if(id==="market")render("market");
+   }
+  });
+ });
+
+ document.querySelectorAll("[data-quest]").forEach(el=>{
+  el.addEventListener("click",()=>{
+   acceptQuest(el.dataset.quest);
+  });
+ });
+
+ document.querySelectorAll("[data-stat]").forEach(el=>{
+  el.addEventListener("click",()=>{
+   spendStat(el.dataset.stat);
+  });
+ });
+
+ document.querySelectorAll("[data-attack]").forEach(el=>{
+  el.addEventListener("click",()=>{
+   const i=Number(el.dataset.attack);
+   attack(i<0?null:i);
+  });
+ });
+
+ document.querySelectorAll("[data-equip]").forEach(el=>{
+  el.addEventListener("click",()=>{
+   equipItem(Number(el.dataset.equip));
+  });
+ });
+
+ document.querySelectorAll("[data-skill]").forEach(el=>{
+  el.addEventListener("click",()=>{
+   toggleSkill(Number(el.dataset.skill));
+  });
+ });
+
+ document.querySelectorAll("[data-gather]").forEach(el=>{
+  el.addEventListener("click",()=>{
+   gather(el.dataset.gather);
+  });
+ });
+
+ document.querySelectorAll("[data-food]").forEach(el=>{
+  el.addEventListener("click",()=>{
+   buyFood(el.dataset.food);
+  });
+ });
+
+ document.querySelectorAll("[data-buyweapon]").forEach(el=>{
+  el.addEventListener("click",()=>{
+   buyWeapon(Number(el.dataset.buyweapon));
+  });
+ });
+
+ document.querySelectorAll("[data-buyarmor]").forEach(el=>{
+  el.addEventListener("click",()=>{
+   buyArmor(Number(el.dataset.buyarmor));
+  });
+ });
+
+ document.querySelectorAll("[data-market]").forEach(el=>{
+  el.addEventListener("click",()=>{
+   buyMarket(Number(el.dataset.market));
+  });
+ });
+
+ document.querySelectorAll("[data-approve]").forEach(el=>{
+  el.addEventListener("click",()=>{
+   moderate(Number(el.dataset.approve),true);
+  });
+ });
+
+ document.querySelectorAll("[data-reject]").forEach(el=>{
+  el.addEventListener("click",()=>{
+   moderate(Number(el.dataset.reject),false);
+  });
+ });
+
+ document.getElementById("soundBtn")?.addEventListener("click",()=>{
+  soundOn=!soundOn;
+  document.getElementById("soundBtn").textContent=soundOn?"🔊":"🔇";
+  if(soundOn)beep(400,.05);
+ });
+}
+
+function renderCreate(){
+ const app=document.getElementById("app");
+ app.innerHTML=createHTML();
+
+ let race=state.race;
+ let cls=state.class;
+
+ document.querySelectorAll("[data-race]").forEach(b=>{
+  b.addEventListener("click",()=>{
+   race=b.dataset.race;
+   document.querySelectorAll("[data-race]").forEach(x=>x.classList.remove("selected"));
+   b.classList.add("selected");
+  });
+ });
+
+ document.querySelectorAll("[data-class]").forEach(b=>{
+  b.addEventListener("click",()=>{
+   cls=b.dataset.class;
+   document.querySelectorAll("[data-class]").forEach(x=>x.classList.remove("selected"));
+   b.classList.add("selected");
+  });
+ });
+
+ const create=document.querySelector("[data-action='create']");
+ if(create){
+  create.addEventListener("click",()=>{
+   const name=(document.getElementById("charName").value||"Nameless").trim();
+
+   state.name=name||"Nameless";
+   state.race=race;
+   state.class=cls;
+   state.started=true;
+   state.inventory=initializeInventory();
+
+   recalc();
+
+   state.hp=state.computed.maxHp;
+   state.mp=state.computed.maxMp;
+
+   state.unlockedSkills=[state.class+"_0"];
+   state.equippedSkills=[state.class+"_0"];
+
+   log(state.name+" tiba di Astera.");
+   save();
+   sfx("win");
+   render("home");
+  });
+ }
+}
+
+function createCharacter(){
+ const button=document.querySelector("[data-action='create']");
+ if(button)button.click();
+}
+
+function buyMarket(index){
+ const items=[
+  ["Small Potion",30,"Potion",{heal:80}],
+  ["Large Potion",90,"Potion",{heal:250}],
+  ["Mega Potion",240,"Potion",{heal:700}],
+  ["Small Ether",40,"Potion",{mana:45}],
+  ["Large Ether",120,"Potion",{mana:180}],
+  ["Antidote",55,"Potion",{heal:30}],
+  ["Teleport Stone",150,"Utility",{}],
+  ["Dungeon Key",500,"Material",{}]
+ ];
+
+ const x=items[index];
+ if(!x)return;
+
+ if(state.gold<x[1]){
+  toast("Gold tidak cukup.");
+  return;
+ }
+
+ state.gold-=x[1];
+
+ addItem(x[0],x[2],1,x[3]);
+
+ toast("🛒 "+x[0]+" dibeli.");
+ save();
+ render("market");
+}
+
+/* ---------- ERROR GUARD ---------- */
+
+function showError(err){
+ const app=document.getElementById("app");
+
+ if(!app)return;
+
+ app.innerHTML=`
+ <section class="error">
+  <div class="eyebrow">NEXORA SYSTEM</div>
+  <h1>⚠️ Game Error</h1>
+  <p>
+   Game mengalami error saat menjalankan bagian tertentu.
+   Save kamu tidak langsung dihapus.
+  </p>
+
+  <p class="muted">
+   ${esc(err&&err.message?err.message:String(err))}
+  </p>
+
+  <button class="btn" onclick="location.reload()">
+   ↻ RELOAD GAME
+  </button>
+
+  <button class="btn alt" onclick="localStorage.removeItem('${SAVE_KEY}');location.reload()">
+   ♻️ RESET SAVE
+  </button>
+ </section>`;
+}
+
+window.addEventListener("error",function(e){
+ console.error(e.error||e.message);
+});
+
+window.addEventListener("unhandledrejection",function(e){
+ console.error(e.reason);
+});
+
+/* ---------- BOOT ---------- */
+
+try{
+ state=load();
+
+ if(state.started){
+  recalc();
+  generateDailyQuests();
+ }
+
+ render(state.started?"home":"home");
+}catch(err){
+ state=freshState();
+ showError(err);
+}
+
+</script>
+</body>
+</html>
